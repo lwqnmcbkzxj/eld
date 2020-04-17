@@ -1,6 +1,7 @@
-const { makeQuery, initMysqlConnection, makeResponse, checkAuth } = require('./utils');
-
 var express = require('express');
+const { initMysqlConnection, checkAuth } = require('./utils');
+
+
 
 var app = express();
 app.use(express.json());

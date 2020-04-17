@@ -1,6 +1,5 @@
-const mysql = require('mysql');
+mysql = require('mysql');
 const { MYSQL_AUTH } = require('./config.js');
-const { INCORRECT_QUERY, AUTH_FAILED } = require('./const.js');
 
 
 var _con;

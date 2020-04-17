@@ -1,5 +1,4 @@
 const { makeQuery, makeResponse } = require('../utils.js');
-const { check, validationResult } = require('express-validator');
 
 module.exports = function(req, res) { /* company_id */
     // console.log("In Vehicles");
