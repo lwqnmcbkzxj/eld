@@ -28,12 +28,14 @@ module.exports.initMysqlConnection = initMysqlConnection;
 
 const checkAuth = function(req, res, next) {
     const token = req.headers.token;
-    // console.log("Token: " + token);
-    // console.log("In checkAuth");
-    makeQuery(`SELECT user_id, role_id FROM user WHERE user_token = ?`, [ token ], (db_success) => {
-        // console.log("Length found: " + db_success.result.length);
+    makeQuery(`SELECT user_id, role_id, company_id FROM user WHERE user_token = ?`, [ token ], (db_success) => {
         if (db_success.result.length <= 0) return res.send(makeResponse(-1, 'User Not Authorized'));
-        // console.log("Before calling next() ... ");
+        const auth_info = {
+            req_user_id: db_success.result[0].user_id,
+            req_role_id: db_success.result[0].role_id,
+            req_company_id: db_success.result[0].company_id
+        };
+        req['auth_info'] = auth_info;
         next();
     }, (db_fail) => {
         return res.send(makeResponse(-2, 'Unexpected Error During Auth'));
