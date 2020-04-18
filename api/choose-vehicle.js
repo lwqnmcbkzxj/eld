@@ -1,6 +1,7 @@
 const { makeQuery, makeResponse } = require('../utils.js');
 
 module.exports = function(req, res) { /* vehicle_id */
+    // console.log(req.body);
     const vehicle_id = req.body.vehicle_id;
     const req_company_id = req.auth_info.req_company_id;
     const req_user_id = req.auth_info.req_user_id;
@@ -9,7 +10,8 @@ module.exports = function(req, res) { /* vehicle_id */
 
     makeQuery(`select * from vehicle where vehicle_id = ? and company_id = ?`, [vehicle_id, req_company_id],
         (dsuc) => {
-            makeQuery(`update vehicle set driver_user_id = ? where vehicle_id = ? and company_id = ?`,
+        if (dsuc.result.length <= 0) return res.send(makeResponse(2, 'Specified vehicle not found in company'));
+        makeQuery(`update vehicle set driver_user_id = ? where vehicle_id = ? and company_id = ?`,
                 [req_user_id, vehicle_id, req_company_id],(db_success) => {
                     const amount_of_changed_rows = db_success.result.changedRows;
                     if (amount_of_changed_rows >= 2) {
@@ -23,7 +25,7 @@ module.exports = function(req, res) { /* vehicle_id */
                 }
             );
         }, (dfail) => {
-            return res.send(makeResponse(2, 'Specified vehicle in company not found'));
+            return res.send(makeResponse(4, 'Unexpected error during select to database'));
         }
     );
 
