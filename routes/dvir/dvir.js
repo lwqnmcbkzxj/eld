@@ -6,8 +6,10 @@ router.use('/', checkAuth);
 
 const addRouter = require('./add');
 const deleteRouter = require('./delete')
+const getRouter = require('./get')
 
 router.use('/add', addRouter);
 router.use('/delete', deleteRouter);
+router.use('/get', getRouter);
 
 module.exports = router;
