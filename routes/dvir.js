@@ -1,12 +1,12 @@
 const express = require('express');
 const router = express.Router();
-const { checkAuth } = require('../../utils.js');
+const { checkAuth } = require('../utils.js');
 
 router.use('/', checkAuth);
 
-const addRouter = require('./add');
-const deleteRouter = require('./delete')
-const getRouter = require('./get')
+const addRouter = require('./dvir/add');
+const deleteRouter = require('./dvir/delete')
+const getRouter = require('./dvir/get')
 
 router.use('/add', addRouter);
 router.use('/delete', deleteRouter);
