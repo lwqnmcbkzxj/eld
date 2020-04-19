@@ -1,10 +1,11 @@
 const express = require('express');
 const router = express.Router();
-const { makeQuery, makeResponse, checkAuth } = require('../utils.js');
+const { makeQuery, makeResponse, checkAuth } = require('../../utils.js');
 const bodyParser = require('body-parser');
 let urlencodedParser = bodyParser.urlencoded({ extended: true });
 
 router.use('/', checkAuth, urlencodedParser);
+
 router.post('/', function(req, res) { /* vehicle_id */
     // console.log(req.body);
     const vehicle_id = req.body.vehicle_id;
