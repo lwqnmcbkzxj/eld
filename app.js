@@ -15,10 +15,13 @@ let urlencodedParser = bodyParser.urlencoded({ extended: true });
 // app.use(express.json());
 initMysqlConnection(function() {}, function() {});
 
-
-app.post('/login', urlencodedParser, require('./api/login'));
-app.get('/vehicles/:company_id', [checkAuth, require('./api/vehicles')]);
-app.post('/choose-vehicle', urlencodedParser, [checkAuth, require('./api/choose-vehicle')]);
+//import routes
+const loginRoute = require('./routes/login');
+const vehiclesRoute = require('./routes/vehicles');
+const chooseVehicleRoute = require('./routes/choose-vehicle');
+app.use('/login', loginRoute);
+app.use('/vehicles', vehiclesRoute);
+app.use('/choose-vehicle', chooseVehicleRoute);
 
 let storage = multer.diskStorage({
   destination: function(req, file, cb) {
@@ -34,7 +37,7 @@ let upload = multer({
     cb(null, true);
   }
 });
-app.post('/add-dvir', upload.single('signature'), [checkAuth, require('./api/add-dvir')]);
+app.post('/add-dvir', upload.single('signature'), [checkAuth, require('./routes/add-dvir')]);
 
 
 app.listen(3000, function() {

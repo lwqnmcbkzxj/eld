@@ -1,8 +1,15 @@
+const express = require('express');
+const router = express.Router();
+
 const { makeQuery, makeResponse } = require('../utils.js');
 const crypto = require('crypto');
 const md5 = require('md5');
 
-module.exports = function(req, res) { /* user_login, user_password */
+var bodyParser = require('body-parser');
+let urlencodedParser = bodyParser.urlencoded({ extended: true });
+router.use('/', urlencodedParser);
+
+router.post('/', function(req, res) { /* user_login, user_password */
     console.log(req.body);
     const user_login = req.body.user_login;
     const user_password = req.body.user_password;
@@ -21,7 +28,7 @@ module.exports = function(req, res) { /* user_login, user_password */
             const user_token = buffer.toString('hex');
             console.log(user_token);
             makeQuery(`update user set user_token = ? where user_login = ?`, [user_token, user_login], (dres) => {
-                return res.send(makeResponse(0, {
+                return res.header({token: user_token}).status(200).send(makeResponse(0, {
                     login: user_login,
                     token: user_token,
                     role_id: user_info.role_id,
@@ -38,5 +45,6 @@ module.exports = function(req, res) { /* user_login, user_password */
     }, (res) => {
         return res.send(makeResponse(3, 'Unexpected error while executing SELECT request'));
     });
+});
 
-};
+module.exports = router;

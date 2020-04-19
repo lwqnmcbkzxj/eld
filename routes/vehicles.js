@@ -1,7 +1,10 @@
-const { makeQuery, makeResponse } = require('../utils.js');
+const express = require('express');
+const router = express.Router();
+const { makeQuery, makeResponse, checkAuth } = require('../utils.js');
 
-module.exports = function(req, res) { /* company_id */
-    // console.log("In Vehicles");
+router.use('/', checkAuth);
+
+router.get('/:company_id', function(req, res) { /* company_id */
     const company_id = req.params.company_id;
     if (!company_id) return res.send(makeResponse(1, 'Empty company_id received'));
 
@@ -24,4 +27,6 @@ module.exports = function(req, res) { /* company_id */
     }, (db_result) => {
         return res.send(makeResponse(3, 'Unexpected error while selecting companies from database'));
     });
-};
+});
+
+module.exports = router;
