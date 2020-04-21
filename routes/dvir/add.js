@@ -32,8 +32,13 @@ router.post('/', upload.single('signature'), async function(req, res) { /* vehic
     const req_company_id = req.auth_info.req_company_id;
     const req_user_id = req.auth_info.req_user_id;
 
-    const session_obj = await getActiveSessionID(req_user_id);
-    const session_id = session_obj.session_id;
+    let session_id = null;
+    try {
+        const session_id = await getActiveSessionID(req_user_id);
+    } catch (err) {
+        session_id = null;
+    }
+
     // console.log("Session ID: " + session_obj);
     // console.log(vehicle_id, req_company_id, req_user_id);
     if (!vehicle_id) return res.status(400).send(makeResponse(1, 'Empty vehicle_id received'));
