@@ -21,9 +21,18 @@ function makeQuery(query, params = [], onSuccess, onError){
         else onSuccess && onSuccess({ status: 'ok', result } );
     });
 }
+function mQuery(query, params = []) {
+    if (!_con) return;
+    return new Promise((resolve, reject) => {
+        _con.query(query, params, (err, result) => {
+            if (err) return reject(err);
+            resolve(result);
+        });
+    });
+}
 module.exports.makeQuery = makeQuery;
 module.exports.initMysqlConnection = initMysqlConnection;
-
+module.exports.mQuery = mQuery;
 ///////////////////////
 
 const checkAuth = function(req, res, next) {
@@ -44,6 +53,17 @@ const checkAuth = function(req, res, next) {
 };
 module.exports.checkAuth = checkAuth;
 
+
+async function getActiveSessionID(user_id) {
+    if (!user_id) return {status: -3, session_id: null};
+    const session_db = await mQuery(`select session_id from session where driver_user_id = ? and session_status = 'ACTIVE'`, [user_id]);
+    // console.log(session_db);
+    const n = session_db.length;
+    if (n >= 2) return {status: -1, session_id: null};
+    else if (n <= 0) return {status: -2, session_id: null};
+    else return {status: 0, session_id: session_db[0].session_id};
+};
+module.exports.getActiveSessionID = getActiveSessionID;
 //////////////////////
 
 function getSqlTimestamp(date){

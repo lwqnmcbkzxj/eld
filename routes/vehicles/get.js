@@ -10,9 +10,10 @@ router.get('/:company_id', function(req, res) { /* company_id */
         if (db_result.result.length <= 0) return res.status(404).send(makeResponse(2, 'Wrong company ID. Company not found'));
         else {
             makeQuery(`select v.vehicle_id, v.vehicle_sn, v.vehicle_issue_year, v.vehicle_status, 
-                    vmake.vehicle_make_name, vmodel.vehicle_model_name, (v.driver_user_id is not null) as is_reserved
+                    vmake.vehicle_make_name, vmodel.vehicle_model_name, (acs.vehicle_id is not null) as is_reserved
                     from vehicle v left join vehicle_make vmake on v.vehicle_make_id = vmake.vehicle_make_id 
                     left join vehicle_model vmodel on v.vehicle_model_id = vmodel.vehicle_model_id 
+                    left join active_session acs on v.vehicle_id = acs.vehicle_id 
                     where v.company_id = ? order by v.vehicle_sort`, [company_id], (db_response) => {
 
                 return res.status(200).send(makeResponse(0, db_response.result));

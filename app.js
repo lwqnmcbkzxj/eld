@@ -15,7 +15,7 @@ app.use('/vehicles', vehiclesRoute);
 app.use('/dvir', dvirRouter);
 app.use('/auth', authRouter);
 
-
-app.listen(3000, function() {
-  console.log("Listening to port 3000 ...");
+const port = 3000;
+app.listen(port, function() {
+  console.log('Listening to port ' + port + ' ....');
 });

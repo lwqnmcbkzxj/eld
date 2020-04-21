@@ -17,14 +17,9 @@ router.post('/', function(req, res) { /* vehicle_id */
     makeQuery(`select * from vehicle where vehicle_id = ? and company_id = ?`, [vehicle_id, req_company_id],
         (dsuc) => {
         if (dsuc.result.length <= 0) return res.status(404).send(makeResponse(2, 'Specified vehicle not found in company'));
-        makeQuery(`update vehicle set driver_user_id = ? where vehicle_id = ? and company_id = ?`,
-                [req_user_id, vehicle_id, req_company_id],(db_success) => {
-                    const amount_of_changed_rows = db_success.result.changedRows;
-                    if (amount_of_changed_rows >= 2) {
-                        return res.status(200).send(makeResponse(3, 'Chosen more than one vehicles'));
-                    } else {
-                        return res.status(200).send(makeResponse(0, {company_id: req_company_id, vehicle_id: vehicle_id}));
-                    }
+        makeQuery(`insert into session(driver_user_id, vehicle_id) VALUES(?, ?)`,[req_user_id, vehicle_id],(db_success) => {
+            const session_id = db_success.result.insertId;
+            return res.status(201).send(makeResponse(0, {session_id: session_id, vehicle_id: vehicle_id}));
                 }, (db_fail) => {
                     return res.status(500).send(makeResponse(1, 'Unexpected error during database update'));
                     // return res.send(makeResponse(1, db_fail));
