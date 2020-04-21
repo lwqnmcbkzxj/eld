@@ -4,13 +4,13 @@ const { checkAuth } = require('../utils.js');
 
 router.use('/', checkAuth);
 
-const getRouter = require('./vehicles/get');
-const chooseVehicle = require('./vehicles/choose');
-const getInfoVehicle = require('./vehicles/get-info');
+const getRouter = require('./vehicle/get');
+const chooseVehicle = require('./vehicle/choose');
+const getInfoVehicle = require('./vehicle/info');
 
 router.use('/get', getRouter);
 router.use('/choose', chooseVehicle);
-router.use('/get-info', getInfoVehicle);
+router.use('/info', getInfoVehicle);
 
 
 module.exports = router;
