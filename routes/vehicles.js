@@ -6,9 +6,11 @@ router.use('/', checkAuth);
 
 const getRouter = require('./vehicles/get');
 const chooseVehicle = require('./vehicles/choose');
+const getInfoVehicle = require('./vehicles/get-info');
 
 router.use('/get', getRouter);
 router.use('/choose', chooseVehicle);
+router.use('/get-info', getInfoVehicle);
 
 
 module.exports = router;
