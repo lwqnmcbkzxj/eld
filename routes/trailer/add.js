@@ -1,7 +1,7 @@
 const router = require('express').Router();
 const { mQuery, makeResponse } = require('./../../utils');
 
-router.post('/', async (req, res) => {
+router.post('/', async (req, res) => {  /* trailer_name */
     const req_user_id = req.auth_info.req_user_id;
     const session_id = req.auth_info.session_id;
     const trailer_external_id = req.body.trailer_name;
