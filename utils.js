@@ -53,11 +53,20 @@ const checkAuth = function(req, res, next) {
 };
 module.exports.checkAuth = checkAuth;
 
-class SmartError extends Error {
-    constructor(args) {
-        super(args);
+async function sessionExtracter(req, res, next) {
+    const req_user_id = req.auth_info.req_user_id;
+    let session_id = null;
+    try {
+        const session_db = await mQuery(`select session_id from session where driver_user_id = ? and session_status = 'ACTIVE'`, [req_user_id]);
+        // console.log(session_db);
+        session_id = session_db[0].session_id;
+        req.auth_info['session_id'] = session_id;
+    } catch (err) {
+        return res.status(500).send(makeResponse(-5, err));
     }
+    next();
 }
+module.exports.sessionExtracter = sessionExtracter;
 
 async function getActiveSessionID(user_id) {
     try {
