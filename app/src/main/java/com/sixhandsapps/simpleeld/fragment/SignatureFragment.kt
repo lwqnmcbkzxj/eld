@@ -1,14 +1,18 @@
-package com.sixhandsapps.simpleeld
+package com.sixhandsapps.simpleeld.fragment
 
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import com.sixhandsapps.simpleeld.R
+import com.sixhandsapps.simpleeld.widget.SignatureView
+import com.sixhandsapps.simpleeld.activity.MainActivity
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.fragment_signature.*
 
-class SignatureFragment: Fragment(), SignatureView.Callback {
+class SignatureFragment: Fragment(),
+    SignatureView.Callback {
 
     private val activity by lazy {
         requireActivity() as MainActivity
@@ -36,12 +40,12 @@ class SignatureFragment: Fragment(), SignatureView.Callback {
     }
 
     override fun startDrawing() {
-        activity.viewPager.isPagingEnabled = false
+        activity.viewPager.isUserInputEnabled = false
     }
 
     override fun endDrawing() {
         clearButton.isEnabled = true
         submitButton.isEnabled = true
-        activity.viewPager.isPagingEnabled = true
+        activity.viewPager.isUserInputEnabled = true
     }
 }

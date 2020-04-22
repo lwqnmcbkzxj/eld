@@ -1,4 +1,4 @@
-package com.sixhandsapps.simpleeld
+package com.sixhandsapps.simpleeld.widget
 
 import android.content.Context
 import android.graphics.*

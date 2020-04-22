@@ -27,7 +27,7 @@
                 android:textColor="#2B2C2E"
                 android:textSize="16sp" />
 
-            <com.sixhandsapps.simpleeld.SignatureView
+            <com.sixhandsapps.simpleeld.widget.SignatureView
                 android:id="@+id/signatureView"
                 android:layout_width="match_parent"
                 android:layout_height="350dp"
