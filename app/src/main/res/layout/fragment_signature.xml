@@ -6,15 +6,18 @@
     android:layout_height="match_parent">
 
     <androidx.cardview.widget.CardView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:id="@+id/cardView"
+        android:layout_width="0dp"
+        tools:layout_width="700dp"
+        android:layout_height="match_parent"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="16dp"
         android:layout_gravity="center"
         app:cardElevation="8dp">
 
         <LinearLayout
-            android:layout_width="700dp"
-            android:layout_height="wrap_content"
-            android:clipToPadding="false"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
             android:orientation="vertical"
             android:paddingTop="24dp">
 
@@ -24,13 +27,14 @@
                 android:layout_marginStart="24dp"
                 android:layout_marginEnd="24dp"
                 android:text="I hereby certify that my date entries and my record of duty status for this 24-hour period are true and correct"
-                android:textColor="#2B2C2E"
+                android:textColor="?attr/colorOnSurface"
                 android:textSize="16sp" />
 
             <com.sixhandsapps.simpleeld.widget.SignatureView
                 android:id="@+id/signatureView"
                 android:layout_width="match_parent"
-                android:layout_height="350dp"
+                android:layout_height="0dp"
+                android:layout_weight="1"
                 android:layout_marginStart="24dp"
                 android:layout_marginTop="24dp"
                 android:layout_marginEnd="24dp"

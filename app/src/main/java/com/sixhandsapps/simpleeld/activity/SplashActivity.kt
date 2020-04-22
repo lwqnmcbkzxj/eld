@@ -7,7 +7,7 @@ import androidx.preference.PreferenceManager
 import com.sixhandsapps.simpleeld.PREFERENCES_TOKEN
 import com.sixhandsapps.simpleeld.getPreferences
 
-class SplashActivity: AppCompatActivity() {
+class SplashActivity: BaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

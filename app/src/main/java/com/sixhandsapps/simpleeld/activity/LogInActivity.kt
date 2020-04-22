@@ -9,13 +9,14 @@ import androidx.core.content.edit
 import androidx.core.widget.addTextChangedListener
 import androidx.lifecycle.Observer
 import com.google.android.material.textfield.TextInputLayout
+import com.sixhandsapps.simpleeld.PREFERENCES_COMPANY_ID
 import com.sixhandsapps.simpleeld.PREFERENCES_TOKEN
 import com.sixhandsapps.simpleeld.R
 import com.sixhandsapps.simpleeld.getPreferences
 import com.sixhandsapps.simpleeld.viewmodel.LogInViewModel
 import kotlinx.android.synthetic.main.activity_log_in.*
 
-class LogInActivity : AppCompatActivity() {
+class LogInActivity : BaseActivity() {
 
     private val viewModel by viewModels<LogInViewModel>()
 
@@ -49,14 +50,21 @@ class LogInActivity : AppCompatActivity() {
         }
 
         viewModel.logInResponse.observe(this, Observer {
-            if (it.status == 0) {
-                getPreferences().edit(true) {
-                    putString(PREFERENCES_TOKEN, it.result!!.token)
+            when {
+                it.status == 0 -> {
+                    getPreferences().edit(true) {
+                        putString(PREFERENCES_TOKEN, it.result!!.token)
+                        putInt(PREFERENCES_COMPANY_ID, it.result.companyId)
+                    }
+                    startActivity(Intent(this, ConfirmVehicleActivity::class.java))
+                    finish()
                 }
-                startActivity(Intent(this, MainActivity::class.java))
-                finish()
-            } else {
-                Toast.makeText(this, it.resultString, Toast.LENGTH_LONG).show()
+                it.status != null -> {
+                    Toast.makeText(this, it.resultString, Toast.LENGTH_LONG).show()
+                }
+                else -> {
+                    Toast.makeText(this, it.throwable!!.message, Toast.LENGTH_LONG).show()
+                }
             }
         })
     }
