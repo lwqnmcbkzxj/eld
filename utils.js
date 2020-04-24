@@ -38,7 +38,7 @@ module.exports.mQuery = mQuery;
 const checkAuth = function(req, res, next) {
     const token = req.headers.token;
     // console.log(req.body);
-    makeQuery(`SELECT user_id, role_id, company_id FROM user WHERE user_token = ?`, [ token ], (db_success) => {
+    makeQuery(`SELECT user_id, role_id, company_id FROM user WHERE user_token = ? and user_status <> 'DELETED'`, [ token ], (db_success) => {
         if (db_success.result.length <= 0) return res.status(401).send(makeResponse(-1, 'User Not Authorized'));
         const auth_info = {
             req_user_id: db_success.result[0].user_id,
@@ -48,7 +48,7 @@ const checkAuth = function(req, res, next) {
         req['auth_info'] = auth_info;
         next();
     }, (db_fail) => {
-        return res.status(401).send(makeResponse(-2, 'Unexpected Error During Auth'));
+        return res.status(401).send(makeResponse(-2, db_fail));
     });
 };
 module.exports.checkAuth = checkAuth;
@@ -57,7 +57,8 @@ async function sessionExtracter(req, res, next) {
     const req_user_id = req.auth_info.req_user_id;
     let session_id = null;
     try {
-        const session_db = await mQuery(`select session_id from session where driver_user_id = ? and session_status = 'ACTIVE'`, [req_user_id]);
+        const session_db = await mQuery(`select session_id from session where 
+             driver_user_id = ? and session_status = 'ACTIVE' order by session_start_dt desc limit 1`, [req_user_id]);
         // console.log(session_db);
         session_id = session_db[0].session_id;
         req.auth_info['session_id'] = session_id;
@@ -75,8 +76,7 @@ async function getActiveSessionID(user_id) {
     } catch (err) {
         throw err;
     }
-
-};
+}
 module.exports.getActiveSessionID = getActiveSessionID;
 //////////////////////
 
