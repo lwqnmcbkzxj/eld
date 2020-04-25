@@ -78,7 +78,11 @@ async function getActiveSessionID(user_id) {
     }
 }
 module.exports.getActiveSessionID = getActiveSessionID;
-//////////////////////
+
+function genRandomFileName() {
+    return Math.random().toString(36).substring(2, 12) + Math.random().toString(36).substring(2, 12);
+}
+module.exports.genRandomFileName = genRandomFileName;
 
 function getSqlTimestamp(date){
     return (date.getYear() + 1900) + '-' + (date.getMonth() + 1) + '-' + date.getDate() + ' ' +
