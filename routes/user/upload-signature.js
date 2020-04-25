@@ -5,7 +5,7 @@ const fs = require('fs');
 let multer = require('multer');
 let storage = multer.diskStorage({
     destination: function(req, file, cb) {
-        cb(null, '/var/www/api.eld.sixhands.co/uploads/');
+        cb(null, global.app_root + '/uploads/');
     },
     filename: function(req, file, cb) {
         // console.log(file);

@@ -1,3 +1,6 @@
+const path = require('path');
+global.app_root = path.resolve(__dirname);
+
 const { initMysqlConnection } = require('./utils');
 
 let express = require('express');
