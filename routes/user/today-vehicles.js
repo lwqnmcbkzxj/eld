@@ -11,8 +11,8 @@ router.get('/', async (req, res) => {   /* */
 
     let db;
     try {
-        db = await mQuery(`select * from session where (session_start_dt >= ? and session_start_dt <= ?) or 
-                                (session_id = ?)`, [dt, dt, session_id]);
+        db = await mQuery(`select * from session where (session_start_dt <= ? and session_end_dt >= ?) or 
+            (session_start_dt <= ? and session_end_dt is null) or (session_id = ?)`, [dt, dt, dt, session_id]);
     } catch (err) {
         return res.status(500).send(makeResponse(2, err));
     }

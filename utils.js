@@ -69,6 +69,16 @@ async function sessionExtracter(req, res, next) {
 }
 module.exports.sessionExtracter = sessionExtracter;
 
+async function companyExists(company_id) {
+    try {
+        const db = await mQuery(`select company_id from company where company_id = ?`, [company_id]);
+        return db.length > 0;
+    } catch (err) {
+        throw err;
+    }
+}
+module.exports.companyExists = companyExists;
+
 async function getActiveSessionID(user_id) {
     try {
         const session_db = await mQuery(`select session_id from session where driver_user_id = ? and session_status = 'ACTIVE'`, [user_id]);
