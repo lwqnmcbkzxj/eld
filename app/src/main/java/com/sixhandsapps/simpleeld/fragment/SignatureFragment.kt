@@ -47,12 +47,14 @@ class SignatureFragment: Fragment(),
     }
 
     override fun startDrawing() {
+        scrollView.requestDisallowInterceptTouchEvent(true)
         activity.viewPager.isUserInputEnabled = false
     }
 
     override fun endDrawing() {
         clearButton.isEnabled = true
         submitButton.isEnabled = true
+        scrollView.requestDisallowInterceptTouchEvent(false)
         activity.viewPager.isUserInputEnabled = true
     }
 }

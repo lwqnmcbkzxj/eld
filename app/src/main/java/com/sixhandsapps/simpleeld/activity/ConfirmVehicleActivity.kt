@@ -5,6 +5,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.view.ViewGroup
+import android.view.Window
 import android.view.WindowManager
 import android.widget.Toast
 import androidx.activity.viewModels
@@ -15,6 +16,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.sixhandsapps.simpleeld.PREFERENCES_VEHICLE_ID
 import com.sixhandsapps.simpleeld.R
 import com.sixhandsapps.simpleeld.getPreferences
+import com.sixhandsapps.simpleeld.handleResponse
 import com.sixhandsapps.simpleeld.model.Vehicle
 import com.sixhandsapps.simpleeld.viewmodel.ConfirmVehicleViewModel
 import kotlinx.android.synthetic.main.activity_confirm_vehicle.*
@@ -30,22 +32,26 @@ class ConfirmVehicleActivity : BaseActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_confirm_vehicle)
 
+        backButton.setOnClickListener {
+            finish()
+        }
         recyclerView.updateLayoutParams {
             width = (resources.displayMetrics.widthPixels * 0.7f).roundToInt()
         }
 
-        viewModel.vehicles.observe(this, Observer {
-            when {
-                it.status == 0 -> {
-                    recyclerView.adapter = VehicleAdapter(it.result!!)
+        viewModel.vehicles.observe(this, Observer { response ->
+            handleResponse(response, onSuccess = {
+                recyclerView.adapter = VehicleAdapter(it)
+            })
+        })
+        viewModel.chooseVehicleResponse.observe(this, Observer {
+            handleResponse(it, onSuccess = {
+                getPreferences().edit(true) {
+                    putInt(PREFERENCES_VEHICLE_ID, it.getValue("vehicle_id"))
                 }
-                it.status != null -> {
-                    Toast.makeText(this, it.resultString, Toast.LENGTH_LONG).show()
-                }
-                else -> {
-                    Toast.makeText(this, it.throwable!!.message, Toast.LENGTH_LONG).show()
-                }
-            }
+                startActivity(Intent(this, MainActivity::class.java))
+                finishAffinity()
+            })
         })
     }
 
@@ -72,7 +78,9 @@ class ConfirmVehicleActivity : BaseActivity() {
                     divider.visibility = View.VISIBLE
                 }
                 itemView.setOnClickListener {
-                    val dialog = Dialog(this@ConfirmVehicleActivity)
+                    val dialog = Dialog(this@ConfirmVehicleActivity).apply {
+                        requestWindowFeature(Window.FEATURE_NO_TITLE)
+                    }
                     val view = View.inflate(
                         this@ConfirmVehicleActivity,
                         R.layout.confirm_vehicle_dialog,
@@ -86,16 +94,7 @@ class ConfirmVehicleActivity : BaseActivity() {
                             dialog.dismiss()
                         }
                         confirmButton.setOnClickListener {
-                            getPreferences().edit(true) {
-                                putInt(PREFERENCES_VEHICLE_ID, vehicle.id)
-                            }
-                            startActivity(
-                                Intent(
-                                    this@ConfirmVehicleActivity,
-                                    MainActivity::class.java
-                                )
-                            )
-                            finish()
+                            viewModel.chooseVehicle(vehicle.id)
                         }
                     }
                     dialog.setContentView(view)

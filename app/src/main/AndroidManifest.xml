@@ -22,6 +22,10 @@
         </activity>
         <activity android:name=".activity.MainActivity" />
         <activity android:name=".activity.ConfirmVehicleActivity" />
+        <activity android:name=".activity.RecordsActivity" />
+        <activity android:name=".activity.InspectionModuleActivity" />
+        <activity android:name=".activity.DrivingActivity" />
+        <activity android:name=".activity.LogsActivity" />
     </application>
 
 </manifest>

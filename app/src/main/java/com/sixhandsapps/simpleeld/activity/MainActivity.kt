@@ -23,6 +23,9 @@ class MainActivity : BaseActivity(), PopupMenu.OnMenuItemClickListener {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        logs.setOnClickListener {
+            startActivity(Intent(this, LogsActivity::class.java))
+        }
         viewPager.adapter = object :
             FragmentStateAdapter(this) {
 
@@ -56,6 +59,7 @@ class MainActivity : BaseActivity(), PopupMenu.OnMenuItemClickListener {
                 return true
             }
             R.id.nav_inspection_module -> {
+                startActivity(Intent(this, InspectionModuleActivity::class.java))
                 return true
             }
             R.id.nav_hos_basic_rules -> {

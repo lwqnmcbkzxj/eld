@@ -13,16 +13,16 @@
         android:orientation="vertical">
 
         <TextView
-            android:fontFamily="sans-serif-light"
-            android:textStyle="bold"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="24dp"
             android:layout_marginTop="24dp"
             android:layout_marginEnd="24dp"
-            android:textColor="?attr/colorOnSurface"
+            android:fontFamily="sans-serif-light"
             android:text="Create new DVIR"
-            android:textSize="20sp" />
+            android:textColor="?attr/colorOnSurface"
+            android:textSize="20sp"
+            android:textStyle="bold" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -168,16 +168,16 @@
         android:visibility="gone">
 
         <TextView
-            android:fontFamily="sans-serif-light"
-            android:textStyle="bold"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="24dp"
             android:layout_marginTop="24dp"
             android:layout_marginEnd="24dp"
+            android:fontFamily="sans-serif-light"
             android:text="Your signature"
             android:textColor="#2B2C2E"
-            android:textSize="20sp" />
+            android:textSize="20sp"
+            android:textStyle="bold" />
 
         <com.sixhandsapps.simpleeld.widget.SignatureView
             android:id="@+id/signatureView"
@@ -189,50 +189,48 @@
             android:layout_weight="1"
             android:background="#F8F7F8" />
 
-        <FrameLayout
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_gravity="end"
+            android:clipToPadding="false"
+            android:orientation="horizontal"
+            android:padding="24dp">
 
             <com.google.android.material.button.MaterialButton
-                app:strokeWidth="0dp"
                 android:id="@+id/clearButton"
                 style="@style/Widget.MaterialComponents.Button.OutlinedButton"
                 android:layout_width="128dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
-                android:layout_marginStart="24dp"
                 android:enabled="false"
-                android:text="Clear" />
+                android:text="Clear"
+                app:strokeWidth="0dp" />
 
-            <LinearLayout
-                android:layout_width="wrap_content"
+            <Space
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_weight="1" />
+
+            <Button
+                android:id="@+id/backButton"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                android:layout_width="128dp"
+                android:layout_height="wrap_content"
+                android:text="Back" />
+
+            <Space
+                android:layout_width="24dp"
+                android:layout_height="0dp" />
+
+            <Button
+                android:id="@+id/saveButton"
+                android:layout_width="128dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="end"
-                android:clipToPadding="false"
-                android:orientation="horizontal"
-                android:padding="24dp">
+                android:text="Save" />
 
-                <Button
-                    android:id="@+id/backButton"
-                    style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-                    android:layout_width="128dp"
-                    android:layout_height="wrap_content"
-                    android:text="Back" />
-
-                <Space
-                    android:layout_width="24dp"
-                    android:layout_height="0dp" />
-
-                <Button
-                    android:id="@+id/saveButton"
-                    android:layout_width="128dp"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="end"
-                    android:text="Save" />
-
-            </LinearLayout>
-
-        </FrameLayout>
+        </LinearLayout>
 
     </LinearLayout>
 

@@ -1,5 +1,6 @@
 package com.sixhandsapps.simpleeld.widget
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.*
 import android.util.AttributeSet
@@ -56,6 +57,7 @@ class SignatureView : FrameLayout {
         canvas = Canvas(bitmap)
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     override fun onTouchEvent(event: MotionEvent): Boolean {
         val x = event.x
         val y = event.y
