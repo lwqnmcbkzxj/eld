@@ -6,9 +6,11 @@ router.use('/', checkAuth);
 router.use('/', sessionExtracter);
 
 const addRouter = require('./record/add');
+const editRouter = require('./record/edit');
 
 
 router.use('/add', addRouter);
+router.use('/edit', editRouter);
 
 
 module.exports = router;
