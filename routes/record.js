@@ -7,10 +7,12 @@ router.use('/', sessionExtracter);
 
 const addRouter = require('./record/add');
 const editRouter = require('./record/edit');
+const getRouter = require('./record/get');
 
 
 router.use('/add', addRouter);
 router.use('/edit', editRouter);
+router.use('/get', getRouter);
 
 
 module.exports = router;

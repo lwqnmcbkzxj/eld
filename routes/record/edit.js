@@ -20,7 +20,7 @@ router.patch('/', async (req, res) => {  /* record_id, location, remark, end_tim
     try {
         db = await mQuery(`select record_id from record where record_id = ? and record_status = 'ACTIVE'`, [record_id]);
     } catch (err) {
-        return res.status(400).send(makeResponse(3, err));
+        return res.status(500).send(makeResponse(3, err));
     }
     if (db.length <= 0) return res.status(404).send(makeResponse(4, 'Could not find ACTIVE record with record_id = ' + record_id));
 
