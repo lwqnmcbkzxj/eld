@@ -58,8 +58,8 @@ router.post('/', async function(req, res) { /* vehicle_id */
         if (changedRows <= 0) {
             return res.status(200).send(makeResponse(7, `Unexpected backend behaviour. No rows updated`));
         }
-        res.status(200).send(makeResponse(0, {session_id: session_id, vehicle_id: vehicle_id}));
     }
+    return res.status(200).send(makeResponse(0, {session_id: session_id, vehicle_id: vehicle_id}));
 
     // makeQuery(`select * from vehicle where vehicle_id = ? and company_id = ?`, [vehicle_id, req_company_id],
     //     (dsuc) => {
