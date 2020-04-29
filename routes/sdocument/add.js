@@ -10,9 +10,9 @@ router.post('/', async (req, res) => {  /* shipping_document_name */
 
     // check if 'shipping_document_external_id' already exists
     try {
-        const db_trail = await mQuery(`select * from shipping_document where shipping_document_external_id = ?`, [shipping_document_external_id]);
-        const n = db_trail.lenght;
-        if (n > 0) return res.status(409).send(makeResponse(2, 'shipping_document with name ' + shipping_document_external_id + ' already exists'));
+        const db_sdoc = await mQuery(`select * from shipping_document where shipping_document_external_id = ?`, [shipping_document_external_id]);
+        const n = db_sdoc.lenght;
+        if (n > 0) return res.status(409).send(makeResponse(2, 'Shipping document with name ' + shipping_document_external_id + ' already exists'));
     } catch (err) {
         return res.status(500).send(makeResponse(1, err));
     }

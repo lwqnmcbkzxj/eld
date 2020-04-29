@@ -6,10 +6,10 @@ router.use('/', checkAuth);
 
 router.use('/', sessionExtracter);
 
-const getRouter = require('./shipping_document/get');
-const addRouter = require('./shipping_document/add');
-const deleteRouter = require('./shipping_document/delete');
-const editRouter = require('./shipping_document/edit');
+const getRouter = require('./sdocument/get');
+const addRouter = require('./sdocument/add');
+const deleteRouter = require('./sdocument/delete');
+const editRouter = require('./sdocument/edit');
 
 router.use('/get', getRouter);
 router.use('/add', addRouter);

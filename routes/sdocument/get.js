@@ -1,8 +1,8 @@
 const router = require('express').Router();
-const { mQuery, makeResponse, getActiveSessionID } = require('./../../utils');
+const { mQuery, makeResponse } = require('./../../utils');
 
 router.get('/', async (req, res) => {
-    const req_user_id = req.auth_info.req_user_id;
+    // const req_user_id = req.auth_info.req_user_id;
     const session_id = req.auth_info.session_id;
 
     try {
