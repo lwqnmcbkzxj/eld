@@ -43,8 +43,8 @@ router.post('/', upload.single('signature'), async function(req, res) { /* vehic
     // console.log(vehicle_id, req_company_id, req_user_id);
     if (!vehicle_id) return res.status(400).send(makeResponse(1, 'Empty vehicle_id received'));
 
-    makeQuery(`insert into signature(signature_user_id, signature_src, signature_status, session_id) values 
-    (?, ?, ?, ?)`, [req_user_id, signature.path, 'ACTIVE', session_id], (sig_suc) => {
+    makeQuery(`insert into signature(signature_user_id, signature_src, signature_status, session_id, signature_type) values 
+    (?, ?, ?, ?, ?)`, [req_user_id, signature.path, 'ACTIVE', session_id, 'DVIR'], (sig_suc) => {
         const signature_id = sig_suc.result.insertId;
         makeQuery(`insert into dvir(vehicle_id, session_id, driver_signature_id, mechanic_signature_id, dvir_location, dvir_deffects_status, dvir_description, creator_user_id, dvir_status) 
         values (?, ?, ?, ?, ?, ?, ?, ?, ?)`, [vehicle_id, session_id, signature_id, null, location, defects_status, description, req_user_id, 'ACTIVE'], (dvir_suc) => {

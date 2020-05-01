@@ -28,6 +28,7 @@ router.use('/', sessionExtracter);
 router.post('/', upload.single('signature'), async (req, res) => {   /* signature */
     const req_user_id = req.auth_info.req_user_id;
     const session_id = req.auth_info.session_id;
+    // console.log(req.auth_info);
     const signature = req.file;
     if (!signature) return res.send(400).send(makeResponse(1, 'Empty signature received'));
 
@@ -38,8 +39,8 @@ router.post('/', upload.single('signature'), async (req, res) => {   /* signatur
 
     let db;
     try {
-        db = await mQuery(`insert into signature(signature_user_id, signature_src, session_id) values 
-            (?, ?, ?)`, [req_user_id, file_path, session_id]);
+        db = await mQuery(`insert into signature(signature_user_id, signature_src, session_id, signature_type) values 
+            (?, ?, ?, ?)`, [req_user_id, file_path, session_id, 'REGULAR']);
     } catch (err) {
         return res.send(500).send(makeResponse(2, err));
     }
