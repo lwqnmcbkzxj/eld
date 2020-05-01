@@ -57,10 +57,10 @@ async function sessionExtracter(req, res, next) {
     const req_user_id = req.auth_info.req_user_id;
     let session_id = null;
     try {
-        console.log(req.auth_info);
+        // console.log(req.auth_info);
         const session_db = await mQuery(`select session_id from session where 
              driver_user_id = ? and session_status = 'ACTIVE' order by session_start_dt desc limit 1`, [req_user_id]);
-        console.log(session_db);
+        // console.log(session_db);
         if (session_db.length <= 0) req.auth_info['session_id'] = null;
         else {
             session_id = session_db[0].session_id;
