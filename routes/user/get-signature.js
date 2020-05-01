@@ -7,7 +7,8 @@ router.get('/', async (req, res) => {
     // find link to last signature
     let db;
     try {
-        db = await mQuery(`select signature_src from signature where signature_user_id = ? order by signature_dt desc limit 1`,
+        db = await mQuery(`select signature_src from signature where signature_user_id = ? and signature_type = 'REGULAR'
+            order by signature_dt desc limit 1`,
             [req_user_id]);
     } catch (err) {
         return res.status(500).send(makeResponse(1, err));
