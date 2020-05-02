@@ -21,4 +21,20 @@ router.get('/', async (req, res) => {  /* no parameters */
     return res.status(200).send(makeResponse(0, db));
 });
 
+router.get('/:date', async (req, res) => {  /* date */
+    const req_user_id = req.auth_info.req_user_id;
+    const date = req.params.date;
+
+    let db;
+    try {
+        db = await mQuery(`select dvir_id, (driver_signature_id is not null) as has_driver_signature, session_id, 
+       (mechanic_signature_id is not null) as has_mechanics_signature, dvir_deffects_status, vehicle_id,
+       dvir_created_dt, dvir_location, dvir_description from dvir 
+        where creator_user_id = ? and dvir_status = 'ACTIVE' and date_format(dvir_created_dt, '%Y-%m-%d') = ?`, [ req_user_id, date ]);
+    } catch (err) {
+        return res.status(500).send(makeResponse(1, err));
+    }
+    return res.status(200).send(makeResponse(0, db));
+});
+
 module.exports = router;
