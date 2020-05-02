@@ -83,6 +83,14 @@ async function companyExists(company_id) {
 }
 module.exports.companyExists = companyExists;
 
+function makeDay(dt) {
+    const day = String(dt.getDate()).padStart(2, '0');
+    const month = String(dt.getMonth() + 1).padStart(2, '0');
+    const year = dt.getFullYear();
+    return year + "-" + month + "-" + day;
+}
+module.exports.makeDay = makeDay;
+
 async function getActiveSessionID(user_id) {
     try {
         const session_db = await mQuery(`select session_id from session where driver_user_id = ? and session_status = 'ACTIVE'`, [user_id]);
