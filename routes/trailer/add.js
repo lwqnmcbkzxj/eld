@@ -1,10 +1,12 @@
 const router = require('express').Router();
-const { mQuery, makeResponse } = require('./../../utils');
+const { mQuery, makeResponse, getCurDt } = require('./../../utils');
 
-router.post('/', async (req, res) => {  /* trailer_name */
+router.post('/', async (req, res) => {  /* trailer_name, date */
     const req_user_id = req.auth_info.req_user_id;
     const session_id = req.auth_info.session_id;
     const trailer_external_id = req.body.trailer_name;
+    const body_dt = req.body.date;
+    const dt = (!body_dt) ? getCurDt() : body_dt;
 
     if (!trailer_external_id) return res.status(400).send(makeResponse(5, 'Empty trailer_name received'));
 
@@ -31,7 +33,8 @@ router.post('/', async (req, res) => {  /* trailer_name */
 
     // add new (session_id, trailer_id)
     try {
-        const db = await mQuery(`insert into session_trailer(session_id, trailer_id) VALUES (?, ?)`, [session_id, trailer_id]);
+        const db = await mQuery(`insert into session_trailer(session_id, trailer_id, session_trailer_dt) VALUES (?, ?, ?)`,
+            [ session_id, trailer_id, dt ]);
         const session_trailer_id = db.insertId;
         return res.status(201).send(makeResponse(0, {
             session_id: session_id,
@@ -43,6 +46,5 @@ router.post('/', async (req, res) => {  /* trailer_name */
         return res.status(500).send(makeResponse(4, err));
     }
 });
-
 
 module.exports = router;

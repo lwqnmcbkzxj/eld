@@ -1,10 +1,11 @@
 const router = require('express').Router();
-const { mQuery, makeResponse } = require('./../../utils');
+const { mQuery, makeResponse, getCurDt } = require('./../../utils');
 
-router.post('/', async (req, res) => {  /* shipping_document_name */
+router.post('/', async (req, res) => {  /* shipping_document_name, date */
     const req_user_id = req.auth_info.req_user_id;
     const session_id = req.auth_info.session_id;
     const shipping_document_external_id = req.body.shipping_document_name;
+    const dt = (!req.body.date) ? getCurDt() : req.body.date;
 
     if (!shipping_document_external_id) return res.status(400).send(makeResponse(5, 'Empty shipping_document_name received'));
 
@@ -31,7 +32,8 @@ router.post('/', async (req, res) => {  /* shipping_document_name */
 
     // add new (session_id, shipping_document_id)
     try {
-        const db = await mQuery(`insert into session_shipping_document(session_id, shipping_document_id) VALUES (?, ?)`, [session_id, shipping_document_id]);
+        const db = await mQuery(`insert into session_shipping_document(session_id, shipping_document_id, session_shipping_document_dt) VALUES (?, ?, ?)`,
+            [ session_id, shipping_document_id, dt ]);
         const session_shipping_document_id = db.insertId;
         return res.status(201).send(makeResponse(0, {
             session_id: session_id,
