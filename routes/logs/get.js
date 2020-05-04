@@ -13,6 +13,7 @@ router.get('/:date/:days', async (req, res) => {
     const date_end = new Date(Date.parse(date_str) + ms_in_day);
     const date_start = new Date(Date.parse(date_str) - (days_amount - 1)* ms_in_day);
 
+    console.log(date_start + ":" + date_end);
     let ds = date_start;
     while (ds < date_end) {
         const md = makeDay(ds);
@@ -22,8 +23,9 @@ router.get('/:date/:days', async (req, res) => {
 
     let db;
     try {
+        const params = [ date_start - ms_in_day, date_end, req_user_id ];
         db = await mQuery(`select signature_id, signature_type, date_format(signature_dt, '%Y-%m-%d') as signature_day
-            from signature where (signature_dt >= ? and signature_dt < ?) and signature_user_id = ?`, [ date_start, date_end, req_user_id ]);
+            from signature where (signature_dt >= ? and signature_dt < ?) and signature_user_id = ?`, params);
     } catch (err) {
         return res.status(500).send(makeResponse(1, err));
     }
@@ -50,6 +52,7 @@ router.get('/:date/:days', async (req, res) => {
         return res.status(500).send(makeResponse(2, err));
     }
 
+    // console.log(db);
     const cur_dt_unix = Math.round(Date.now() / 1000);
     const n = db.length;
     for (let i = 0; i < n; i++) {
