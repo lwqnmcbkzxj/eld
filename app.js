@@ -1,7 +1,7 @@
 const path = require('path');
 global.app_root = path.resolve(__dirname);
 
-const { initMysqlConnection } = require('./utils');
+const { initMysqlConnection, getCurDt } = require('./utils');
 
 let express = require('express');
 let app = express();
@@ -34,4 +34,5 @@ app.use('/logs', logsRouter);
 const port = 3000;
 app.listen(port, function() {
   console.log('Listening to port ' + port + ' ....');
+  // console.log(getCurDt());
 });

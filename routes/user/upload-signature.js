@@ -28,7 +28,7 @@ router.use('/', sessionExtracter);
 router.post('/', upload.single('signature'), async (req, res) => {   /* signature, dt (optional) */
     const req_user_id = req.auth_info.req_user_id;
     const session_id = req.auth_info.session_id;
-    const dt = req.body.dt;
+    const dt = req.body.date;
     // console.log(req.auth_info);
     const signature = req.file;
     if (!signature) return res.send(400).send(makeResponse(1, 'Empty signature received'));

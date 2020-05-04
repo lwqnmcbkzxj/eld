@@ -91,6 +91,18 @@ function makeDay(dt) {
 }
 module.exports.makeDay = makeDay;
 
+function getCurDt() {
+    const dt = new Date();
+    const day = String(dt.getDate()).padStart(2, '0');
+    const month = String(dt.getMonth() + 1).padStart(2, '0');
+    const year = dt.getFullYear();
+    const hour = String(dt.getHours()).padStart(2, '0');
+    const minute = String(dt.getMinutes()).padStart(2, '0');
+    const second = String(dt.getSeconds()).padStart(2, '0');
+    return year + "-" + month + "-" + day + " " + hour + ":" + minute + ":" + second;
+}
+module.exports.getCurDt = getCurDt;
+
 async function getActiveSessionID(user_id) {
     try {
         const session_db = await mQuery(`select session_id from session where driver_user_id = ? and session_status = 'ACTIVE'`, [user_id]);
