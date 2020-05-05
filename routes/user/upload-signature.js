@@ -1,5 +1,5 @@
 const router = require('express').Router();
-const { mQuery, makeResponse, sessionExtracter, genRandomFileName } = require('./../../utils');
+const { mQuery, makeResponse, sessionExtracter, genRandomFileName, makeDay } = require('./../../utils');
 const fs = require('fs');
 
 let multer = require('multer');
@@ -25,29 +25,30 @@ let upload = multer({
 
 router.use('/', sessionExtracter);
 
-router.post('/', upload.single('signature'), async (req, res) => {   /* signature, dt (optional) */
+router.post('/', upload.single('signature'), async (req, res) => {   /* signature, date (optional) */
     const req_user_id = req.auth_info.req_user_id;
     const session_id = req.auth_info.session_id;
-    const dt = req.body.date;
-    // console.log(req.auth_info);
+    const dt = (!req.body.date) ? makeDay(new Date()) : req.body.date;
     const signature = req.file;
     if (!signature) return res.send(400).send(makeResponse(1, 'Empty signature received'));
 
     const file_path = signature.path;
-    console.log(file_path);
-    // const file_exists = await fs.access(file_path, );
-    // console.log(file_exists);
 
     let db;
+
+    // soft delete all signatures
     try {
-        let query, params;
-        if (!dt) {
-            query = `insert into signature(signature_user_id, signature_src, session_id, signature_type) values (?, ?, ?, ?)`;
-            params = [ req_user_id, file_path, session_id, 'REGULAR' ];
-        } else {
-            query = `insert into signature(signature_user_id, signature_src, session_id, signature_type, signature_dt) values (?, ?, ?, ?, ?)`;
-            params = [ req_user_id, file_path, session_id, 'REGULAR', dt ];
-        }
+        db = await mQuery(`update signature set signature_status = 'DELETED' where 
+            signature_status = 'ACTIVE' and signature_type = 'REGULAR' and 
+            signature_user_id = ? and date_format(signature_dt, '%Y-%m-%d') = ?`, [ req_user_id, dt ]);
+    } catch (err) {
+        return res.send(500).send(makeResponse(3, err));
+    }
+
+    // upload new signature
+    try {
+        const query = `insert into signature(signature_user_id, signature_src, session_id, signature_type, signature_dt) values (?, ?, ?, ?, ?)`;
+        const params = [ req_user_id, file_path, session_id, 'REGULAR', dt ];
         db = await mQuery(query, params);
     } catch (err) {
         return res.send(500).send(makeResponse(2, err));
