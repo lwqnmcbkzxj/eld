@@ -25,7 +25,7 @@ router.get('/:date/:days', async (req, res) => {
     try {
         const params = [ date_start - ms_in_day, date_end, req_user_id ];
         db = await mQuery(`select signature_id, signature_type, date_format(signature_dt, '%Y-%m-%d') as signature_day
-            from signature where (signature_dt >= ? and signature_dt < ?) and signature_user_id = ?`, params);
+            from signature where (signature_dt >= ? and signature_dt < ?) and signature_user_id = ? and signature_status <> 'DELETED'`, params);
     } catch (err) {
         return res.status(500).send(makeResponse(1, err));
     }
