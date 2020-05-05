@@ -19,4 +19,8 @@ router.get('/:date', async (req, res) => {  /* */
     return res.status(200).send(makeResponse(0, db));
 });
 
+router.get('/', async (req, res) => {  /* */
+    return res.status(501).send(makeResponse(1, 'Not implemented'));
+});
+
 module.exports = router;
