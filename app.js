@@ -1,4 +1,6 @@
 const path = require('path');
+const setTZ = require('set-tz');
+setTZ('UTC');
 global.app_root = path.resolve(__dirname);
 
 const { initMysqlConnection, getCurDt } = require('./utils');
@@ -18,6 +20,7 @@ const companyRouter = require('./routes/company');
 const userRouter = require('./routes/user');
 const recordRouter = require('./routes/record');
 const logsRouter = require('./routes/logs');
+const signatureRouter = require('./routes/signature');
 // const sessionRouter = require('./routes/session');
 
 app.use('/vehicle', vehiclesRoute);
@@ -29,6 +32,7 @@ app.use('/user', userRouter);
 app.use('/record', recordRouter);
 app.use('/sdocument', sdocumentRouter);
 app.use('/logs', logsRouter);
+app.use('/signature', signatureRouter);
 // app.use('/session', sessionRouter);
 
 const port = 3000;

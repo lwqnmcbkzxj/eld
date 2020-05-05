@@ -7,7 +7,8 @@ router.get('/:date', async (req, res) => {  /* */
     const ms_in_day = 24*60*60*1000;
     const date_last = makeDay(new Date(Date.parse(date) - ms_in_day));
 
-    console.log(date_last);
+    // console.log(date_last);
+    // console.log(new Date());
 
     let db;
     try {
