@@ -55,6 +55,7 @@
                         android:text="Start time" />
 
                     <TextView
+                        android:id="@+id/startTime"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="12:00:00 AM"
@@ -90,7 +91,7 @@
                         android:text="End time" />
 
                     <TextView
-                        android:id="@+id/timeTextView"
+                        android:id="@+id/endTimeTextView"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="11:12:21 PM"
@@ -113,9 +114,11 @@
             app:startIconDrawable="@drawable/ic_location">
 
             <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/createDialogEditText"
+                android:id="@+id/locationEditText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:enabled="false"
+                android:imeOptions="flagNoExtractUi"
                 android:hint="Location"
                 android:inputType="text" />
 
@@ -133,6 +136,7 @@
                 android:id="@+id/remarkEditText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:imeOptions="flagNoExtractUi"
                 android:hint="Remark"
                 android:inputType="text" />
 
@@ -153,7 +157,7 @@
             android:padding="24dp">
 
             <Button
-                android:id="@+id/offDutyCancelButton"
+                android:id="@+id/cancelButton"
                 style="@style/Widget.MaterialComponents.Button.OutlinedButton"
                 android:layout_width="128dp"
                 android:layout_height="wrap_content"
@@ -164,7 +168,7 @@
                 android:layout_height="0dp" />
 
             <Button
-                android:id="@+id/offDutyPositiveButton"
+                android:id="@+id/positiveButton"
                 android:layout_width="128dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="end"

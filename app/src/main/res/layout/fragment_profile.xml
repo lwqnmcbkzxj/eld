@@ -155,7 +155,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="1dp"
                         android:layout_marginTop="20dp"
-                        android:background="@android:color/darker_gray" />
+                        android:background="#F3F2F3" />
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -182,6 +182,7 @@
                         <com.google.android.material.textfield.TextInputEditText
                             android:id="@+id/remarkEditText"
                             android:layout_width="match_parent"
+                            android:imeOptions="flagNoExtractUi"
                             android:layout_height="wrap_content"
                             android:hint="Remark"
                             android:inputType="text" />

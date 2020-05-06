@@ -47,7 +47,7 @@
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:layout_marginTop="16dp"
-            android:background="@android:color/darker_gray" />
+            android:background="#F3F2F3" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -128,7 +128,7 @@
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:background="@android:color/darker_gray" />
+            android:background="#F3F2F3" />
 
         <TextView
             android:id="@+id/timeTextView"
@@ -149,6 +149,18 @@
             android:layout_marginStart="24dp"
             android:layout_marginTop="24dp"
             android:drawableStart="@drawable/ic_location"
+            android:drawablePadding="8dp"
+            android:gravity="center_vertical"
+            android:text="1.2 mi ENE of Hollywood, CA"
+            android:textColor="?attr/colorOnSurface" />
+
+        <TextView
+            android:id="@+id/descTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="24dp"
+            android:layout_marginTop="24dp"
+            android:drawableStart="@drawable/ic_remark"
             android:drawablePadding="8dp"
             android:gravity="center_vertical"
             android:text="1.2 mi ENE of Hollywood, CA"

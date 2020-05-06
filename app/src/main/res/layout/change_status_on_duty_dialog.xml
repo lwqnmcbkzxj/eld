@@ -61,12 +61,15 @@
                 android:id="@+id/createDialogEditText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:imeOptions="flagNoExtractUi"
                 android:hint="Location"
+                android:enabled="false"
                 android:inputType="text" />
 
         </com.google.android.material.textfield.TextInputLayout>
 
         <CheckBox
+            android:id="@+id/yardMove"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="24dp"
@@ -86,20 +89,22 @@
                 android:id="@+id/remarkEditText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:imeOptions="flagNoExtractUi"
                 android:hint="Remark"
                 android:inputType="text" />
 
         </com.google.android.material.textfield.TextInputLayout>
 
         <TextView
+            android:id="@+id/remarkOptional"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="40dp"
             android:text="Optional" />
 
-        <RadioGroup
-            android:visibility="gone"
-            android:id="@+id/radioGroup"
+        <LinearLayout
+            android:id="@+id/checkBoxLayout"
+            android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="24dp"
@@ -111,8 +116,7 @@
                 android:layout_height="wrap_content"
                 android:orientation="horizontal">
 
-                <RadioButton
-                    android:id="@+id/ptiRadio"
+                <CheckBox
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -123,8 +127,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1">
 
-                    <RadioButton
-                        android:id="@+id/scaleRadio"
+                    <CheckBox
                         android:layout_marginStart="16dp"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -132,8 +135,7 @@
 
                 </FrameLayout>
 
-                <RadioButton
-                    android:id="@+id/repairsRadio"
+                <CheckBox
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -151,8 +153,7 @@
                 android:layout_height="wrap_content"
                 android:orientation="horizontal">
 
-                <RadioButton
-                    android:id="@+id/pickUpRadio"
+                <CheckBox
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -163,8 +164,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1">
 
-                    <RadioButton
-                        android:id="@+id/deliveryRadio"
+                    <CheckBox
                         android:layout_marginStart="16dp"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -172,8 +172,7 @@
 
                 </FrameLayout>
 
-                <RadioButton
-                    android:id="@+id/dotInspectionRadio"
+                <CheckBox
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -191,8 +190,7 @@
                 android:layout_height="wrap_content"
                 android:orientation="horizontal">
 
-                <RadioButton
-                    android:id="@+id/fuelRadio"
+                <CheckBox
                     android:layout_width="0dp"
                     android:layout_gravity="center_vertical"
                     android:layout_height="wrap_content"
@@ -210,16 +208,18 @@
 
                         <com.google.android.material.textfield.TextInputEditText
                             android:layout_width="match_parent"
+                            android:id="@+id/customEditText"
                             android:layout_height="wrap_content"
                             android:hint="Custom"
                             android:inputType="text"
+                            android:imeOptions="flagNoExtractUi"
                             android:paddingStart="64dp"
                             tools:ignore="RtlSymmetry" />
 
                     </com.google.android.material.textfield.TextInputLayout>
 
-                    <RadioButton
-                        android:id="@+id/customRadio"
+                    <CheckBox
+                        android:id="@+id/customCheckBox"
                         android:layout_marginStart="16dp"
                         android:layout_gravity="center_vertical"
                         android:layout_width="wrap_content"
@@ -229,7 +229,7 @@
 
             </LinearLayout>
 
-        </RadioGroup>
+        </LinearLayout>
 
         <LinearLayout
             android:layout_width="wrap_content"

@@ -35,7 +35,7 @@
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:layout_marginTop="24dp"
-            android:background="@android:color/darker_gray" />
+            android:background="#F3F2F3" />
 
         <include layout="@layout/vehicle_list_item" />
 

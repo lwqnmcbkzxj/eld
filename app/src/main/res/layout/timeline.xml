@@ -277,13 +277,13 @@
         android:orientation="vertical">
 
         <TextView
-            android:id="@+id/offDutyTime"
+            android:id="@+id/offDutyTimeTextView"
             android:layout_width="wrap_content"
             android:layout_height="0dp"
             android:layout_weight="1"
+            android:text="00:00"
             android:fontFamily="sans-serif-light"
             android:gravity="center_vertical"
-            android:text="10:30"
             android:textColor="?attr/colorOnSurface"
             android:textStyle="bold" />
         
@@ -291,21 +291,21 @@
             android:id="@+id/sleeperTime"
             android:layout_width="wrap_content"
             android:layout_height="0dp"
+            android:text="00:00"
             android:layout_weight="1"
             android:fontFamily="sans-serif-light"
             android:gravity="center_vertical"
-            android:text="05:15"
             android:textColor="?attr/colorOnSurface"
             android:textStyle="bold" />
 
         <TextView
-            android:id="@+id/drivingTime"
+            android:id="@+id/drivingTimeView"
             android:layout_width="wrap_content"
             android:layout_height="0dp"
             android:layout_weight="1"
+            android:text="00:00"
             android:fontFamily="sans-serif-light"
             android:gravity="center_vertical"
-            android:text="00:00"
             android:textColor="?attr/colorOnSurface"
             android:textStyle="bold" />
 
@@ -313,10 +313,10 @@
             android:id="@+id/onDutyTime"
             android:layout_width="wrap_content"
             android:layout_height="0dp"
+            android:text="00:00"
             android:layout_weight="1"
             android:fontFamily="sans-serif-light"
             android:gravity="center_vertical"
-            android:text="02:45"
             android:textColor="?attr/colorOnSurface"
             android:textStyle="bold" />
 

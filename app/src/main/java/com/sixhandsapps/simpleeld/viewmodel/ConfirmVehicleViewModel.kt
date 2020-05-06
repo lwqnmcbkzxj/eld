@@ -1,15 +1,14 @@
 package com.sixhandsapps.simpleeld.viewmodel
 
 import android.app.Application
-import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.Transformations
+import androidx.lifecycle.*
 import com.sixhandsapps.simpleeld.*
 import com.sixhandsapps.simpleeld.data.DataRepository
 import com.sixhandsapps.simpleeld.model.ApiResponse
 
-class ConfirmVehicleViewModel(application: Application) : AndroidViewModel(application) {
+public class ConfirmVehicleViewModel : AndroidViewModel {
+
+    public constructor(application: Application) : super(application)
 
     private val token = getToken()
 
@@ -28,5 +27,11 @@ class ConfirmVehicleViewModel(application: Application) : AndroidViewModel(appli
 
     fun chooseVehicle(id: Int) {
         vehicleId.value = id
+    }
+
+    class Factory(val application: Application) : ViewModelProvider.AndroidViewModelFactory(application) {
+        override fun <T : ViewModel?> create(modelClass: Class<T>): T {
+            return ConfirmVehicleViewModel(application) as T
+        }
     }
 }

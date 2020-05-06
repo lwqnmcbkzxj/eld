@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TextView android:gravity="center_vertical"
+    android:layout_width="match_parent"
+    android:layout_margin="8dp"
+    android:layout_height="wrap_content"
+    android:drawableStart="@drawable/ic_calendar_blue"
+    android:drawablePadding="4dp"
+    android:fontFamily="sans-serif-light"
+    android:text="12/12/12"
+    android:textColor="?attr/colorOnSurface"
+    android:textStyle="bold"
+    xmlns:android="http://schemas.android.com/apk/res/android" />

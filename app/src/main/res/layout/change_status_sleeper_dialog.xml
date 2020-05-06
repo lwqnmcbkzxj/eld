@@ -59,6 +59,8 @@
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/createDialogEditText"
                 android:layout_width="match_parent"
+                android:enabled="false"
+                android:imeOptions="flagNoExtractUi"
                 android:layout_height="wrap_content"
                 android:hint="Location"
                 android:inputType="text" />
@@ -77,6 +79,7 @@
                 android:id="@+id/remarkEditText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:imeOptions="flagNoExtractUi"
                 android:hint="Remark"
                 android:inputType="text" />
 

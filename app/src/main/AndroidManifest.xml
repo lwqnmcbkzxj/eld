@@ -26,6 +26,7 @@
         <activity android:name=".activity.InspectionModuleActivity" />
         <activity android:name=".activity.DrivingActivity" />
         <activity android:name=".activity.LogsActivity" />
+        <activity android:name=".activity.AnotherDeviceActivity" />
     </application>
 
 </manifest>

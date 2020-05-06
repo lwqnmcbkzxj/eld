@@ -32,6 +32,7 @@
                 android:textStyle="bold" />
 
             <LinearLayout
+                android:id="@+id/attention"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
@@ -47,6 +48,7 @@
                     android:tint="#D79100" />
 
                 <TextView
+                    android:id="@+id/drivingTimeTextView"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="24dp"
@@ -81,6 +83,7 @@
             android:src="@drawable/ic_password" />
 
         <TextView
+            android:id="@+id/timeTextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
@@ -247,6 +250,14 @@
             android:layout_height="60dp"
             android:layout_gravity="center_horizontal"
             android:text="Driving" />
+
+        <Button
+            android:layout_marginBottom="48dp"
+            android:id="@+id/cancelButton"
+            android:layout_width="wrap_content"
+            android:layout_height="60dp"
+            android:layout_gravity="center_horizontal"
+            android:text="Cancel (Temp button)" />
 
     </LinearLayout>
 

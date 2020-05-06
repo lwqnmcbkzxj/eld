@@ -6,8 +6,10 @@ import android.graphics.*
 import android.util.AttributeSet
 import android.view.Gravity
 import android.view.MotionEvent
+import android.view.View
 import android.widget.FrameLayout
 import android.widget.TextView
+import java.io.File
 import kotlin.math.roundToInt
 
 class SignatureView : FrameLayout {
@@ -39,13 +41,15 @@ class SignatureView : FrameLayout {
         defStyleAttr
     )
 
+    val textView = TextView(context).apply {
+        text = "Sign here"
+        setTextColor(Color.parseColor("#93969A"))
+        textSize = 16f
+        isAllCaps = true
+    }
+
     init {
-        addView(TextView(context).apply {
-            text = "Sing here"
-            setTextColor(Color.parseColor("#93969A"))
-            textSize = 16f
-            isAllCaps = true
-        }, LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT).apply {
+        addView(textView, LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT).apply {
             gravity = Gravity.CENTER_HORIZONTAL
             topMargin = (16 * resources.displayMetrics.density).roundToInt()
         })
@@ -55,6 +59,12 @@ class SignatureView : FrameLayout {
         super.onSizeChanged(w, h, oldw, oldh)
         bitmap = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_8888)
         canvas = Canvas(bitmap)
+    }
+
+    fun setBitmap(bitmap: Bitmap) {
+        this.bitmap = Bitmap.createScaledBitmap(bitmap, width, width * bitmap.height / bitmap.width, false)
+        canvas = Canvas(bitmap)
+        invalidate()
     }
 
     @SuppressLint("ClickableViewAccessibility")
@@ -90,6 +100,15 @@ class SignatureView : FrameLayout {
     override fun onDraw(canvas: Canvas) {
         canvas.drawBitmap(bitmap, 0f, 0f, bitmapPaint)
         canvas.drawPath(path, paint)
+    }
+
+    fun toFile(): File {
+        val bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
+        val canvas = Canvas(bitmap)
+        draw(canvas)
+        val signature = File.createTempFile("signature-temp", ".jpg", context.cacheDir)
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, signature.outputStream())
+        return signature
     }
 
     fun clear() {

@@ -16,7 +16,12 @@ class TimeScorePieChart : View {
             field = value
             invalidate()
         }
+
     var max: Long? = null
+        set(value) {
+            this.value = value
+            field = value
+        }
 
     private val paint = Paint().apply {
         color = Color.BLACK

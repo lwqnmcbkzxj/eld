@@ -1,47 +1,102 @@
 package com.sixhandsapps.simpleeld.activity
 
 import android.os.Bundle
+import android.os.Handler
+import android.view.View
+import android.widget.TextView
 import com.sixhandsapps.simpleeld.R
+import com.sixhandsapps.simpleeld.Status
+import com.sixhandsapps.simpleeld.fragment.*
 import kotlinx.android.synthetic.main.activity_driving.*
+import java.text.SimpleDateFormat
+import java.util.*
 import java.util.concurrent.TimeUnit
+import kotlin.concurrent.schedule
 
-class DrivingActivity: BaseActivity() {
+class DrivingActivity : BaseActivity() {
+
+    lateinit var timerTask: TimerTask
+
+    override fun onDestroy() {
+        super.onDestroy()
+        timerTask.cancel()
+    }
+
+    val handler = Handler()
+
+    private val dateFormat = SimpleDateFormat("hh:mm a", Locale.getDefault())
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_driving)
 
-        val breakValue = TimeUnit.MINUTES.toMillis(60)
-        val drivingValue = TimeUnit.MINUTES.toMillis(45)
-        val shiftValue = TimeUnit.MINUTES.toMillis(30)
-        val cycleValue = TimeUnit.SECONDS.toMillis(590)
+        timerTask = Timer().schedule(0, 1000) {
+            handler.post {
+                timeTextView.text = dateFormat.format(Date())
+                if ((status == Status.ON_DUTY || status == Status.DRIVING || status == Status.ON_DUTY_YARD_PARKING) && cycleTime > 0) {
+                    cyclePieChart.value = cycleTime.also {
+                        updateTimerTextView(cycleTextView, it)
+                    }
+                }
+                if (status != null) {
+                    if (breakTime >= 0) {
+                        breakPieChart.value =
+                            breakTime.also {
+                                updateTimerTextView(breakTextView, it)
+                            }
+                    }
+                    if (shiftTime >= 0) {
+                        shiftPieChart.value =
+                            shiftTime.also {
+                                updateTimerTextView(shiftTextView, it)
+                            }
+                    }
+                }
+                if (drivingTime >= 0) {
+                    drivingPieChart.value =
+                        drivingTime.also {
+                            updateTimerTextView(drivingTextView, it)
+                        }
+                } else {
+                    finish()
+                }
+                TimeUnit.MILLISECONDS.toMinutes(drivingTime).let {
+                    if (it < 60) {
+                        attention.visibility = View.VISIBLE
+                        drivingTimeTextView.text = "You have $it min\nfor driving"
+                    } else {
+                        attention.visibility = View.INVISIBLE
+                    }
+                }
+            }
+        }
+        breakPieChart.max = breakMaxTime
+        breakPieChart.value = breakTime
+        updateTimerTextView(breakTextView, breakTime)
 
-        breakPieChart.max = TimeUnit.HOURS.toMillis(1)
-        drivingPieChart.max = TimeUnit.HOURS.toMillis(1)
-        shiftPieChart.max = TimeUnit.HOURS.toMillis(1)
-        cyclePieChart.max = TimeUnit.HOURS.toMillis(1)
+        drivingPieChart.max = drivingMaxTime
+        drivingPieChart.value = drivingTime
+        updateTimerTextView(drivingTextView, drivingTime)
 
-        breakPieChart.value = breakValue
-        drivingPieChart.value = drivingValue
-        shiftPieChart.value = shiftValue
-        cyclePieChart.value = cycleValue
+        shiftPieChart.max = shiftMaxTime
+        shiftPieChart.value = shiftTime
+        updateTimerTextView(shiftTextView, shiftTime)
 
-        breakTextView.text = "${String.format(
-            "%02d",
-            TimeUnit.MILLISECONDS.toMinutes(breakValue)
-        )}:${String.format("%02d", TimeUnit.MILLISECONDS.toSeconds(breakValue) % 60)}"
-        drivingTextView.text = "${String.format(
-            "%02d",
-            TimeUnit.MILLISECONDS.toMinutes(drivingValue)
-        )}:${String.format("%02d", TimeUnit.MILLISECONDS.toSeconds(drivingValue) % 60)}"
-        shiftTextView.text = "${String.format(
-            "%02d",
-            TimeUnit.MILLISECONDS.toMinutes(shiftValue)
-        )}:${String.format("%02d", TimeUnit.MILLISECONDS.toSeconds(shiftValue) % 60)}"
-        cycleTextView.text = "${String.format(
-            "%02d",
-            TimeUnit.MILLISECONDS.toMinutes(cycleValue)
-        )}:${String.format("%02d", TimeUnit.MILLISECONDS.toSeconds(cycleValue) % 60)}"
+        cyclePieChart.max = cycleMaxTime
+        cyclePieChart.value = cycleTime
+        updateTimerTextView(cycleTextView, cycleTime)
+
+        cancelButton.setOnClickListener {
+            status = null
+            finish()
+        }
     }
 
+    private fun updateTimerTextView(textView: TextView, value: Long) {
+        textView.text = "${String.format(
+            "%02d",
+            TimeUnit.MILLISECONDS.toHours(value)
+        )}:${String.format("%02d", TimeUnit.MILLISECONDS.toMinutes(value) % 60)}"
+    }
 }
+

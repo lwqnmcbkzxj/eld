@@ -4,13 +4,10 @@ import android.content.Context
 import android.graphics.*
 import android.util.AttributeSet
 import android.view.View
-import android.widget.LinearLayout
 import androidx.core.content.ContextCompat
-import androidx.core.view.marginEnd
-import androidx.core.view.marginStart
-import androidx.core.view.updateLayoutParams
 import com.sixhandsapps.simpleeld.R
 import com.sixhandsapps.simpleeld.model.Record
+import com.sixhandsapps.simpleeld.serverDateFormat
 import java.util.*
 import kotlin.math.roundToInt
 
@@ -63,34 +60,57 @@ class Timeline : View {
         records?.sortedBy { it.startTime }?.let {
             path.reset()
             it.forEachIndexed { index, record ->
-                val startDate = Calendar.getInstance().apply { timeInMillis = record.startTime }
-                val start = offset + startDate.get(Calendar.HOUR_OF_DAY)  / 24f * width + startDate.get(Calendar.MINUTE) / 60f * colWidth
-                val endDate = Calendar.getInstance().apply { timeInMillis = record.endTime }
-                val end = offset + endDate.get(Calendar.HOUR_OF_DAY) / 24f * width + endDate.get(Calendar.MINUTE) / 60f * colWidth + 1f
+                val y = getRecordY(record.type!!)
 
-                val y = getRecordY(record.type)
+                if (y != null) {
+                    val startDate = Calendar.getInstance().apply {
+                        timeInMillis = serverDateFormat.parse(
+                            record.startTime
+                        )!!.time
+                    }
+                    val start = offset + startDate.get(Calendar.HOUR_OF_DAY) / 24f * width + startDate.get(
+                            Calendar.MINUTE
+                        ) / 60f * colWidth
+                    val endDate = if (index == it.size - 1 && startDate.get(Calendar.DAY_OF_YEAR) == Calendar.getInstance().get(Calendar.DAY_OF_YEAR)) Calendar.getInstance().apply {
+                        timeInMillis = System.currentTimeMillis() - TimeZone.getDefault().rawOffset
+                    } else if (index < it.size - 1) Calendar.getInstance().apply {
+                        timeInMillis = serverDateFormat.parse(
+                            it[index + 1].startTime
+                        )!!.time
+                    } else {
+                        startDate.apply {
+                            set(Calendar.HOUR_OF_DAY, getActualMaximum(Calendar.HOUR_OF_DAY))
+                            set(Calendar.MINUTE, getActualMaximum(Calendar.MINUTE))
+                            set(Calendar.SECOND, getActualMaximum(Calendar.SECOND))
+                        }
+                    }
+                    val end = offset + endDate.get(
+                            Calendar.HOUR_OF_DAY
+                        ) / 24f * width + endDate.get(Calendar.MINUTE) / 60f * colWidth + 1f
+                    if (path.isEmpty) {
+                        path.moveTo(start, y)
+                    }
 
-                if (path.isEmpty) {
-                    path.moveTo(start, y)
-                }
+                    path.lineTo(end, y)
 
-                path.lineTo(end, y)
-
-                if (index < it.size - 1) {
-                    path.lineTo(end, getRecordY(it[index + 1].type))
+                    if (index < it.size - 1) {
+                        getRecordY(it[index + 1].type!!)?.let {
+                            path.lineTo(end, it)
+                        }
+                    }
                 }
             }
             canvas.drawPath(path, paintRounded)
         }
     }
 
-    private fun getRecordY(recordType: Int) = when (recordType) {
-        0 -> height / 8f
-        1 -> height / 8f * 3
-        2 -> height / 8f * 5
-        3 -> height / 8f * 7
+    private fun getRecordY(recordType: String) = when (recordType) {
+        "OFF_DUTY", "OFF_DUTY_PC" -> height / 8f
+        "SLEEPER" -> height / 8f * 3
+        "DRIVING" -> height / 8f * 5
+        "ON_DUTY", "ON_DUTY_YM" -> height / 8f * 7
         else -> null
-    }!!
+    }
 
     private fun drawBackground(canvas: Canvas) {
         val width = width - offset

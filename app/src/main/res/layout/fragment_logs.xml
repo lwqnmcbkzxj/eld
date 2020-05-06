@@ -41,6 +41,7 @@
                         android:textStyle="bold" />
 
                     <LinearLayout
+                        android:id="@+id/statusTab"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:background="@drawable/statuses_background"
@@ -50,7 +51,6 @@
                             android:id="@+id/statusOffDuty"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:background="@drawable/selected_status_background"
                             android:drawableStart="@drawable/ic_off_duty"
                             android:drawablePadding="8dp"
                             android:gravity="center_vertical"
@@ -60,7 +60,7 @@
                             android:paddingBottom="8dp"
                             android:text="Off duty"
                             android:textAllCaps="true"
-                            android:textColor="@android:color/white"
+                            android:textColor="?attr/colorOnSurface"
                             android:textStyle="bold" />
 
                         <TextView
@@ -99,6 +99,7 @@
                     </LinearLayout>
 
                     <TextView
+                        android:id="@+id/time"
                         android:ellipsize="end"
                         android:maxLines="1"
                         android:layout_weight="1"
@@ -106,7 +107,7 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:fontFamily="sans-serif-light"
-                        android:text="11:30 PM"
+                        tools:text="11:30 PM"
                         android:textColor="?attr/colorOnSurface"
                         android:textSize="20sp"
                         android:textStyle="bold" />
@@ -114,6 +115,15 @@
                 </LinearLayout>
 
                 <include layout="@layout/timeline" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:layout_width="match_parent"
+                    android:orientation="horizontal"
+                    android:layout_marginTop="16dp"
+                    android:id="@+id/violationRecyclerView"
+                    tools:listitem="@layout/violation_list_item"
+                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                    android:layout_height="wrap_content" />
 
             </LinearLayout>
 
@@ -127,6 +137,8 @@
             android:padding="16dp">
 
             <androidx.cardview.widget.CardView
+                android:id="@+id/timeScore"
+                android:layout_marginEnd="24dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 app:cardElevation="8dp">
@@ -138,7 +150,7 @@
                     android:paddingStart="24dp"
                     android:paddingTop="16dp"
                     android:paddingEnd="24dp"
-                    android:paddingBottom="16dp">
+                    android:paddingBottom="24dp">
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -293,15 +305,21 @@
 
                     </LinearLayout>
 
+                    <Button
+                        android:id="@+id/drivingButton"
+                        android:textSize="12sp"
+                        android:layout_marginTop="16dp"
+                        android:text="Driving (temp button)"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"/>
+
                 </LinearLayout>
 
             </androidx.cardview.widget.CardView>
 
-            <Space
-                android:layout_width="24dp"
-                android:layout_height="0dp" />
 
             <androidx.cardview.widget.CardView
+                android:id="@+id/recordsCardView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:cardElevation="8dp">
@@ -360,10 +378,11 @@
                         android:id="@+id/divider"
                         android:layout_width="match_parent"
                         android:layout_height="1dp"
-                        android:background="@android:color/darker_gray" />
+                        android:background="#F3F2F3" />
 
                     <androidx.recyclerview.widget.RecyclerView
                         android:id="@+id/recordRecyclerView"
+                        tools:itemCount="4"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:nestedScrollingEnabled="false"

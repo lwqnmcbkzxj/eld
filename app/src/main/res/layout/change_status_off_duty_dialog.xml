@@ -57,15 +57,18 @@
             app:startIconDrawable="@drawable/ic_location">
 
             <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/createDialogEditText"
+                android:id="@+id/locationEditText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:enabled="false"
+                android:imeOptions="flagNoExtractUi"
                 android:hint="Location"
                 android:inputType="text" />
 
         </com.google.android.material.textfield.TextInputLayout>
 
         <CheckBox
+            android:id="@+id/personalConveyance"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="24dp"
@@ -86,11 +89,13 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="Remark"
+                android:imeOptions="flagNoExtractUi"
                 android:inputType="text" />
 
         </com.google.android.material.textfield.TextInputLayout>
 
         <TextView
+            android:id="@+id/remarkOptional"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="40dp"

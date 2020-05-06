@@ -12,21 +12,25 @@ import androidx.activity.viewModels
 import androidx.core.content.edit
 import androidx.core.view.updateLayoutParams
 import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
 import com.sixhandsapps.simpleeld.PREFERENCES_VEHICLE_ID
 import com.sixhandsapps.simpleeld.R
 import com.sixhandsapps.simpleeld.getPreferences
-import com.sixhandsapps.simpleeld.handleResponse
 import com.sixhandsapps.simpleeld.model.Vehicle
 import com.sixhandsapps.simpleeld.viewmodel.ConfirmVehicleViewModel
+import com.sixhandsapps.simpleeld.viewmodel.MainViewModel
 import kotlinx.android.synthetic.main.activity_confirm_vehicle.*
 import kotlinx.android.synthetic.main.confirm_vehicle_dialog.view.*
 import kotlinx.android.synthetic.main.vehicle_list_item.view.*
+import java.lang.Exception
 import kotlin.math.roundToInt
 
 class ConfirmVehicleActivity : BaseActivity() {
 
-    private val viewModel by viewModels<ConfirmVehicleViewModel>()
+    private val viewModel by lazy {
+        ViewModelProvider(this, ConfirmVehicleViewModel.Factory(application)).get(ConfirmVehicleViewModel::class.java)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -39,20 +43,24 @@ class ConfirmVehicleActivity : BaseActivity() {
             width = (resources.displayMetrics.widthPixels * 0.7f).roundToInt()
         }
 
-        viewModel.vehicles.observe(this, Observer { response ->
-            handleResponse(response, onSuccess = {
-                recyclerView.adapter = VehicleAdapter(it)
+        try {
+            viewModel.vehicles.observe(this, Observer { response ->
+                handleResponse(response, onSuccess = {
+                    recyclerView.adapter = VehicleAdapter(it)
+                })
             })
-        })
-        viewModel.chooseVehicleResponse.observe(this, Observer {
-            handleResponse(it, onSuccess = {
-                getPreferences().edit(true) {
-                    putInt(PREFERENCES_VEHICLE_ID, it.getValue("vehicle_id"))
-                }
-                startActivity(Intent(this, MainActivity::class.java))
-                finishAffinity()
+            viewModel.chooseVehicleResponse.observe(this, Observer {
+                handleResponse(it, onSuccess = {
+                    getPreferences().edit(true) {
+                        putInt(PREFERENCES_VEHICLE_ID, it.getValue("vehicle_id"))
+                    }
+                    startActivity(Intent(this, LogsActivity::class.java))
+                    finishAffinity()
+                })
             })
-        })
+        } catch (e: Exception) {
+            Toast.makeText(this, e.message, Toast.LENGTH_LONG).show()
+        }
     }
 
     private inner class VehicleAdapter(val vehicles: List<Vehicle>) :

@@ -1,238 +1,257 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:animateLayoutChanges="true"
-    android:orientation="vertical">
+    android:fillViewport="true"
+    android:id="@+id/scrollView"
+    android:overScrollMode="never">
 
     <LinearLayout
-        android:id="@+id/createDvirLayout"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
+        android:animateLayoutChanges="true"
         android:orientation="vertical">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="24dp"
-            android:layout_marginTop="24dp"
-            android:layout_marginEnd="24dp"
-            android:fontFamily="sans-serif-light"
-            android:text="Create new DVIR"
-            android:textColor="?attr/colorOnSurface"
-            android:textSize="20sp"
-            android:textStyle="bold" />
-
         <LinearLayout
+            android:id="@+id/createDvirLayout"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="24dp"
-            android:layout_marginTop="24dp"
-            android:layout_marginEnd="24dp"
-            android:orientation="horizontal">
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="24dp"
+                android:layout_marginTop="24dp"
+                android:layout_marginEnd="24dp"
+                android:fontFamily="sans-serif-light"
+                android:text="Create new DVIR"
+                android:textColor="?attr/colorOnSurface"
+                android:textSize="20sp"
+                android:textStyle="bold" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="24dp"
+                android:layout_marginTop="24dp"
+                android:layout_marginEnd="24dp"
+                android:orientation="horizontal">
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    app:startIconDrawable="@drawable/ic_vehicle">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/vehicleEditText"
+                        android:layout_width="match_parent"
+                        android:imeOptions="flagNoExtractUi"
+                        android:layout_height="wrap_content"
+                        android:enabled="false"
+                        android:hint="Vehicle"
+                        android:inputType="text" />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <Space
+                    android:layout_width="24dp"
+                    android:layout_height="0dp" />
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    app:startIconDrawable="@drawable/ic_time">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/timeEditText"
+                        android:imeOptions="flagNoExtractUi"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:enabled="false"
+                        android:hint="Time"
+                        android:inputType="text" />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+            </LinearLayout>
 
             <com.google.android.material.textfield.TextInputLayout
-                android:layout_width="0dp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                app:startIconDrawable="@drawable/ic_vehicle">
+                android:layout_marginStart="24dp"
+                android:layout_marginTop="24dp"
+                android:layout_marginEnd="24dp"
+                app:startIconDrawable="@drawable/ic_location">
 
                 <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/vehicleEditText"
+                    android:id="@+id/locationEditText"
                     android:layout_width="match_parent"
+                    android:imeOptions="flagNoExtractUi"
                     android:layout_height="wrap_content"
-                    android:hint="Vehicle"
+                    android:enabled="false"
+                    android:hint="Location"
                     android:inputType="text" />
 
             </com.google.android.material.textfield.TextInputLayout>
 
-            <Space
-                android:layout_width="24dp"
-                android:layout_height="0dp" />
+            <RadioGroup
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="24dp"
+                android:layout_marginTop="24dp"
+                android:layout_marginEnd="24dp">
+
+                <RadioButton
+                    android:id="@+id/noDefects"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:checked="true"
+                    android:text="I detected no deficiency in this motor vehicle as would be likely to affect the safety of its operation on result in its mechanical breakdown" />
+
+                <RadioButton
+                    android:id="@+id/hasDefects"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="I detected the following defect or deficiencies in this motor vehicle that would be likely to affect the safety of its operation on result in its mechanical breakdown" />
+
+            </RadioGroup>
 
             <com.google.android.material.textfield.TextInputLayout
-                android:layout_width="0dp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                app:startIconDrawable="@drawable/ic_time">
+                android:layout_marginStart="24dp"
+                android:layout_marginTop="24dp"
+                android:layout_marginEnd="24dp"
+                android:id="@+id/descLayout"
+                app:startIconDrawable="@drawable/ic_remark">
 
                 <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/timeEditText"
+                    android:id="@+id/descriptionEditText"
                     android:layout_width="match_parent"
+                    android:imeOptions="flagNoExtractUi"
                     android:layout_height="wrap_content"
-                    android:hint="Time"
+                    android:hint="Description"
                     android:inputType="text" />
 
             </com.google.android.material.textfield.TextInputLayout>
 
-        </LinearLayout>
-
-        <com.google.android.material.textfield.TextInputLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="24dp"
-            android:layout_marginTop="24dp"
-            android:layout_marginEnd="24dp"
-            app:startIconDrawable="@drawable/ic_location">
-
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/locationEditText"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="Location"
-                android:inputType="text" />
-
-        </com.google.android.material.textfield.TextInputLayout>
-
-        <RadioGroup
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="24dp"
-            android:layout_marginTop="24dp"
-            android:layout_marginEnd="24dp">
-
-            <RadioButton
-                android:id="@+id/no_defects"
+            <TextView
+                android:id="@+id/optional"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:checked="true"
-                android:text="I detected no deficiency in this motor vehicle as would be likely to affect the safety of its operation on result in its mechanical breakdown" />
+                android:layout_marginStart="40dp"
+                android:text="Optional" />
 
-            <RadioButton
-                android:id="@+id/has_defects"
+            <LinearLayout
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="I detected the following defect or deficiencies in this motor vehicle that would be likely to affect the safety of its operation on result in its mechanical breakdown" />
-
-        </RadioGroup>
-
-        <com.google.android.material.textfield.TextInputLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="24dp"
-            android:layout_marginTop="24dp"
-            android:layout_marginEnd="24dp"
-            app:startIconDrawable="@drawable/ic_remark">
-
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/descriptionEditText"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="Description"
-                android:inputType="text" />
-
-        </com.google.android.material.textfield.TextInputLayout>
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="40dp"
-            android:text="Optional" />
-
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="end"
-            android:clipToPadding="false"
-            android:orientation="horizontal"
-            android:padding="24dp">
-
-            <Button
-                android:id="@+id/cancelButton"
-                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-                android:layout_width="128dp"
-                android:layout_height="wrap_content"
-                android:text="Cancel" />
-
-            <Space
-                android:layout_width="24dp"
-                android:layout_height="0dp" />
-
-            <Button
-                android:id="@+id/signatureButton"
-                android:layout_width="128dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="end"
-                android:text="Signature" />
+                android:clipToPadding="false"
+                android:orientation="horizontal"
+                android:padding="24dp">
+
+                <Button
+                    android:id="@+id/cancelButton"
+                    style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                    android:layout_width="128dp"
+                    android:layout_height="wrap_content"
+                    android:text="Cancel" />
+
+                <Space
+                    android:layout_width="24dp"
+                    android:layout_height="0dp" />
+
+                <Button
+                    android:id="@+id/signatureButton"
+                    android:layout_width="128dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="end"
+                    android:text="Signature" />
+
+            </LinearLayout>
 
         </LinearLayout>
 
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/signatureLayout"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:visibility="gone">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="24dp"
-            android:layout_marginTop="24dp"
-            android:layout_marginEnd="24dp"
-            android:fontFamily="sans-serif-light"
-            android:text="Your signature"
-            android:textColor="#2B2C2E"
-            android:textSize="20sp"
-            android:textStyle="bold" />
-
-        <com.sixhandsapps.simpleeld.widget.SignatureView
-            android:id="@+id/signatureView"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_marginStart="24dp"
-            android:layout_marginTop="24dp"
-            android:layout_marginEnd="24dp"
-            android:layout_weight="1"
-            android:background="#F8F7F8" />
-
         <LinearLayout
+            android:id="@+id/signatureLayout"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="end"
-            android:clipToPadding="false"
-            android:orientation="horizontal"
-            android:padding="24dp">
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:visibility="gone">
 
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/clearButton"
-                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-                android:layout_width="128dp"
+            <TextView
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:enabled="false"
-                android:text="Clear"
-                app:strokeWidth="0dp" />
+                android:layout_marginStart="24dp"
+                android:layout_marginTop="24dp"
+                android:layout_marginEnd="24dp"
+                android:fontFamily="sans-serif-light"
+                android:text="Your signature"
+                android:textColor="#2B2C2E"
+                android:textSize="20sp"
+                android:textStyle="bold" />
 
-            <Space
-                android:layout_width="0dp"
+            <com.sixhandsapps.simpleeld.widget.SignatureView
+                android:id="@+id/signatureView"
+                android:layout_width="match_parent"
                 android:layout_height="0dp"
-                android:layout_weight="1" />
+                android:minHeight="200dp"
+                android:layout_marginStart="24dp"
+                android:layout_marginTop="24dp"
+                android:layout_marginEnd="24dp"
+                android:layout_weight="1"
+                android:background="#F8F7F8" />
 
-            <Button
-                android:id="@+id/backButton"
-                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-                android:layout_width="128dp"
-                android:layout_height="wrap_content"
-                android:text="Back" />
-
-            <Space
-                android:layout_width="24dp"
-                android:layout_height="0dp" />
-
-            <Button
-                android:id="@+id/saveButton"
-                android:layout_width="128dp"
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="end"
-                android:text="Save" />
+                android:clipToPadding="false"
+                android:orientation="horizontal"
+                android:padding="24dp">
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/clearButton"
+                    style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                    android:layout_width="128dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:enabled="false"
+                    android:text="Clear"
+                    app:strokeWidth="0dp" />
+
+                <Space
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:layout_weight="1" />
+
+                <Button
+                    android:id="@+id/backButton"
+                    style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                    android:layout_width="128dp"
+                    android:layout_height="wrap_content"
+                    android:text="Back" />
+
+                <Space
+                    android:layout_width="24dp"
+                    android:layout_height="0dp" />
+
+                <Button
+                    android:enabled="false"
+                    android:id="@+id/saveButton"
+                    android:layout_width="128dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="end"
+                    android:text="Save" />
+
+            </LinearLayout>
 
         </LinearLayout>
 
+
     </LinearLayout>
-
-
-</LinearLayout>
+</ScrollView>

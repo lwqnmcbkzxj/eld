@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TextView android:background="#33E63C22"
+    android:textAllCaps="true"
+    android:padding="6dp"
+    android:layout_marginEnd="6dp"
+    android:drawableStart="@drawable/ic_sign"
+    android:drawablePadding="8dp"
+    android:fontFamily="sans-serif-light"
+    android:textStyle="bold"
+    android:textColor="#E63C22"
+    android:gravity="center_vertical"
+    tools:text="Violation: 11 - Hour Rule Violations"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools" />
