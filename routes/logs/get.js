@@ -17,7 +17,7 @@ router.get('/:date/:days', async (req, res) => {
     let ds = date_start;
     while (ds < date_end) {
         const md = makeDay(ds);
-        result.push({ day: md, has_inspection: 0, has_signature: 0, on_duty_seconds: 0 });
+        result.push({ day: md, has_inspection: 0, has_signature: 0, on_duty_seconds: 0, has_records: 0 });
         ds = new Date(ds.getTime() + ms_in_day);
     }
 
@@ -45,8 +45,8 @@ router.get('/:date/:days', async (req, res) => {
 
     try {
         db = await mQuery(`select record_id, record_type in ('ON_DUTY', 'DRIVING', 'ON_DUTY_YM') as record_type_ok,
-            unix_timestamp(record_start_dt) as record_start_dt, date_format(record_start_dt, '%Y-%m-%d') as record_start_day
-            from record where record_status <> 'DELETED' and driver_user_id = ? and 
+            unix_timestamp(record_start_dt) as record_start_dt, date_format(record_start_dt, '%Y-%m-%d') as record_start_day,
+            record_status from record where record_status <> 'DELETED' and driver_user_id = ? and 
             record_start_dt >= ? and record_start_dt <= ? order by record_start_dt`, [ req_user_id, date_start, date_end ]);
     } catch (err) {
         return res.status(500).send(makeResponse(2, err));
@@ -66,6 +66,11 @@ router.get('/:date/:days', async (req, res) => {
         }
         if (j >= result.length) continue;
         // j points at result[j] element
+
+        const day_has_records = (!db[i].record_status.localeCompare('ACTIVE')) ? 1 : 0;
+        if (result[j].has_records === 0) {
+            result[j].has_records = day_has_records;
+        }
 
         if (db[i].record_type_ok === 1) {
             let start_dt_unix = db[i].record_start_dt;
