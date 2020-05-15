@@ -3,6 +3,10 @@ import { colors } from '../../assets/scss/Colors/Colors.js'
 
 
 const useStyles = makeStyles(theme => ({
+	menu: {
+		height: 'calc(100vh - 58px)',
+		position: 'relative',
+	},
 	menuList: {
 		height: 'calc(100vh - 58px)',
 		boxSizing: 'border-box',
@@ -14,7 +18,7 @@ const useStyles = makeStyles(theme => ({
 		display: 'flex',
 		flexDirection: 'column',
 		justifyContent: 'space-between',
-		position: 'relative',
+		position: 'fixed',
 	},
 	
 	list__item: {

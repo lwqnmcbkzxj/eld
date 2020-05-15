@@ -1,8 +1,9 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Menu, MenuItem, makeStyles, Button } from '@material-ui/core';
 import { colors } from '../../assets/scss/Colors/Colors';
 
-
+import ProfileSubscribtionModal from '../Common/Modals/ProfileSubscribtionModal'
+import EditProfileModal from '../Common/Modals/EditProfileModal'
 type HeaderMenuProps = {
 	anchorEl: null | HTMLElement
 	handleClose: () => void
@@ -10,7 +11,11 @@ type HeaderMenuProps = {
 const useStyles = makeStyles(theme => ({
 	menu__item: {
 		width: '180px',
-		color: colors.primary_text_color
+		color: colors.primary_text_color,
+		fontFamily: 'Heebo',
+		fontSize: '14px',
+		lineheight: '21px',
+		textTransform: 'none'
 	},
 }));
 
@@ -18,6 +23,17 @@ const useStyles = makeStyles(theme => ({
 
 export const HeaderMenu: React.FC<HeaderMenuProps> = ({ anchorEl, handleClose, ...props }) => {
 	const classes = useStyles()
+
+	const [subscribtionModalOpen, setSubscribtionModalOpen] = useState(false)
+	const handleSubscribtionModalClose = () => {
+		setSubscribtionModalOpen(false);
+	};
+
+	const [profileEditModalOpen, setProfileEditModalOpen] = useState(false)
+	const handleProfileEditModalClose = () => {
+		setProfileEditModalOpen(false);
+	};
+
 	return (
 		<div style={{ boxShadow: '0px 6px 16px rgba(0, 0, 0, 0.2)', borderRadius: '4px' }}>
 			<Menu
@@ -38,21 +54,34 @@ export const HeaderMenu: React.FC<HeaderMenuProps> = ({ anchorEl, handleClose, .
 			>
 				<MenuItem
 					className={classes.menu__item}
-					onClick={handleClose}>
+					onClick={() => {
+						setProfileEditModalOpen(true)
+						handleClose()
+					}}>
 					Edit Profile
 				</MenuItem>
 
 				<MenuItem
 					className={classes.menu__item}
-					onClick={handleClose}>
+					onClick={() => {
+						setSubscribtionModalOpen(true)
+						handleClose()
+					}}>
 					Subscription
 					</MenuItem>
 				<MenuItem
 					className={classes.menu__item}
-					onClick={handleClose}>
+					onClick={() => {
+						// logout()
+						handleClose()
+					}}>
 					Log out
 				</MenuItem>
 			</Menu>
+
+
+			<ProfileSubscribtionModal open={subscribtionModalOpen} handleClose={handleSubscribtionModalClose}/>
+			<EditProfileModal open={profileEditModalOpen} handleClose={handleProfileEditModalClose}/>
 		</div>
 	);
 }

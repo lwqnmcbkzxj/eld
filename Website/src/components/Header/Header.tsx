@@ -28,39 +28,41 @@ const Header: FC<PropsType> = ({ pageName, isRootPage, ...props }) => {
 
 
 	return (
-		<div className="header">
-			<div className="header__logo"><Logo /></div>
-			<div className="header__pageName">
-				{!isRootPage && <GoBackBlock link={`/${pageName.toLowerCase()}`} />}
-				<div className={cn("header__active_link", {"not-root": !isRootPage})}>{pageName}</div>
-			</div>
-
-			<div className="header__user-block user-block">
-				<div className="user-block__notifications">
-					<IconButton
-						style={{ padding: 0 }}
-						onClick={() => { console.log('OPEN NOTIFICATIONs') }}>
-						<img src={noticeIcon} alt="notice-img" />
-					</IconButton>
+		<div className="header-holder">
+			<div className="header">
+				<div className="header__logo"><Logo /></div>
+				<div className="header__pageName">
+					{!isRootPage && <GoBackBlock link={`/${pageName.toLowerCase()}`} />}
+					<div className={cn("header__active_link", { "not-root": !isRootPage })}>{pageName}</div>
 				</div>
 
-				<Button
-					aria-controls="simple-menu"
-					aria-haspopup="true"
-					onClick={handleClick} 
-					style={{ display: 'inline-block', marginLeft: '5px', boxSizing: 'border-box', paddingTop: 0, paddingBottom: 0, backgroundColor: 'transparent' }}>
-					
-					<div className="user-block__info info" aria-controls="simple-menu" >
-						<div className="info_left">
-							<div className="info__nickname">Pac Man</div>
-							<div className="info__email">pacman@namco.jp</div>
-						</div>
-						<img src={userImg} alt="user-img" className="info__user-img" />
+				<div className="header__user-block user-block">
+					<div className="user-block__notifications">
+						<IconButton
+							style={{ padding: 0 }}
+							onClick={() => { console.log('OPEN NOTIFICATIONs') }}>
+							<img src={noticeIcon} alt="notice-img" />
+						</IconButton>
 					</div>
-				</Button>
-				<HeaderMenu handleClose={handleMenuClose} anchorEl={anchorEl} />
+
+					<Button
+						aria-controls="simple-menu"
+						aria-haspopup="true"
+						onClick={handleClick}
+						style={{ display: 'inline-block', marginLeft: '5px', boxSizing: 'border-box', paddingTop: 0, paddingBottom: 0, backgroundColor: 'transparent' }}>
+
+						<div className="user-block__info info" aria-controls="simple-menu" >
+							<div className="info_left">
+								<div className="info__nickname">Pac Man</div>
+								<div className="info__email">pacman@namco.jp</div>
+							</div>
+							<img src={userImg} alt="user-img" className="info__user-img" />
+						</div>
+					</Button>
+					<HeaderMenu handleClose={handleMenuClose} anchorEl={anchorEl} />
 
 
+				</div>
 			</div>
 		</div>
 	)

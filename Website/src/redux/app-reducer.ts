@@ -60,8 +60,6 @@ export const getPageName = (pathname: string): ThunksType => async (dispatch) =>
 	let pageName = ''
 	if (pagesArray.some(page => page === pathParts[0])) 
 		pageName = pathParts[0][0].toUpperCase() + pathParts[0].slice(1)
-	else if (pathname === '/' || pathname === '')
-		pageName = 'Simply ELD'
 	else 
 		pageName = 'Not found'
 	
