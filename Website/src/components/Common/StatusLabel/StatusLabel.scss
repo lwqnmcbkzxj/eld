@@ -1,0 +1,23 @@
+@import '../../../assets/scss/Colors/Colors.scss';
+
+.status-label {
+	padding: 3px 8px 2px 8px;
+	border-radius: 14px;
+	font-size: 11px;
+	line-height: 15px;
+	font-family: 'Heebo Bold';
+	letter-spacing: 0.2px;
+	color: $bg_white_color;
+	text-transform: uppercase;
+	text-align: center;
+	display: inline-block;
+	&.success {
+		background: $main_green_color;
+	}
+	&.error {
+		background: $main_red_color;
+	}
+	&.warning {
+		background:$main_yellow_color;
+	}
+}
