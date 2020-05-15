@@ -1,0 +1,24 @@
+@import url('./assets/font/font.css');
+@import './assets/scss/Colors/Colors.scss';
+
+body {
+	font-family: "Heebo"!important;
+	z-index: 1;
+	overflow: hidden;
+}
+
+.app-container {
+	display: grid; 
+	grid-template-columns: 232px auto;
+	margin-top: 2px;
+}
+
+.page {
+	margin-left: 2px;
+	background: #E5E5E5;
+	min-height: calc(100vh - 58px);
+	position: relative;
+}
+.units-page {
+	overflow: hidden;
+}
