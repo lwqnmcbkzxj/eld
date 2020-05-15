@@ -32,6 +32,201 @@ let initialState = {
 				text: 'deactivated',
 				type: 'error'
 			},
+		},
+		{
+			id: 3,
+			truckNumber: '032',
+			make: 'Freightliner',
+			model: 'Cascadia (2016)',
+			license: 'P918297',
+			eldNumber: 'Vehicle-032-2B250D69',
+			notes: 'Notes notes',
+			status: {
+				text: 'deactivated',
+				type: 'error'
+			},
+		},
+		{
+			id: 4,
+			truckNumber: '032',
+			make: 'Freightliner',
+			model: 'Cascadia (2016)',
+			license: 'P918297',
+			eldNumber: 'Vehicle-032-2B250D69',
+			notes: 'Notes notes',
+			status: {
+				text: 'deactivated',
+				type: 'error'
+			},
+		},
+		{
+			id: 5,
+			truckNumber: '032',
+			make: 'Freightliner',
+			model: 'Cascadia (2016)',
+			license: 'P918297',
+			eldNumber: 'Vehicle-032-2B250D69',
+			notes: 'Notes notes',
+			status: {
+				text: 'deactivated',
+				type: 'error'
+			},
+		},
+		{
+			id: 6,
+			truckNumber: '032',
+			make: 'Freightliner',
+			model: 'Cascadia (2016)',
+			license: 'P918297',
+			eldNumber: 'Vehicle-032-2B250D69',
+			notes: 'Notes notes',
+			status: {
+				text: 'deactivated',
+				type: 'error'
+			},
+		},
+		{
+			id: 7,
+			truckNumber: '032',
+			make: 'Freightliner',
+			model: 'Cascadia (2016)',
+			license: 'P918297',
+			eldNumber: 'Vehicle-032-2B250D69',
+			notes: 'Notes notes',
+			status: {
+				text: 'deactivated',
+				type: 'error'
+			},
+		},
+		{
+			id: 8,
+			truckNumber: '032',
+			make: 'Freightliner',
+			model: 'Cascadia (2016)',
+			license: 'P918297',
+			eldNumber: 'Vehicle-032-2B250D69',
+			notes: 'Notes notes',
+			status: {
+				text: 'deactivated',
+				type: 'error'
+			},
+		},
+		{
+			id: 9,
+			truckNumber: '032',
+			make: 'Freightliner',
+			model: 'Cascadia (2016)',
+			license: 'P918297',
+			eldNumber: 'Vehicle-032-2B250D69',
+			notes: 'Notes notes',
+			status: {
+				text: 'deactivated',
+				type: 'error'
+			},
+		},
+		{
+			id: 10,
+			truckNumber: '032',
+			make: 'Freightliner',
+			model: 'Cascadia (2016)',
+			license: 'P918297',
+			eldNumber: 'Vehicle-032-2B250D69',
+			notes: 'Notes notes',
+			status: {
+				text: 'deactivated',
+				type: 'error'
+			},
+		},
+		{
+			id: 11,
+			truckNumber: '032',
+			make: 'Freightliner',
+			model: 'Cascadia (2016)',
+			license: 'P918297',
+			eldNumber: 'Vehicle-032-2B250D69',
+			notes: 'Notes notes',
+			status: {
+				text: 'deactivated',
+				type: 'error'
+			},
+		},
+		{
+			id: 12,
+			truckNumber: '032',
+			make: 'Freightliner',
+			model: 'Cascadia (2016)',
+			license: 'P918297',
+			eldNumber: 'Vehicle-032-2B250D69',
+			notes: 'Notes notes',
+			status: {
+				text: 'deactivated',
+				type: 'error'
+			},
+		},
+		{
+			id: 13,
+			truckNumber: '032',
+			make: 'Freightliner',
+			model: 'Cascadia (2016)',
+			license: 'P918297',
+			eldNumber: 'Vehicle-032-2B250D69',
+			notes: 'Notes notes',
+			status: {
+				text: 'deactivated',
+				type: 'error'
+			},
+		},
+		{
+			id: 14,
+			truckNumber: '032',
+			make: 'Freightliner',
+			model: 'Cascadia (2016)',
+			license: 'P918297',
+			eldNumber: 'Vehicle-032-2B250D69',
+			notes: 'Notes notes',
+			status: {
+				text: 'deactivated',
+				type: 'error'
+			},
+		},
+		{
+			id: 15,
+			truckNumber: '032',
+			make: 'Freightliner',
+			model: 'Cascadia (2016)',
+			license: 'P918297',
+			eldNumber: 'Vehicle-032-2B250D69',
+			notes: 'Notes notes',
+			status: {
+				text: 'deactivated',
+				type: 'error'
+			},
+		},
+		{
+			id: 16,
+			truckNumber: '032',
+			make: 'Freightliner',
+			model: 'Cascadia (2016)',
+			license: 'P918297',
+			eldNumber: 'Vehicle-032-2B250D69',
+			notes: 'Notes notes',
+			status: {
+				text: 'deactivated',
+				type: 'error'
+			},
+		},
+		{
+			id: 17,
+			truckNumber: '032',
+			make: 'Freightliner',
+			model: 'Cascadia (2016)',
+			license: 'P918297',
+			eldNumber: 'Vehicle-032-2B250D69',
+			notes: 'Notes notes',
+			status: {
+				text: 'deactivated',
+				type: 'error'
+			},
 		}
 
 	]as Array<VehicleType>

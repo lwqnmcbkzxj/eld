@@ -11,7 +11,8 @@ const Drivers:FC<PropsType> = ({ drivers, ...props }) => {
 	
 	return (
 		<div className="page drivers-page">
-			<DriversTable rows={drivers}/>
+			<DriversTable rows={drivers} />
+			
 		</div>
 	)
 }

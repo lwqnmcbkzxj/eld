@@ -1,16 +1,20 @@
 import React, { FC, useState, useEffect } from 'react'
 import './Elds.scss'
 
+import { EldType } from '../../types/elds'
+import EldsTable from './EldsTable'
 
 type PropsType = {
-
+	elds: Array<EldType>
 }
 
-const Elds:FC<PropsType> = (props: any) => {
+const Elds:FC<PropsType> = ({ elds, ...props }) => {
 
 	return (
 		<div className="page elds-page">
-			EldsPage
+			
+			
+			<EldsTable rows={elds}/>
 		</div>
 	)
 }

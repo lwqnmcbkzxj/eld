@@ -44,8 +44,8 @@ const EnhancedTableHead: FC<EnhancedTableHeadProps> = ({ onSelectAllClick, numSe
 const EnhancedTable: FC<EnhancedTableProps> = ({ rows, getUnits, ...props }) => {
 	const classes = useTableStyles()
 	const [selected, setSelected] = React.useState<string[]>([])
-	const [page, setPage] = React.useState(0)
-	const [rowsPerPage, setRowsPerPage] = React.useState(10)
+	// const [page, setPage] = React.useState(0)
+	// const [rowsPerPage, setRowsPerPage] = React.useState(2)
 	const [searchText, setSearchText] = useState("")
 
 	const handleSelectAllClick = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -77,14 +77,14 @@ const EnhancedTable: FC<EnhancedTableProps> = ({ rows, getUnits, ...props }) => 
 		setSelected(newSelected)
 	};
 
-	const handleChangePage = (event: unknown, newPage: number) => {
-		setPage(newPage)
-	};
+	// const handleChangePage = (event: unknown, newPage: number) => {
+	// 	setPage(newPage)
+	// };
 
-	const handleChangeRowsPerPage = (event: React.ChangeEvent<HTMLInputElement>) => {
-		setRowsPerPage(parseInt(event.target.value, 10))
-		setPage(0)
-	};
+	// const handleChangeRowsPerPage = (event: React.ChangeEvent<HTMLInputElement>) => {
+	// 	setRowsPerPage(parseInt(event.target.value, 10))
+	// 	setPage(0)
+	// };
 
 
 	const getLocaleSpeed = (value: number) => {
@@ -120,7 +120,9 @@ const EnhancedTable: FC<EnhancedTableProps> = ({ rows, getUnits, ...props }) => 
 						rowCount={rows.length}
 					/>
 					<TableBody>
-						{rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row, index) => {
+						{rows
+							// .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+							.map((row, index) => {
 
 							const isItemSelected = isSelected(row.id.toString());
 							if (isContainsSearchText(searchText, row, ['name', 'truckNumber'])) {
@@ -157,13 +159,13 @@ const EnhancedTable: FC<EnhancedTableProps> = ({ rows, getUnits, ...props }) => 
 					</TableBody>
 				</CustomTable>
 				
-				<CustomPaginator
+				{/* <CustomPaginator
 					length={rows.length}
 					rowsPerPage={rowsPerPage}
-					page={page}
+					currentPage={page}
 					handleChangePage={handleChangePage}
 					handleChangeRowsPerPage={handleChangeRowsPerPage}
-				/>
+				/>  */}
 			</Paper>
 		</div>
 

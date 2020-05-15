@@ -3,6 +3,7 @@ import './App.scss'
 import { Route, NavLink } from "react-router-dom"
 import { Switch, Redirect } from 'react-router'
 import { withRouter } from 'react-router'
+import { useDispatch } from 'react-redux'
 
 import { getPageName } from './redux/app-reducer' 
 
@@ -14,7 +15,8 @@ import EldsContainer from './components/Elds/EldsContainer'
 import LogsContainer from './components/Logs/LogsContainer'
 import UnitsContainer from './components/Units/UnitsContainer'
 import VehiclesContainer from './components/Vehicles/VehiclesContainer'
-import { useDispatch } from 'react-redux'
+import NotFound from './components/NotFound/NotFound'
+
 import CustomHelmet from './components/Common/CustomHelmet/CustomHelmet'
 
 const App = (props: any) => {
@@ -25,8 +27,8 @@ const App = (props: any) => {
 		dispatch(getPageName(pathName))
 	}, [pathName])
 
-	// if (pathName === "/")
-		// return <Redirect to="/units" />
+	if (pathName === "/")
+		return <Redirect to="/units" />
 	return (
 		<div className="app-wrapper">
 			<CustomHelmet />
@@ -42,7 +44,7 @@ const App = (props: any) => {
 						<Route path="/logs" render={()=> <LogsContainer /> } />
 						<Route path="/units" render={()=> <UnitsContainer /> } />
 						<Route path="/vehicles" render={()=> <VehiclesContainer /> } />
-						{/* <Route component={NotFound} /> */}
+						<Route component={NotFound} />
 
 					</Switch>
 

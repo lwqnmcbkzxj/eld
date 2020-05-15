@@ -146,7 +146,7 @@ let initialState = {
 			},
 			description: 'Pick up',
 			currentSPD: 0,
-		},
+		},				
 		{
 			id: 11,
 			name: 'Bruceq Wayane ',
@@ -189,6 +189,77 @@ let initialState = {
 			description: 'Pick up',
 			currentSPD: 0,
 		},
+		{
+			id: 14,
+			name: 'Bruce Wayne ',
+			truckNumber: '032',
+			lastLocation: '15.6 mi WNW of Lake Forest, CA',
+			share: '',
+			date: '08.12.20  11:30 AM',
+			status: {
+				text: 'On duty',
+				type: 'warning'
+			},
+			description: 'Pick up',
+			currentSPD: 0,
+		},
+		{
+			id: 15,
+			name: 'Bruce Wayne ',
+			truckNumber: '032',
+			lastLocation: '15.6 mi WNW of Lake Forest, CA',
+			share: '',
+			date: '08.12.20  11:30 AM',
+			status: {
+				text: 'On duty',
+				type: 'warning'
+			},
+			description: 'Pick up',
+			currentSPD: 0,
+		},
+		{
+			id: 16,
+			name: 'Bruce Wayne ',
+			truckNumber: '032',
+			lastLocation: '15.6 mi WNW of Lake Forest, CA',
+			share: '',
+			date: '08.12.20  11:30 AM',
+			status: {
+				text: 'On duty',
+				type: 'warning'
+			},
+			description: 'Pick up',
+			currentSPD: 0,
+		},
+		{
+			id: 17,
+			name: 'Bruce Wayne ',
+			truckNumber: '032',
+			lastLocation: '15.6 mi WNW of Lake Forest, CA',
+			share: '',
+			date: '08.12.20  11:30 AM',
+			status: {
+				text: 'On duty',
+				type: 'warning'
+			},
+			description: 'Pick up',
+			currentSPD: 0,
+		},
+		{
+			id: 18,
+			name: 'Bruce Wayne ',
+			truckNumber: '032',
+			lastLocation: '15.6 mi WNW of Lake Forest, CA',
+			share: '',
+			date: '08.12.20  11:30 AM',
+			status: {
+				text: 'On duty',
+				type: 'warning'
+			},
+			description: 'Pick up',
+			currentSPD: 0,
+		},
+		
 	] as Array<UnitType>
 }
 

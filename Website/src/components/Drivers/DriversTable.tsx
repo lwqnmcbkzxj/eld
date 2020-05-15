@@ -63,14 +63,14 @@ const DriversTable: FC<PropsType> = ({ rows, ...props }) => {
 				<StyledDefaultButton variant="outlined" onClick={()=>{ console.log('OPENING ADD DRIVER MODAL') }}>Add driver</StyledDefaultButton>
 			</Toolbar>
 
-			<CustomTable>
+			<CustomTable subtractHeight={52}>
 				<TableHead>
 					<TableRow>
 						<CustomTableHeaderCells Component={CustomTableCell} labels={labels} />
 					</TableRow>
 				</TableHead>
 				<TableBody>
-					{rows.map(row => (
+					{rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map(row => (
 
 						(row.userName.includes(searchText) ||
 							row.firstName.includes(searchText) ||
@@ -100,7 +100,7 @@ const DriversTable: FC<PropsType> = ({ rows, ...props }) => {
 			<CustomPaginator
 				length={rows.length}
 				rowsPerPage={rowsPerPage}
-				page={page}
+				currentPage={page}
 				handleChangePage={handleChangePage}
 				handleChangeRowsPerPage={handleChangeRowsPerPage}
 			/>

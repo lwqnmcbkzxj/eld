@@ -6,6 +6,7 @@ import appReducer from "./app-reducer"
 import unitsReducer from "./units-reducer"
 import driversReducer from "./drivers-reducer"
 import vehiclesReducer from "./vehicles-reducer"
+import eldsReducer from "./elds-reducer"
 
 
 import { reducer as formReducer } from "redux-form";
@@ -18,6 +19,7 @@ let rootReducer = combineReducers({
 	units: unitsReducer,
 	drivers: driversReducer,
 	vehicles: vehiclesReducer,
+	elds: eldsReducer,
 
     form: formReducer
 }); 

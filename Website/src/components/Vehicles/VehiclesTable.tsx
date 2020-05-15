@@ -44,14 +44,14 @@ const DriversTable: FC<PropsType> = ({ rows, ...props }) => {
 				<StyledDefaultButton variant="outlined" onClick={()=>{ console.log('OPENING ADD VEHICLE MODAL') }}>Add vehicle</StyledDefaultButton>
 			</Toolbar>
 
-			<CustomTable>
+			<CustomTable subtractHeight={52}>
 				<TableHead>
 					<TableRow>
 						<CustomTableHeaderCells labels={labels} />
 					</TableRow>
 				</TableHead>
 				<TableBody>
-					{rows.map(row => (
+					{rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map(row => (
 						isContainsSearchText(searchText, row, ['make', 'model', 'license', 'eldNumber']) &&	
 
 						<TableRow key={row.id}>
@@ -71,7 +71,7 @@ const DriversTable: FC<PropsType> = ({ rows, ...props }) => {
 			<CustomPaginator
 				length={rows.length}
 				rowsPerPage={rowsPerPage}
-				page={page}
+				currentPage={page}
 				handleChangePage={handleChangePage}
 				handleChangeRowsPerPage={handleChangeRowsPerPage}
 			/>
