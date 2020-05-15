@@ -1,0 +1,12 @@
+.goBackBlock {
+	position: absolute;
+	left: 20px;
+	padding: 7px 16.5px 7px 16.5px;
+	border: 1px solid #D3D2D5;
+	box-sizing: border-box;
+	border-radius: 4px;
+	transition: .3s;
+	&:hover {
+		box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+	}
+}

@@ -1,0 +1,79 @@
+@import '../../assets/scss/Colors/Colors.scss';
+
+.header {
+	display: grid;
+	grid-template-columns: 210px auto 210px;
+	align-items: center;
+	box-sizing: border-box;
+	height: 56px;
+	box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.1);
+	position: relative;
+	padding: 0 22px;
+	& > div {
+		padding: 10px 0;
+	}
+
+	&__logo {
+		padding: 0!important;
+	}
+
+	&__pageName {
+		position: relative;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+	}
+
+	&__active_link {
+		font-family: 'Heebo Bold';
+		font-size: 20px;
+		line-height: 29px;
+		letter-spacing: 1px;
+		text-transform: uppercase;
+		text-align: center;
+		color: $primary_text_color;
+		width: 100%;
+		&.not-root {
+			color: $placholder_text_color;
+		}
+	}
+
+
+	&__user-block {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		& .user-block {
+			&__notifications {
+				border-right: 1px solid $light_line_color;
+				padding-right: 15px;
+			}
+
+			&__info {
+				display: flex;
+				align-items: center;
+				justify-content: space-between;
+				font-size: 12px;
+				line-height: 18px;
+				text-align: right;
+				color: $primary_text_color;
+
+				& .info {
+					&__nickname {
+						font-family: 'Heebo Medium';
+					}
+
+					&__email {
+						color: $secondary_text_color;
+					}
+
+					&__user-img {
+						width: 24px;
+						height: auto;
+						margin-left: 12px;
+					}
+				}
+			}
+		}
+	}
+}

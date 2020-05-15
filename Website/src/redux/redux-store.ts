@@ -2,6 +2,7 @@ import { composeWithDevTools } from 'redux-devtools-extension'
 import { createStore, combineReducers, applyMiddleware } from "redux"
 import thunkMiddleware from "redux-thunk"
 
+import appReducer from "./app-reducer"
 
 
 import { reducer as formReducer } from "redux-form";
@@ -10,6 +11,7 @@ import { reducer as formReducer } from "redux-form";
 
 let rootReducer = combineReducers({    
 	
+	app: appReducer,
 
     form: formReducer
 }); 
