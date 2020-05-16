@@ -10,8 +10,8 @@ router.put('/', body_parser, async (req, res) => {
     try {
         const schema = Joi.object({
             old_password: Joi.string().required(),
-            new_password: Joi.string().required(),
-            new_password_confirmation: Joi.string().required()
+            new_password: Joi.string().min(6).required(),
+            new_password_confirmation: Joi.string().min(6).required()
         });
         vars = await schema.validateAsync(req.body);
     } catch (err) {
