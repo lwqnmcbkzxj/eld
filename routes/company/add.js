@@ -23,7 +23,7 @@ router.post('/', async (req, res) => {    /* company_name, company_address, subs
     }
 
     try {
-        const params = [ vars.company_name, null, null, null, vars.subscribe_type, vars.company_timezone, vars.contact_name,
+        const params = [ vars.company_name, null, vars.company_address, null, vars.subscribe_type, vars.company_timezone, vars.contact_name,
             vars.contact_phone, vars.email, vars.usdot, vars.terminal_address_1, vars.terminal_address_2, 'ACTIVE'
         ];
         db = await mQuery(`insert into company
