@@ -9,8 +9,10 @@ router.use('/', checkAuth);
 
 
 const infoRouter = require('./company/info');
+const addRouter = require('./company/add');
 
 router.use('/info', infoRouter);
+router.use('/add', addRouter);
 
 
 module.exports = router;
