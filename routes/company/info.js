@@ -1,5 +1,5 @@
 const router = require('express').Router();
-const { mQuery, makeResponse } = require('../../utils')
+const { mQuery, makeResponse } = require('../../utils');
 
 router.get('/:company_id', async (req, res) => {
     const company_id = req.params.company_id;
@@ -7,8 +7,8 @@ router.get('/:company_id', async (req, res) => {
 
     let db;
     try {
-        db = await mQuery(`select company_id, company_short_name, company_long_name,
-            company_home_terminal_address, company_main_office_address from company where company_id = ?`, [company_id]);
+        db = await mQuery(`select c.*, t.timezone_name
+       from company c left join timezone t on c.timezone_id = t.timezone_id where company_id = ?`, [company_id]);
     } catch (err) {
         return res.status(500).send(makeResponse(2, err));
     }
