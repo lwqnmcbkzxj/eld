@@ -16,7 +16,6 @@ router.put('/', body_parser, async (req, res) => {
         return res.status(400).send(makeResponse(1, err));
     }
 
-    console.log(vars);
     try {
         let strs = [], params = [];
         if (vars.user_first_name) {
