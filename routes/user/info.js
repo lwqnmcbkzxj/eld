@@ -1,5 +1,5 @@
 const router = require('express').Router();
-const { mQuery, makeResponse } = require('../../utils')
+const { mQuery, makeResponse } = require('../../utils');
 
 router.get('/', async (req, res) => {
     const req_user_id = req.auth_info.req_user_id;
