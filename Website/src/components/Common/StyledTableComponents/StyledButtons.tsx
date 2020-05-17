@@ -19,10 +19,11 @@ const CustomButton = withStyles((theme) => ({
 export const StyledDefaultButton = withStyles((theme) => ({
 	root: {
 		color: colors.primary_text_color,
-		background: '#fff',
+		background: colors.bg_white_color,
 		border: `1px solid ${colors.main_gray_color}`,
 		"&:hover": {
 			border: `1px solid ${colors.placholder_text_color}`,
+			background: colors.bg_white_color,
 		},
 		"&:active": {
 			background: colors.bg_page_color,

@@ -171,6 +171,7 @@ function TablePaginationActions({ count, page, rowsPerPage, onChangePage, ...pro
 				break
 			}
 		}
+
 		rightPortionPageNumber = leftPortionPageNumber + 5
 		if (rightPortionPageNumber > pagesCount) {
 			rightPortionPageNumber = pagesCount - leftPortionPageNumber
