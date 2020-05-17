@@ -2,14 +2,14 @@ const router = require('express').Router();
 const Joi = require('@hapi/joi');
 const { mQuery, makeResponse } = require('../../utils');
 
-router.post('/', async (req, res) => {    /* company_name, company_address, subscribe_type, company_timezone, contact_name, contact_phone, email, usdot, terminal_address_1, terminal_address_2 */
+router.post('/', async (req, res) => {
     let vars = {}, db = null;
     try {
         const schema = Joi.object({
             company_name: Joi.string().required(),
             company_address: Joi.string().required(),
-            subscribe_type: Joi.string().valid('Basic'),
-            company_timezone: Joi.number().min(1),
+            subscribe_type: Joi.string().valid('BASIC', 'ADVANCED', 'PREMIUM'),
+            company_timezone: Joi.number().valid('ALASKAN', 'CENTRAL', 'EASTERN', 'HAWAIIAN', 'PACIFIC'),
             contact_name: Joi.string(),
             contact_phone: Joi.string(),
             email: Joi.string().email(),
@@ -22,8 +22,17 @@ router.post('/', async (req, res) => {    /* company_name, company_address, subs
         return res.status(400).send(makeResponse(1, err));
     }
 
+    let timezone_id = null;
+    if (!vars.company_timezone.localeCompare('ALASKAN')) timezone_id = 1;
+    else if (!vars.company_timezone.localeCompare('CENTRAL')) timezone_id = 2;
+    else if (!vars.company_timezone.localeCompare('EASTERN')) timezone_id = 3;
+    else if (!vars.company_timezone.localeCompare('HAWAIIAN')) timezone_id = 4;
+    else if (!vars.company_timezone.localeCompare('PACIFIC')) timezone_id = 5;
+    else {
+        return res.status(400).send(makeResponse(3, `Could not identify timezone_id by string constant \'${vars.company_timezone}\'`));
+    }
     try {
-        const params = [ vars.company_name, null, vars.company_address, null, vars.subscribe_type, vars.company_timezone, vars.contact_name,
+        const params = [ vars.company_name, null, vars.company_address, null, vars.subscribe_type, timezone_id, vars.contact_name,
             vars.contact_phone, vars.email, vars.usdot, vars.terminal_address_1, vars.terminal_address_2, 'ACTIVE'
         ];
         db = await mQuery(`insert into company
