@@ -1,7 +1,7 @@
 const router = require('express').Router();
 const Joi = require('@hapi/joi');
 const { mQuery, makeResponse } = require('../../utils');
-const body_parser = require('body-parser').urlencoded();
+const body_parser = require('body-parser').urlencoded({ extended: false });
 
 router.put('/', body_parser, async (req, res) => {
     let vars = {}, db = null;
