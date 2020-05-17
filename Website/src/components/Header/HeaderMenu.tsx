@@ -2,8 +2,8 @@ import React, { useState } from 'react';
 import { Menu, MenuItem, makeStyles, Button } from '@material-ui/core';
 import { colors } from '../../assets/scss/Colors/Colors';
 
-import ProfileSubscribtionModal from '../Common/Modals/ProfileSubscribtionModal'
-import EditProfileModal from '../Common/Modals/EditProfileModal'
+import ProfileSubscriptionModal from '../Common/Modals/ProfileModals/ProfileSubscriptionModal'
+import EditProfileModal from '../Common/Modals/ProfileModals/EditProfileModal'
 type HeaderMenuProps = {
 	anchorEl: null | HTMLElement
 	handleClose: () => void
@@ -24,9 +24,9 @@ const useStyles = makeStyles(theme => ({
 export const HeaderMenu: React.FC<HeaderMenuProps> = ({ anchorEl, handleClose, ...props }) => {
 	const classes = useStyles()
 
-	const [subscribtionModalOpen, setSubscribtionModalOpen] = useState(false)
-	const handleSubscribtionModalClose = () => {
-		setSubscribtionModalOpen(false);
+	const [subscriptionModalOpen, setSubscriptionModalOpen] = useState(false)
+	const handleSubscriptionModalClose = () => {
+		setSubscriptionModalOpen(false);
 	};
 
 	const [profileEditModalOpen, setProfileEditModalOpen] = useState(false)
@@ -64,7 +64,7 @@ export const HeaderMenu: React.FC<HeaderMenuProps> = ({ anchorEl, handleClose, .
 				<MenuItem
 					className={classes.menu__item}
 					onClick={() => {
-						setSubscribtionModalOpen(true)
+						setSubscriptionModalOpen(true)
 						handleClose()
 					}}>
 					Subscription
@@ -80,8 +80,8 @@ export const HeaderMenu: React.FC<HeaderMenuProps> = ({ anchorEl, handleClose, .
 			</Menu>
 
 
-			<ProfileSubscribtionModal open={subscribtionModalOpen} handleClose={handleSubscribtionModalClose}/>
-			<EditProfileModal open={profileEditModalOpen} handleClose={handleProfileEditModalClose}/>
+			<ProfileSubscriptionModal open={subscriptionModalOpen} handleClose={handleSubscriptionModalClose} />
+			<EditProfileModal open={profileEditModalOpen} handleClose={handleProfileEditModalClose} />
 		</div>
 	);
 }

@@ -4,7 +4,7 @@ import StatusLabel from '../Common/StatusLabel/StatusLabel'
 import { StyledTableCell, CustomTable, CustomPaginator, CustomTableHeaderCells } from '../Common/StyledTableComponents/StyledTableComponents'
 
 import { StyledSearchInput } from '../Common/StyledTableComponents/StyledInputs'
-import { StyledDefaultButton } from '../Common/StyledTableComponents/StyledButtons'
+import { StyledDefaultButtonSmall } from '../Common/StyledTableComponents/StyledButtons'
 
 import { VehicleType } from '../../types/vehicles'
 
@@ -41,7 +41,7 @@ const DriversTable: FC<PropsType> = ({ rows, ...props }) => {
 		<Paper style={{ boxShadow: 'none' }}>
 			<Toolbar style={{ width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'space-between', boxSizing: 'border-box' }}>
 				<StyledSearchInput searchText={searchText} setSearchText={setSearchText} />
-				<StyledDefaultButton variant="outlined" onClick={()=>{ console.log('OPENING ADD VEHICLE MODAL') }}>Add vehicle</StyledDefaultButton>
+				<StyledDefaultButtonSmall variant="outlined" onClick={()=>{ console.log('OPENING ADD VEHICLE MODAL') }}>Add vehicle</StyledDefaultButtonSmall>
 			</Toolbar>
 
 			<CustomTable subtractHeight={52}>

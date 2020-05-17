@@ -5,7 +5,7 @@ import androidIcon from '../../assets/img/ic_android.svg'
 import { StyledTableCell, CustomTable, CustomPaginator, CustomTableHeaderCells } from '../Common/StyledTableComponents/StyledTableComponents'
 
 import { StyledSearchInput } from '../Common/StyledTableComponents/StyledInputs'
-import { StyledDefaultButton } from '../Common/StyledTableComponents/StyledButtons'
+import { StyledDefaultButtonSmall } from '../Common/StyledTableComponents/StyledButtons'
 
 import { DriverType } from '../../types/drivers'
 
@@ -60,7 +60,7 @@ const DriversTable: FC<PropsType> = ({ rows, ...props }) => {
 		<Paper style={{ boxShadow: 'none' }}>
 			<Toolbar style={{ width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'space-between', boxSizing: 'border-box' }}>
 				<StyledSearchInput searchText={searchText} setSearchText={setSearchText} />
-				<StyledDefaultButton variant="outlined" onClick={()=>{ console.log('OPENING ADD DRIVER MODAL') }}>Add driver</StyledDefaultButton>
+				<StyledDefaultButtonSmall variant="outlined" onClick={()=>{ console.log('OPENING ADD DRIVER MODAL') }}>Add driver</StyledDefaultButtonSmall>
 			</Toolbar>
 
 			<CustomTable subtractHeight={52}>

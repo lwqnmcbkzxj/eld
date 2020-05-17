@@ -8,23 +8,28 @@ const SET_ELDS = 'SET_ELDS'
 let initialState = {
 	elds: [
 		{
-			eldNumber: 'Vehicle-009-2B250D69',
+			id: 1,
+			serial_number: 'Vehicle-009-2B250D691',
 			notes: 'Record is automatically created for the vehicle 009'
 		},
 		{
-			eldNumber: 'Vehicle-009-2B250D69',
+			id: 2,
+			serial_number: 'Vehicle-009-2B250D692',
 			notes: 'Record is automatically created for the vehicle 009'
 		},
 		{
-			eldNumber: 'Vehicle-009-2B250D69',
+			id: 3,
+			serial_number: 'Vehicle-009-2B250D693',
 			notes: 'Record is automatically created for the vehicle 009'
 		},
 		{
-			eldNumber: 'Vehicle-009-2B250D69',
+			id: 4,
+			serial_number: 'Vehicle-009-2B250D694',
 			notes: 'Record is automatically created for the vehicle 009'
 		},
 		{
-			eldNumber: 'Vehicle-009-2B250D69',
+			id: 5,
+			serial_number: 'Vehicle-009-2B250D695',
 			notes: 'Record is automatically created for the vehicle 009'
 		},
 	] as Array<EldType>
@@ -59,7 +64,7 @@ export const setUnits = (elds: Array<EldType>): SetEldsType => {
 }
 
 export const getEldsFromServer = ():ThunksType => async (dispatch) => {
-	console.log('GETTING DRIVERS FROM SERVER')
+	console.log('GETTING ELDS FROM SERVER')
 }
 
 type ThunksType = ThunkAction<Promise<void>, AppStateType, unknown, ActionsTypes>

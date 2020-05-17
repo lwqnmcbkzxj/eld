@@ -1,4 +1,4 @@
-export type ProfileModalType = {
+export type ModalType = {
 	open: boolean
 	handleClose: () => void
 }

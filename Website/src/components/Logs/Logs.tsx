@@ -4,13 +4,11 @@ type PropsType = {
 
 }
 
-const Logs:FC<PropsType> = (props: any) => {
-
+const Logs: FC<PropsType> = (props: any) => {
 	return (
 		<div className="page logs-page">
-			LogsPage
+
 		</div>
 	)
 }
-
-export default Logs;
+export default Logs

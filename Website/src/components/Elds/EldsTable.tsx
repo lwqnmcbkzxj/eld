@@ -1,14 +1,16 @@
-import React, { FC } from 'react'
+import React, { FC, useState } from 'react'
 import { Paper, TableHead, TableRow, TableBody, withStyles, Toolbar, Button } from '@material-ui/core';
 import StatusLabel from '../Common/StatusLabel/StatusLabel'
 import { StyledTableCell, CustomTable, CustomPaginator, CustomTableHeaderCells } from '../Common/StyledTableComponents/StyledTableComponents'
 
 import { StyledSearchInput } from '../Common/StyledTableComponents/StyledInputs'
-import { StyledDefaultButton } from '../Common/StyledTableComponents/StyledButtons'
+import { StyledDefaultButtonSmall } from '../Common/StyledTableComponents/StyledButtons'
 
 import { EldType } from '../../types/elds'
 
 import { isContainsSearchText } from '../../utils/isContainsSearchText'
+
+import EldsModal from '../Common/Modals/PagesModals/EldsModal'
 
 type PropsType = {
 	rows: Array<EldType>
@@ -28,6 +30,19 @@ const EldsTable: FC<PropsType> = ({ rows, ...props }) => {
 	// 	setPage(0)
 	// };
 
+	const [eldEditModalOpen, setEldEditModalOpen] = useState(false)
+	const handleEldEditModalClose = () => {
+		setEldEditModalOpen(false);
+	}; 
+
+	const [currentEldData, setCurrentEldData] = useState({});
+
+	const [eldAddModalOpen, setEldAddModalOpen] = useState(false)
+	const handleEldAddModalClose = () => {
+		setEldAddModalOpen(false);
+	};
+
+
 	let labels = [
 		{ label: "ELD No." },
 		{ label: "Notes" },
@@ -36,7 +51,7 @@ const EldsTable: FC<PropsType> = ({ rows, ...props }) => {
 		<Paper style={{ boxShadow: 'none' }}>
 			<Toolbar style={{ width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'space-between', boxSizing: 'border-box' }}>
 				<StyledSearchInput searchText={searchText} setSearchText={setSearchText} />
-				<StyledDefaultButton variant="outlined" onClick={()=>{ console.log('OPENING ADD ELD MODAL') }}>Add ELD</StyledDefaultButton>
+				<StyledDefaultButtonSmall variant="outlined" onClick={()=>{ setEldAddModalOpen(true) }}>Add ELD</StyledDefaultButtonSmall>
 			</Toolbar>
 
 			<CustomTable>
@@ -47,9 +62,12 @@ const EldsTable: FC<PropsType> = ({ rows, ...props }) => {
 				</TableHead>
 				<TableBody>
 					{rows.map(row => (
-						isContainsSearchText(searchText, row, ['eldNumber']) &&	
-						<TableRow key={row.id}>
-							<StyledTableCell style={{ width: '200px' }}><div className="text-block" style={{ maxWidth: '200px' }} >{row.eldNumber}</div></StyledTableCell>
+						isContainsSearchText(searchText, row, ['serial_number']) &&	
+						<TableRow key={row.id} onClick={() => {
+							setCurrentEldData(row)
+							setEldEditModalOpen(true)
+						}}>
+							<StyledTableCell style={{ width: '200px' }}><div className="text-block" style={{ maxWidth: '200px' }} >{row.serial_number}</div></StyledTableCell>
 							<StyledTableCell><div className="text-block" style={{ minWidth: '200px' }} >{row.notes}</div></StyledTableCell>
 						</TableRow>
 					))}
@@ -63,6 +81,25 @@ const EldsTable: FC<PropsType> = ({ rows, ...props }) => {
 				handleChangePage={handleChangePage}
 				handleChangeRowsPerPage={handleChangeRowsPerPage}
 			/> */}
+
+			{/* Edit modal */}
+			{ eldEditModalOpen && 
+			<EldsModal
+				open={eldEditModalOpen}
+				handleClose={handleEldEditModalClose}
+				initialValues={currentEldData}
+				titleText={"Edit ELD"}
+			/> }
+
+			{/* Add modal */}
+			{eldAddModalOpen &&
+			<EldsModal
+				open={eldAddModalOpen}
+				handleClose={handleEldAddModalClose}
+				initialValues={{}}
+				titleText={"Add ELD"}
+			/> }
+			
 		</Paper>
 	)
 }

@@ -1,5 +1,5 @@
 export type EldType = {
 	id: number
-	eldNumber: string
+	serial_number: string
 	notes: string
 }
