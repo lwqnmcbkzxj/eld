@@ -3,14 +3,15 @@ import { ThunkAction } from 'redux-thunk'
 
 const SET_PAGE_NAME = 'SET_PAGE_NAME'
 const SET_IS_ROOT_PAGE = 'SET_IS_ROOT_PAGE'
+const SET_LOGGED = 'SET_LOGGED'
 
 let initialState = {
 	pageName: "",
-	isRootPage: false
+	isRootPage: false,
 }
 
 type InitialStateType = typeof initialState;
-type ActionsTypes = SetPageNameType | SetIsRootPageType;
+type ActionsTypes = SetPageNameType | SetIsRootPageType ;
 
 const appReducer = (state = initialState, action: ActionsTypes): InitialStateType => {
 	switch (action.type) {
@@ -25,7 +26,7 @@ const appReducer = (state = initialState, action: ActionsTypes): InitialStateTyp
 				...state,
 				isRootPage: action.isRootPage
 			}
-		}
+		}		
 		default:
 			return state;
 	}
@@ -39,6 +40,7 @@ type SetIsRootPageType = {
 	type: typeof SET_IS_ROOT_PAGE,
 	isRootPage: boolean
 }
+
 
 export const setPageName = (pageName: string):SetPageNameType => {
 	return {

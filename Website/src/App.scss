@@ -18,6 +18,11 @@ body {
 	background: #E5E5E5;
 	min-height: calc(100vh - 58px);
 	position: relative;
+	&.login_form-page {
+		min-height: 100vh;
+		position: relative;
+		background: #f8f7f8;
+	}
 }
 .units-page {
 	overflow: hidden;

@@ -3,6 +3,8 @@ import { createStore, combineReducers, applyMiddleware } from "redux"
 import thunkMiddleware from "redux-thunk"
 
 import appReducer from "./app-reducer"
+import userReducer from "./user-reducer"
+
 import unitsReducer from "./units-reducer"
 import driversReducer from "./drivers-reducer"
 import vehiclesReducer from "./vehicles-reducer"
@@ -12,10 +14,11 @@ import eldsReducer from "./elds-reducer"
 import { reducer as formReducer } from "redux-form";
 
 
-
 let rootReducer = combineReducers({    
 	
 	app: appReducer,
+	user: userReducer,
+
 	units: unitsReducer,
 	drivers: driversReducer,
 	vehicles: vehiclesReducer,

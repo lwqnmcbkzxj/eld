@@ -3,7 +3,8 @@ import './App.scss'
 import { Route, NavLink } from "react-router-dom"
 import { Switch, Redirect } from 'react-router'
 import { withRouter } from 'react-router'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
+import { AppStateType } from './types/types'
 
 import { getPageName } from './redux/app-reducer' 
 
@@ -18,14 +19,24 @@ import VehiclesContainer from './components/Vehicles/VehiclesContainer'
 import NotFound from './components/NotFound/NotFound'
 
 import CustomHelmet from './components/Common/CustomHelmet/CustomHelmet'
+import Login from './components/Login/Login'
 
 const App = (props: any) => {
 	const dispatch = useDispatch()
+	const logged = useSelector<AppStateType, boolean>(state => state.user.logged)
 	let pathName = props.location.pathname
 
 	useEffect(() => {
 		dispatch(getPageName(pathName))
 	}, [pathName])
+
+	if (!logged) {
+		return <>
+			<Redirect to="/" />
+			<Login />
+		</>
+	}
+		
 
 	if (pathName === "/")
 		return <Redirect to="/units" />
