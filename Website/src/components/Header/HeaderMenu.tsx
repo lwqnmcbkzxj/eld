@@ -24,10 +24,10 @@ const useStyles = makeStyles(theme => ({
 export const HeaderMenu: React.FC<HeaderMenuProps> = ({ anchorEl, handleClose, ...props }) => {
 	const classes = useStyles()
 
-	const [subscriptionModalOpen, setSubscriptionModalOpen] = useState(false)
-	const handleSubscriptionModalClose = () => {
-		setSubscriptionModalOpen(false);
-	};
+	// const [subscriptionModalOpen, setSubscriptionModalOpen] = useState(false)
+	// const handleSubscriptionModalClose = () => {
+	// 	setSubscriptionModalOpen(false);
+	// };
 
 	const [profileEditModalOpen, setProfileEditModalOpen] = useState(false)
 	const handleProfileEditModalClose = () => {
@@ -61,14 +61,14 @@ export const HeaderMenu: React.FC<HeaderMenuProps> = ({ anchorEl, handleClose, .
 					Edit Profile
 				</MenuItem>
 
-				<MenuItem
+				{/* <MenuItem
 					className={classes.menu__item}
 					onClick={() => {
 						setSubscriptionModalOpen(true)
 						handleClose()
 					}}>
 					Subscription
-					</MenuItem>
+					</MenuItem> */}
 				<MenuItem
 					className={classes.menu__item}
 					onClick={() => {
@@ -80,7 +80,7 @@ export const HeaderMenu: React.FC<HeaderMenuProps> = ({ anchorEl, handleClose, .
 			</Menu>
 
 
-			<ProfileSubscriptionModal open={subscriptionModalOpen} handleClose={handleSubscriptionModalClose} />
+			{/* <ProfileSubscriptionModal open={subscriptionModalOpen} handleClose={handleSubscriptionModalClose} /> */}
 			<EditProfileModal open={profileEditModalOpen} handleClose={handleProfileEditModalClose} />
 		</div>
 	);

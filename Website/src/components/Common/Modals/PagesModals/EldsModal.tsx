@@ -7,7 +7,7 @@ import { useStyles } from '../ModalsStyle'
 import { ModalType } from '../ModalsTypes'
 import { colors } from '../../../../assets/scss/Colors/Colors';
 import { Formik, Field, Form, FieldArray } from 'formik';
-import { CustomField, CustomTextArea } from '../../FormComponents/FormComponents';
+import { CustomField } from '../../FormComponents/FormComponents';
 
 import { StyledFilledInputSmall } from '../../../Common/StyledTableComponents/StyledInputs'
 
@@ -45,7 +45,13 @@ const EditProfileModal = ({ open, handleClose, initialValues, titleText, ...prop
 		notes: yup.string(),
 
 	});
-console.log(initialValues)
+
+	if (!initialValues.id) {
+		initialValues = {
+			serial_number: '',
+			notes: '',
+		}
+	}
 
 	return (
 		<React.Fragment>
@@ -87,7 +93,7 @@ console.log(initialValues)
 							<DialogContent className={classes.dialog__content}>
 
 								<CustomField name={'serial_number'} label={'Serial No.'} />
-								<CustomTextArea name={'notes'} label={'Notes'} />
+								<CustomField name={'notes'} label={'Notes'} type="textarea" placeholder="Notes"/>
 
 
 							</DialogContent>

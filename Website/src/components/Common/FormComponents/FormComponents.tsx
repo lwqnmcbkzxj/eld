@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import cn from 'classnames'
 import { Field, useField, FieldAttributes } from "formik";
-import { makeStyles, withStyles, TextField, IconButton } from '@material-ui/core'
+import { makeStyles, withStyles, TextField, IconButton, Checkbox, FormControlLabel } from '@material-ui/core'
 
 import { StyledFilledInputSmall, StyledFilledInput } from '../../Common/StyledTableComponents/StyledInputs'
 
@@ -14,7 +14,7 @@ export const useFieldStyles = makeStyles(theme => ({
 	form__field: {
 		display: 'flex',
 		flexDirection: 'column',
-		marginBottom: '26px',
+		marginBottom: '4px',
 		position: 'relative',
 		"& label": {
 			color: '#79757D',
@@ -42,24 +42,29 @@ export const useFieldStyles = makeStyles(theme => ({
 
 
 type CustomFieldProps = {
-	label: string
 	name: string
+	label?: string
 	canSeeInputValue?: boolean
 	deleteFunc?: () => void
 	type?: string
 	placeholder?: string
-	multiline?: boolean
+	optional?: boolean
+	disabled?: boolean
+	Component?: any
 }
 
-export const CustomField: React.FC<FieldAttributes<CustomFieldProps>> = ({ label, canSeeInputValue, placeholder, deleteFunc, multiline = false, ...props }) => {
+export const CustomField: React.FC<FieldAttributes<CustomFieldProps>> = (
+	{ label, canSeeInputValue, placeholder = "", deleteFunc, optional = false, disabled = false, Component = StyledFilledInputSmall, ...props }) => {
 	const classes = useFieldStyles()
 	const [field, meta] = useField<CustomFieldProps>(props);
 
-	let errorText = meta.error ? meta.error : "";
-
+	let errorText = meta.error && meta.touched ? meta.error : "";
 	if (errorText.includes(field.name)) {
 		errorText = errorText.slice(field.name.length)
-		errorText = label + errorText
+		if (!!label)
+			errorText = label + errorText 
+		else 
+			errorText = placeholder + errorText 
 	}
 
 
@@ -93,7 +98,7 @@ export const CustomField: React.FC<FieldAttributes<CustomFieldProps>> = ({ label
 	if (canSeeInputValue) {
 		showPasswordButton =
 			<button
-			type="button"
+				type="button"
 				onClick={togglePasswordVisibilty}
 				className={cn(classes.field_icon, "icon_password")}
 			>
@@ -105,16 +110,33 @@ export const CustomField: React.FC<FieldAttributes<CustomFieldProps>> = ({ label
 	if (deleteFunc || canSeeInputValue) {
 		fieldClass = cn(classes.form__field, "field_with_icon")
 	}
+	let multiline = false
+	if (type === 'textarea') {
+		multiline = true
+	}
+	let helperText
+	if (optional && errorText === "") {
+		helperText = 'Optional'
+	} else {
+		helperText = errorText
+	}
+	let style = {}
+	if (helperText === '') {
+		style = { marginBottom: '24px' }
+	}
+	
 	return (
 		<div className={fieldClass}>
 			<label>{label}</label>
-			<StyledFilledInputSmall
+			<Component
 				{...field}
 				multiline={multiline}
 				type={type}
 				placeholder={placeholder}
-				helperText={errorText}
+				helperText={helperText}
 				error={!!errorText}
+				style={style}
+				disabled={disabled}
 			/>
 
 			{deleteButton}
@@ -125,37 +147,23 @@ export const CustomField: React.FC<FieldAttributes<CustomFieldProps>> = ({ label
 	)
 }
 
-type CustomTextAreaTypes = {
-	label: string
-	placeholder?: string
-	name: string
-}
+export const CustomCheckBox: React.FC<FieldAttributes<CustomFieldProps>> = ({ ...props }) => {
+	const classes = makeStyles(theme => ({
+		root: {
+			"& .MuiFormControlLabel-label": {
+				fontSize: '14px',
+				lineHeight: '21px',
+				color: '#323033',
+			}
+		}
+	}))()
 
-export const CustomTextArea: React.FC<FieldAttributes<CustomTextAreaTypes>> = ({ label, placeholder, ...props }) => {
-	const classes = useFieldStyles()
-	const [field, meta] = useField<CustomTextAreaTypes>(props);
-
-	let errorText = meta.error && meta.touched ? meta.error : "";
-
-	if (errorText.includes(field.name)) {
-		errorText = errorText.slice(field.name.length)
-		errorText = label + errorText
-	}
-
-
-	
 	return (
-		<div className={classes.form__field}>
-			<label>{label}</label>
-			<StyledFilledInput
-				{...field}
-				multiline={true}
-				placeholder={placeholder}
-				helperText={errorText}
-				error={!!errorText}
-			/>
-
-
-		</div>
+		<FormControlLabel
+			className={classes.root}
+			name={props.name}
+			control={<Field name={props.name} color="primary" as={Checkbox} />}
+			label={props.label}
+		/>
 	)
 }

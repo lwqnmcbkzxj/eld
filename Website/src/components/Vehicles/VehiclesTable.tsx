@@ -1,4 +1,4 @@
-import React, { FC } from 'react'
+import React, { FC, useState } from 'react'
 import { Paper, TableHead, TableRow, TableBody, withStyles, Toolbar, Button } from '@material-ui/core';
 import StatusLabel from '../Common/StatusLabel/StatusLabel'
 import { StyledTableCell, CustomTable, CustomPaginator, CustomTableHeaderCells } from '../Common/StyledTableComponents/StyledTableComponents'
@@ -7,7 +7,7 @@ import { StyledSearchInput } from '../Common/StyledTableComponents/StyledInputs'
 import { StyledDefaultButtonSmall } from '../Common/StyledTableComponents/StyledButtons'
 
 import { VehicleType } from '../../types/vehicles'
-
+import VehicleModal from '../Common/Modals/PagesModals/VehiclesModal'
 import { isContainsSearchText } from '../../utils/isContainsSearchText'
 
 type PropsType = {
@@ -37,11 +37,46 @@ const DriversTable: FC<PropsType> = ({ rows, ...props }) => {
 		{ label: "Notes" },
 		{ label: "Status" },
 	]
+
+
+
+
+
+
+
+	const [vehicleEditModalOpen, setVehicleEditModalOpen] = useState(false)
+	const handleVehicleEditModalClose = () => {
+		setVehicleEditModalOpen(false);
+	};
+
+
+	let currentModalData = {
+		id: 1,
+		truck_number: '012',
+		eld_number: 'Vehicle-012-2B250D69',
+		make: 'Mack',
+		model: 'Anthem',
+		year: '2012',
+		fuel_type: 'Diesel',
+		licence_number: '1586-986-78-562-3',
+		state: 'Illinois',
+		enter_vin_manually: false,
+		vin_number: '3AKJIFJIEF94850IF94',
+	}
+
+	const [currentVehicleData, setCurrentVehicleData] = useState(currentModalData);
+
+	const [vehicleAddModalOpen, setVehicleAddModalOpen] = useState(false)
+	const handleVehicleAddModalClose = () => {
+		setVehicleAddModalOpen(false);
+	};
+
+
 	return (
 		<Paper style={{ boxShadow: 'none' }}>
 			<Toolbar style={{ width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'space-between', boxSizing: 'border-box' }}>
 				<StyledSearchInput searchText={searchText} setSearchText={setSearchText} />
-				<StyledDefaultButtonSmall variant="outlined" onClick={()=>{ console.log('OPENING ADD VEHICLE MODAL') }}>Add vehicle</StyledDefaultButtonSmall>
+				<StyledDefaultButtonSmall variant="outlined" onClick={()=>{ setVehicleAddModalOpen(true) }}>Add vehicle</StyledDefaultButtonSmall>
 			</Toolbar>
 
 			<CustomTable subtractHeight={52}>
@@ -54,7 +89,15 @@ const DriversTable: FC<PropsType> = ({ rows, ...props }) => {
 					{rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map(row => (
 						isContainsSearchText(searchText, row, ['make', 'model', 'license', 'eldNumber']) &&	
 
-						<TableRow key={row.id}>
+						<TableRow
+							key={row.id}
+							hover
+							onClick={() => {
+								setVehicleEditModalOpen(true);
+								// setCurrentVehicleData(row)
+							}}
+						
+						>
 							<StyledTableCell>{row.truckNumber}</StyledTableCell>
 							<StyledTableCell>{row.make}</StyledTableCell>
 							<StyledTableCell>{row.model}</StyledTableCell>
@@ -75,6 +118,25 @@ const DriversTable: FC<PropsType> = ({ rows, ...props }) => {
 				handleChangePage={handleChangePage}
 				handleChangeRowsPerPage={handleChangeRowsPerPage}
 			/>
+
+
+			{/* Edit modal */}
+			{vehicleEditModalOpen &&
+				<VehicleModal
+					open={vehicleEditModalOpen}
+					handleClose={handleVehicleEditModalClose}
+					initialValues={currentVehicleData}
+					titleText={"Edit Vehicle"}
+				/>}
+
+			{/* Add modal */}
+			{vehicleAddModalOpen &&
+				<VehicleModal
+					open={vehicleAddModalOpen}
+					handleClose={handleVehicleAddModalClose}
+					initialValues={{}}
+					titleText={"Add Vehicle"}
+				/>}
 		</Paper>
 	)
 }

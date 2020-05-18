@@ -47,6 +47,7 @@ const EldsTable: FC<PropsType> = ({ rows, ...props }) => {
 		{ label: "ELD No." },
 		{ label: "Notes" },
 	]
+
 	return (
 		<Paper style={{ boxShadow: 'none' }}>
 			<Toolbar style={{ width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'space-between', boxSizing: 'border-box' }}>

@@ -9,9 +9,8 @@ import { colors } from '../../../../assets/scss/Colors/Colors';
 import { Formik, Field, Form, FieldArray } from 'formik';
 import { CustomField } from '../../FormComponents/FormComponents';
 
-import { StyledFilledInputSmall } from '../../../Common/StyledTableComponents/StyledInputs'
-
-import ChangePasswordModal from './ChangePasswordModal'
+import { StyledFilledInputSmall } from '../../StyledTableComponents/StyledInputs'
+import ChangePasswordModal from '../ProfileModals/ChangePasswordModal'
 import { StyledDefaultButtonSmall, StyledConfirmButtonSmall } from '../../StyledTableComponents/StyledButtons';
 
 import { CustomDialogActions } from '../ModalsComponents'
@@ -19,7 +18,13 @@ import { CustomDialogActions } from '../ModalsComponents'
 import * as yup from "yup";
 
 
-const EditProfileModal = ({ open, handleClose, ...props }: ModalType) => {
+
+type CompanyModalType = {
+	initialValues: any
+	titleText: string
+}
+
+const EditCompanyModal = ({ open, handleClose, titleText, initialValues, ...props }: ModalType & CompanyModalType) => {
 	const classes = useStyles();
 
 	const [changePasswordModalOpen, setChangePasswordModalOpen] = useState(false)
@@ -27,7 +32,7 @@ const EditProfileModal = ({ open, handleClose, ...props }: ModalType) => {
 		setChangePasswordModalOpen(false);
 	};
 
-	const submitProfileEdit = (data: any, setSubmitting: any) => {
+	const handleSubmit = (data: any, setSubmitting: any) => {
 		setSubmitting(true);
 		// make async call
 		console.log("submit: ", data);
@@ -36,19 +41,35 @@ const EditProfileModal = ({ open, handleClose, ...props }: ModalType) => {
 	}
 
 	const validationSchema = yup.object({
-		first_name: yup.string().required(),
-		last_name: yup.string().required(),
-		email: yup.string().required().email('Email must be valid'),
-		phone: yup.string().required(),
+		company_name: yup.string().required(),
+
+		company_address: yup.string().required(),
+		subscribe_type: yup.string().required(),
+		company_timezone: yup.string().required(),
 		contact_name: yup.string().required(),
 		contact_phone: yup.string().required(),
+		email: yup.string().required().email('E-mail must be valid'),
 		usdot: yup.string().required(),
-		company_timezone: yup.string().required(),
-		company_name: yup.string().required(),
-		company_adress: yup.string().required(),
-		terminal_adresses: yup.array().of(yup.string().required('Terminal adress is required'))
 
+		terminal_adresses: yup.array().of(yup.string().required('Terminal adress is required'))
 	});
+
+	if (!initialValues.id) {
+		initialValues = {
+			company_name: '',
+
+			company_address: '',
+			subscribe_type: '',
+			company_timezone: '',
+			contact_name: '',
+			contact_phone: '',
+			email: '',
+			usdot: '',
+
+			terminal_adresses: ['']
+		}
+	}
+
 
 	return (
 		<React.Fragment>
@@ -57,69 +78,64 @@ const EditProfileModal = ({ open, handleClose, ...props }: ModalType) => {
 				maxWidth={'md'}
 				open={open}
 				onClose={handleClose}
-				aria-labelledby="edit-profile-dialog-title"
+				aria-labelledby="edit-company-dialog-title"
 				className={classes.root}
 			>
-				<DialogTitle id="edit-profile-dialog-title" className={classes.dialog__header}>Edit Profile <span>Pac man</span></DialogTitle>
+
+
+				<DialogTitle id="edit-company-dialog-title" className={classes.dialog__header}>
+					<div style={{ display: 'flex', alignItems: 'center', justifyContent: "flex-start" }}>
+						<div style={{ marginRight: '15px' }}>{titleText} <span>{initialValues.company_name}</span></div>
+					</div>
+
+					{initialValues.id &&
+						<StyledDefaultButtonSmall
+							onClick={() => {
+								console.log('DEACTIVATING ' + initialValues.id);
+								handleClose()
+							}}
+						>Deactivate</StyledDefaultButtonSmall>}
+				</DialogTitle>
 
 				<Formik
 					validateOnChange={true}
-					initialValues={{
-						first_name: "Pac",
-						last_name: "Man",
-						email: 'malkovich@mail.ru',
-						phone: '+1 (302) 894-6596',
-						contact_name: 'Marry',
-						contact_phone: '+1 (302) 894-6596',
-						usdot: '15864647',
-						company_timezone: 'Pacific',
-						company_name: 'CARACAS TRANSPORTATION INC',
-						company_adress: '2400 Hassel Road, #400 Hoffman Estates, IL 60169',
-						terminal_adresses: ['2400 Hassel Road, #400 Hoffman Estates, IL 60169', '2400 Hassel Road, #400 Hoffman Estates, IL 60169']
-					}}
+					initialValues={initialValues}
 					validationSchema={validationSchema}
 					validate={values => {
 						const errors: Record<string, string> = {};
 						return errors;
 					}}
 					onSubmit={(data, { setSubmitting }) => {
-						submitProfileEdit(data, setSubmitting)
+						handleSubmit(data, setSubmitting)
 					}}
 				>
 
-					{({ values, errors, isSubmitting }) => (
+					{({ values, isSubmitting }) => (
 						<Form>
 							<DialogContent className={classes.dialog__content}>
 								<div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gridGap: '64px' }}>
 									<div>
-										<div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gridGap: '32px' }}>
+										<CustomField name={'company_name'} label={'Company Name'} />
+										<CustomField name={'company_address'} label={'Company Address'} />
 
-
-											<CustomField name={'first_name'} label={'First Name'} />
-											<CustomField name={'last_name'} label={'Last Name'} />
-										</div>
 										<div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gridGap: '32px' }}>
-											<CustomField name={'email'} label={'E-mail'} />
-											<CustomField name={'phone'} label={'Phone No.'} />
+											<CustomField name={'subscribe_type'} label={'Subscribe Type'} />
+											<CustomField name={'company_timezone'} label={'Company Timezone'} />
 										</div>
 										<div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gridGap: '32px' }}>
 											<CustomField name={'contact_name'} label={'Contact Name'} />
 											<CustomField name={'contact_phone'} label={'Contact Phone No.'} />
 										</div>
 										<div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gridGap: '32px' }}>
+											<CustomField name={'email'} label={'E-mail'} />
 											<CustomField name={'usdot'} label={'USDOT'} />
-											<CustomField name={'company_timezone'} label={'Company Timezone'} />
 										</div>
-
-										<CustomField name={'company_name'} label={'Company Name'} />
 									</div>
 
 									<div>
-										<CustomField name={'company_adress'} label={'Company Address'} />
-
 										<FieldArray name="terminal_adresses" render={arrayHelpers => (
 											<div>
-												{values.terminal_adresses.map((address, counter) => (
+												{values.terminal_adresses.map((address: any, counter: any) => (
 													<CustomField
 														key={counter}
 														name={`terminal_adresses.${counter}`}
@@ -139,19 +155,19 @@ const EditProfileModal = ({ open, handleClose, ...props }: ModalType) => {
 
 							</DialogContent>
 
-							<DialogActions className={classes.dialog__actions} style={{display: 'grid'}}>
+							<DialogActions className={classes.dialog__actions} style={{ display: 'grid' }}>
 								<StyledDefaultButtonSmall
 									onClick={() => { setChangePasswordModalOpen(true) }}
 									style={{ width: '200px' }}
 								>Change password
 								</StyledDefaultButtonSmall>
 
-														
+
 								<CustomDialogActions
 									isSubmitting={isSubmitting}
 									handleClose={handleClose}
 									submitText={"Save"}
-														
+
 									style={{ padding: 0 }}
 								/>
 							</DialogActions>
@@ -165,4 +181,4 @@ const EditProfileModal = ({ open, handleClose, ...props }: ModalType) => {
 		</React.Fragment>
 	);
 }
-export default EditProfileModal
+export default EditCompanyModal

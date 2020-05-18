@@ -1,6 +1,6 @@
 import React, { FC, useState } from 'react'
 import { makeStyles, withStyles } from '@material-ui/core'
-import { FormControl, FilledInput, InputAdornment, TextField } from '@material-ui/core'
+import { FormControl, FilledInput, InputAdornment, TextField, Checkbox, FormControlLabel } from '@material-ui/core'
 import { colors } from '../../../assets/scss/Colors/Colors'
 
 import searchIcon from '../../../assets/img/pctg_search.svg'
@@ -15,7 +15,7 @@ export const StyledFilledInput = withStyles((theme) => ({
 			fontSize: '14px',
 			lineHeight: '21px',
 			color: colors.primary_text_color,
-			height: '40px',
+			height: '44px',
 			padding: '0px',
 
 			"&.MuiInput-multiline": {
@@ -43,16 +43,23 @@ export const StyledFilledInput = withStyles((theme) => ({
 			},
 			"& input": {
 				padding: '0 12px',
-				height: '40px'
+				height: '44px'
 			},
 
 			"&::-webkit-input-placeholder": {
 				color: colors.placholder_text_color
 			},
 			"& .MuiInputAdornment-filled": {
-				margin: '0!important'
+				margin: '0!important',
+				marginLeft: '8px!important'
 			},
 		},
+		"& .MuiFormHelperText-root": {
+			textAlign: 'right',
+			"&.Mui-error": {
+				textAlign: 'left'
+			}
+		}
 
 	},
 }))(TextField);
