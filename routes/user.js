@@ -9,9 +9,13 @@ const uploadSignatureRouter = require('./user/upload-signature');
 const getSignatureRouter = require('./user/get-signature');
 const getLastSignaturesRouter = require('./user/get-last-signatures');
 const editRouter = require('./user/edit');
+const activateRouter = require('./user/activate');
+const deActivateRouter = require('./user/deactivate');
 const changePasswordRouter = require('./user/change-password');
 
 router.use('/info', infoRouter);
+router.use('/activate', activateRouter);
+router.use('/deactivate', deActivateRouter);
 router.use('/today-vehicles', vehiclesRouter);
 router.use('/upload-signature', uploadSignatureRouter);
 router.use('/get-signature', getSignatureRouter);
