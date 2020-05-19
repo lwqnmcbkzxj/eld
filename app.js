@@ -35,7 +35,7 @@ app.use('/logs', logsRouter);
 app.use('/signature', signatureRouter);
 // app.use('/session', sessionRouter);
 
-const port = 3000;
+const port = 3021;
 app.listen(port, function() {
   console.log('Listening to port ' + port + ' ....');
   // console.log(getCurDt());
