@@ -22,6 +22,7 @@ const recordRouter = require('./routes/record');
 const logsRouter = require('./routes/logs');
 const signatureRouter = require('./routes/signature');
 const timezoneRouter = require('./routes/timezone');
+const stateRouter = require('./routes/state');
 // const sessionRouter = require('./routes/session');
 
 app.use('/vehicle', vehiclesRoute);
@@ -35,6 +36,7 @@ app.use('/sdocument', sdocumentRouter);
 app.use('/logs', logsRouter);
 app.use('/signature', signatureRouter);
 app.use('/timezone', timezoneRouter);
+app.use('/state', stateRouter);
 // app.use('/session', sessionRouter);
 
 const port = 3021;
