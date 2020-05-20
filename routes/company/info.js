@@ -20,7 +20,7 @@ router.get('/:company_id', async (req, res) => {
     let rs = db[0];
     db = null;
     try {
-        db = await mQuery(`select company_terminal_address from company_terminal where company_id = ?`, [ company_id ]);
+        db = await mQuery(`select company_address_text from company_address where company_id = ?`, [ company_id ]);
     } catch (err) {
         return res.status(500).send(makeResponse(3, err));
     }

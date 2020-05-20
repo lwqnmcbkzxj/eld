@@ -48,7 +48,7 @@ router.post('/', multer().none(), async (req, res) => {
     Promise.all(vars.terminal_addresses.map(async terminal_address => {
         try {
             const params = [ company_id, terminal_address ];
-            db = await mQuery(`insert into company_terminal (company_id, company_terminal_address) values (?, ?)`, params);
+            db = await mQuery(`insert into company_address (company_id, company_address_text) values (?, ?)`, params);
             // terminal_ids_ok.push(db.insertId);
             return { company_terminal_address: terminal_address, company_terminal_id: db.insertId };
         } catch (err) {

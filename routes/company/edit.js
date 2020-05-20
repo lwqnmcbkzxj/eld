@@ -89,7 +89,7 @@ router.put('/', multer().none(), async (req, res) => {
     db = null;
     // hard delete all addresses
     try {
-        db = await mQuery(`delete from company_terminal where company_id = ?`, [ vars.company_id ]);
+        db = await mQuery(`delete from company_address where company_id = ?`, [ vars.company_id ]);
     } catch (err) {
         return res.status(500).send(makeResponse(4, err));
     }
@@ -99,7 +99,7 @@ router.put('/', multer().none(), async (req, res) => {
     Promise.all(vars.terminal_addresses.map(async terminal_address => {
         try {
             const params = [ vars.company_id, terminal_address ];
-            db = await mQuery(`insert into company_terminal (company_id, company_terminal_address) values (?, ?)`, params);
+            db = await mQuery(`insert into company_address (company_id, company_address_text) values (?, ?)`, params);
             // terminal_ids_ok.push(db.insertId);
             return { company_terminal_address: terminal_address, company_terminal_id: db.insertId };
         } catch (err) {

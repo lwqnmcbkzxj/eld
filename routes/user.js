@@ -11,9 +11,11 @@ const getLastSignaturesRouter = require('./user/get-last-signatures');
 const editRouter = require('./user/edit');
 const activateRouter = require('./user/activate');
 const deActivateRouter = require('./user/deactivate');
+const addRouter = require('./user/add');
 const changePasswordRouter = require('./user/change-password');
 
 router.use('/info', infoRouter);
+router.use('/add', addRouter);
 router.use('/activate', activateRouter);
 router.use('/deactivate', deActivateRouter);
 router.use('/today-vehicles', vehiclesRouter);
