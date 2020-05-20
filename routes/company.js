@@ -13,12 +13,14 @@ const editRouter = require('./company/edit');
 const addRouter = require('./company/add');
 const driversRouter = require('./company/drivers');
 const terminalsRouter = require('./company/terminals');
+const vehiclesRouter = require('./company/vehicles');
 
 router.use('/info', infoRouter);
 router.use('/add', addRouter);
 router.use('/edit', editRouter);
 router.use('/drivers', driversRouter);
 router.use('/terminals', terminalsRouter);
+router.use('/vehicles', vehiclesRouter);
 
 
 module.exports = router;
