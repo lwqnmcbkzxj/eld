@@ -139,3 +139,20 @@ function makeResponse(status, obj) {
     return {status: status, result: obj};
 }
 module.exports.makeResponse = makeResponse;
+
+function makeUpdateString(fields, values) {
+    let params = [], updates = [];
+    for (let i = 0; i < fields.length; i++) {
+        const field = fields[i];
+        const value = values[i];
+        if (value) {
+            params.push(value);
+            updates.push(field + " = ?");
+        }
+    }
+    return {
+        params: params,
+        update: updates.join(", ")
+    };
+}
+module.exports.makeUpdateString = makeUpdateString;
