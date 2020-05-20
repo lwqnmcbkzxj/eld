@@ -3,7 +3,7 @@ const setTZ = require('set-tz');
 setTZ('UTC');
 global.app_root = path.resolve(__dirname);
 
-const { initMysqlConnection, getCurDt } = require('./utils');
+const { initMysqlConnection } = require('./utils');
 
 let express = require('express');
 let app = express();
@@ -21,6 +21,7 @@ const userRouter = require('./routes/user');
 const recordRouter = require('./routes/record');
 const logsRouter = require('./routes/logs');
 const signatureRouter = require('./routes/signature');
+const timezoneRouter = require('./routes/timezone');
 // const sessionRouter = require('./routes/session');
 
 app.use('/vehicle', vehiclesRoute);
@@ -33,6 +34,7 @@ app.use('/record', recordRouter);
 app.use('/sdocument', sdocumentRouter);
 app.use('/logs', logsRouter);
 app.use('/signature', signatureRouter);
+app.use('/timezone', timezoneRouter);
 // app.use('/session', sessionRouter);
 
 const port = 3021;
