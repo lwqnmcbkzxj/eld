@@ -4,7 +4,7 @@ const md5 = require('md5');
 const { mQuery, makeResponse } = require('../../utils');
 const body_parser = require('body-parser').urlencoded({ extended: false });
 
-router.put('/', body_parser, async (req, res) => {
+router.patch('/', body_parser, async (req, res) => {
     const req_user_id = req.auth_info.req_user_id;
     let vars = {}, db = null;
     try {
