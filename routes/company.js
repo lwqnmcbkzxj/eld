@@ -11,10 +11,12 @@ router.use('/', checkAuth);
 const infoRouter = require('./company/info');
 const editRouter = require('./company/edit');
 const addRouter = require('./company/add');
+const driversRouter = require('./company/drivers');
 
 router.use('/info', infoRouter);
 router.use('/add', addRouter);
 router.use('/edit', editRouter);
+router.use('/drivers', driversRouter);
 
 
 module.exports = router;
