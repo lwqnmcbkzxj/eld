@@ -24,6 +24,7 @@ import Login from './components/Login/Login'
 const App = (props: any) => {
 	const dispatch = useDispatch()
 	const logged = useSelector<AppStateType, boolean>(state => state.user.logged)
+	const userInfo = useSelector<AppStateType, UserType>(state => state.user.userInfo)
 	let pathName = props.location.pathname
 
 	useEffect(() => {
@@ -36,25 +37,38 @@ const App = (props: any) => {
 			<Login />
 		</>
 	}
-		
 
-	if (pathName === "/")
-		return <Redirect to="/units" />
+
+	if (pathName === "/") {
+		if (userInfo.role === 0) {
+			return <Redirect to="/units" />
+		} else if (userInfo.role === 1) {
+			return <Redirect to="/dashboard" />
+		}
+	}
+		
 	return (
 		<div className="app-wrapper">
 			<CustomHelmet />
 			<HeaderContainer />
 
 			<div className='app-container'>
-			<MenuContainer />
+				<MenuContainer />
 
 				<div className="app-content">
 					<Switch>
-						<Route path="/drivers" render={()=> <DriversContainer /> } />
-						<Route path="/elds" render={()=> <EldsContainer /> } />
-						<Route path="/logs" render={()=> <LogsContainer /> } />
-						<Route path="/units" render={()=> <UnitsContainer /> } />
-						<Route path="/vehicles" render={()=> <VehiclesContainer /> } />
+						{userInfo.role === 0 ?
+							<>
+								<Route path="/drivers" render={() => <DriversContainer />} />
+								<Route path="/elds" render={() => <EldsContainer />} />
+								<Route path="/logs" render={() => <LogsContainer />} />
+								<Route path="/units" render={() => <UnitsContainer />} />
+								<Route path="/vehicles" render={() => <VehiclesContainer />} />
+							</> : <>
+								<Route path="/companies" render={() => <CompaniesContainer />} />
+								<Route path="/dashboard" render={() => <DashboardContainer />} />
+							</>}
+
 						<Route component={NotFound} />
 
 					</Switch>
