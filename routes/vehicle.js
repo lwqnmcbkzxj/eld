@@ -11,6 +11,7 @@ const getInfoVehicle = require('./vehicle/info');
 const addVehicle = require('./vehicle/add');
 const listVehicle = require('./vehicle/list');
 const editVehicle = require('./vehicle/edit');
+const fuelTypesVehicle = require('./vehicle/fuel-types');
 
 router.use('/get', getRouter);
 router.use('/choose', chooseVehicle);
@@ -18,6 +19,7 @@ router.use('/info', getInfoVehicle);
 router.use('/add', addVehicle);
 router.use('/list', listVehicle);
 router.use('/edit', editVehicle);
+router.use('/fuel-types', fuelTypesVehicle);
 
 
 module.exports = router;
