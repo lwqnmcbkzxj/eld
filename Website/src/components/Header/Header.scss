@@ -16,10 +16,6 @@
 	padding: 0 22px;
 	position: fixed;
     width: 100%;
-	& > div {
-		padding: 10px 0;
-	}
-
 	&__logo {
 		padding: 0!important;
 	}
@@ -29,6 +25,10 @@
 		display: flex;
 		align-items: center;
 		justify-content: center;
+		&.admin {
+			align-self: end;
+			margin-bottom: -2px;
+		}
 	}
 
 	&__active_link {

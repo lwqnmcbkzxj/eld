@@ -1,0 +1,53 @@
+@import '../../assets/scss/Colors/Colors.scss';
+
+
+.dashboard-page {
+	padding-top: 24px;
+
+	&_block {
+		background: $bg_white_color;
+		box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.1);
+		border-radius: 4px;
+		box-sizing: border-box;
+		max-width: 752px;
+
+		display: flex;
+		margin: 24px auto;
+		padding: 24px 0;
+		&:first-child {
+			margin-top: 0px;
+		}
+
+		& .block {
+			&__holder {
+				padding: 0 32px;
+				box-sizing: border-box;
+				width: 100%;
+				&:nth-child(2) {
+					border-left: 1px solid $light_line_color;
+				}
+			}
+			&__header {
+				font-family: Heebo Bold;
+				text-transform: uppercase;
+
+				& .header {
+					&__title {
+						font-size: 20px;
+						line-height: 29px;
+						color: $placholder_text_color;
+						letter-spacing: 1px;
+						margin-bottom: 4px;
+					}
+
+					&__quantity {
+						font-size: 32px;
+						line-height: 48px;
+						letter-spacing: 1.5px;
+						color: $primary_text_color;
+					}
+				}
+			}
+		}
+	}
+}

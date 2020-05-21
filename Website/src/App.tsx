@@ -6,7 +6,7 @@ import { withRouter } from 'react-router'
 import { useDispatch, useSelector } from 'react-redux'
 import { AppStateType } from './types/types'
 
-import { getPageName } from './redux/app-reducer' 
+import { getPageName } from './redux/app-reducer'
 
 import MenuContainer from './components/Menu/MenuContainer'
 import HeaderContainer from './components/Header/HeaderContainer'
@@ -16,10 +16,16 @@ import EldsContainer from './components/Elds/EldsContainer'
 import LogsContainer from './components/Logs/LogsContainer'
 import UnitsContainer from './components/Units/UnitsContainer'
 import VehiclesContainer from './components/Vehicles/VehiclesContainer'
+
+import CompaniesContainer from './components/Companies/CompaniesContainer'
+import DashboardContainer from './components/Dashboard/DashboardContainer'
+
+
 import NotFound from './components/NotFound/NotFound'
 
 import CustomHelmet from './components/Common/CustomHelmet/CustomHelmet'
 import Login from './components/Login/Login'
+import { UserType } from './types/user'
 
 const App = (props: any) => {
 	const dispatch = useDispatch()

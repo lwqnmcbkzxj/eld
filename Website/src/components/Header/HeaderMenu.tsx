@@ -1,9 +1,12 @@
 import React, { useState } from 'react';
+import { useDispatch } from 'react-redux'
 import { Menu, MenuItem, makeStyles, Button } from '@material-ui/core';
 import { colors } from '../../assets/scss/Colors/Colors';
 
 import ProfileSubscriptionModal from '../Common/Modals/ProfileModals/ProfileSubscriptionModal'
 import EditProfileModal from '../Common/Modals/ProfileModals/EditProfileModal'
+
+import { logout } from '../../redux/user-reducer'
 type HeaderMenuProps = {
 	anchorEl: null | HTMLElement
 	handleClose: () => void
@@ -23,7 +26,7 @@ const useStyles = makeStyles(theme => ({
 
 export const HeaderMenu: React.FC<HeaderMenuProps> = ({ anchorEl, handleClose, ...props }) => {
 	const classes = useStyles()
-
+	const dispatch = useDispatch()
 	// const [subscriptionModalOpen, setSubscriptionModalOpen] = useState(false)
 	// const handleSubscriptionModalClose = () => {
 	// 	setSubscriptionModalOpen(false);
@@ -72,7 +75,7 @@ export const HeaderMenu: React.FC<HeaderMenuProps> = ({ anchorEl, handleClose, .
 				<MenuItem
 					className={classes.menu__item}
 					onClick={() => {
-						// logout()
+						dispatch(logout())
 						handleClose()
 					}}>
 					Log out

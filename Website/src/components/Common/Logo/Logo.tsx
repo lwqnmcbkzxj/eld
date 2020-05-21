@@ -4,7 +4,9 @@ import { Link } from 'react-router-dom'
 
 const Logo: FC<{height?: number}> = ({ height = 48, ...props }) => {
 	return (
-		<Link to="/" style={{ height: height }} ><img src={logo} alt="logo"/></Link>
+		<Link to="/"  >
+			<img src={logo} alt="logo" style={{ height: height }} />
+		</Link>
 	)
 }
 
