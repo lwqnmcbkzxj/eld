@@ -156,3 +156,53 @@ function makeUpdateString(fields, values) {
     };
 }
 module.exports.makeUpdateString = makeUpdateString;
+
+async function getVehicleMakeId(vehicle_make_name) {
+    if (!vehicle_make_name) return makeResponse(-3, 'Empty name');
+    let db;
+    try {
+        db = await mQuery(`select vehicle_make_id from vehicle_make where vehicle_make_name = ?`, [ vehicle_make_name ]);
+    } catch (err) {
+        return makeResponse(-1, err);
+    }
+
+    if (db.length <= 0) {
+        // create new make in DB
+        db = null;
+        try {
+            db = await mQuery(`insert into vehicle_make (vehicle_make_name) values (?)`, [ vehicle_make_name ]);
+        } catch (err) {
+            return makeResponse(-2, err);
+        }
+        return makeResponse(0, db.insertId );
+    } else {
+        // found make_id
+        return makeResponse(0, db[0].vehicle_make_id );
+    }
+}
+module.exports.getVehicleMakeId = getVehicleMakeId;
+
+async function getVehicleModelId(vehicle_model_name) {
+    if (!vehicle_model_name) return makeResponse(-3, 'Empty name');
+    let db;
+    try {
+        db = await mQuery(`select vehicle_model_id from vehicle_model where vehicle_model_name = ?`, [ vehicle_model_name ]);
+    } catch (err) {
+        return makeResponse(-1, err);
+    }
+
+    if (db.length <= 0) {
+        // create new make in DB
+        db = null;
+        try {
+            db = await mQuery(`insert into vehicle_model (vehicle_model_name) values (?)`, [ vehicle_model_name ]);
+        } catch (err) {
+            return makeResponse(-2, err);
+        }
+        return makeResponse(0, db.insertId );
+    } else {
+        // found make_id
+        return makeResponse(0, db[0].vehicle_model_id );
+    }
+}
+module.exports.getVehicleModelId = getVehicleModelId;
