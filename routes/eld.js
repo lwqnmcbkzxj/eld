@@ -7,10 +7,10 @@ router.use('/', body_parser);
 
 // const getRouter = require('./eld/get');
 const addRouter = require('./eld/add');
-// const editRouter = require('./eld/edit');
+const editRouter = require('./eld/edit');
 
 // router.use('/get', getRouter);
 router.use('/add', addRouter);
-// router.use('/edit', editRouter);
+router.use('/edit', editRouter);
 
 module.exports = router;

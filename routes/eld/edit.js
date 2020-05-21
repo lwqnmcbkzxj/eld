@@ -1,12 +1,12 @@
 const router = require('express').Router();
 const Joi = require('@hapi/joi');
-const { mQuery, makeResponse } = require('../../utils');
+const { mQuery, makeResponse, makeUpdateString } = require('../../utils');
 
-router.post('/', async (req, res) => {
+router.patch('/', async (req, res) => {
     let vars, db = null;
     try {
         const schema = Joi.object({
-            company_id: Joi.number().integer().min(1).required(),
+            eld_id: Joi.number().integer().required(),
             serial_number: Joi.string().required(),
             note: Joi.string().required()
         });
@@ -15,14 +15,16 @@ router.post('/', async (req, res) => {
         return res.status(400).send(makeResponse(1, err));
     }
 
+    const { params, update } = makeUpdateString([ 'eld_serial_number', 'eld_note' ], [ vars.serial_number, vars.note ]);
+    params.push(vars.eld_id);
+
     try {
-        const params = [ vars.company_id, vars.serial_number, vars.note ];
-        db = await mQuery(`insert into eld (company_id, eld_serial_number, eld_note) values (?, ?, ?)`, params);
+        db = await mQuery(`update eld set ${update} where eld_id = ?`, params);
     } catch (err) {
         return res.status(400).send(makeResponse(2, err));
     }
 
-    return res.status(201).send(makeResponse(0, { eld_id: db.insertId }));
+    return res.status(200).send(makeResponse(0, { changedRows: db.changedRows }));
 });
 
 module.exports = router;
