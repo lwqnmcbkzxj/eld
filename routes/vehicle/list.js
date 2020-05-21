@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { makeResponse, mQuery, companyExists } = require('../../utils.js');
+const { makeResponse, mQuery } = require('../../utils.js');
 const Joi = require('@hapi/joi');
 
 router.get('/:company_id', async function(req, res) {
