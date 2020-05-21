@@ -9,11 +9,13 @@ const getRouter = require('./vehicle/get');
 const chooseVehicle = require('./vehicle/choose');
 const getInfoVehicle = require('./vehicle/info');
 const addVehicle = require('./vehicle/add');
+const listVehicle = require('./vehicle/list');
 
 router.use('/get', getRouter);
 router.use('/choose', chooseVehicle);
 router.use('/info', getInfoVehicle);
 router.use('/add', addVehicle);
+router.use('/list', listVehicle);
 
 
 module.exports = router;
