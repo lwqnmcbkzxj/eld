@@ -1,13 +1,13 @@
 const router = require('express').Router();
 const Joi = require('@hapi/joi');
-const { mQuery, makeResponse, getVehicleMakeId, getVehicleModelId } = require('../../utils');
+const { mQuery, makeResponse, getVehicleMakeId, getVehicleModelId, makeUpdateString } = require('../../utils');
 
-router.post('/', async (req, res) => {
+router.patch('/', async (req, res) => {
     let vars, db = null;
     try {
         const schema = Joi.object({
+            vehicle_id: Joi.number().integer().min(1).required(),
             truck_number: Joi.string().required(),
-            company_id: Joi.number().integer().min(1).required(),
             eld_id: Joi.number().integer().min(1),
             make: Joi.string(),
             model: Joi.string(),
@@ -27,28 +27,30 @@ router.post('/', async (req, res) => {
     const make_obj = await getVehicleMakeId(vars.make);
     const make_status = make_obj.status;
     const make_id = (make_status === 0) ? make_obj.result : null;
-    // if (make_status !== 0) return res.status(500).send(makeResponse(2, make_id));
 
     const model_obj = await getVehicleModelId(vars.model);
     const model_status = model_obj.status;
     const model_id = (model_status === 0) ? model_obj.result : null;
-    // if (model_status !== 0) return res.status(500).send(makeResponse(3, model_id));
 
     const vehicle_serial_number = '';
+
+    const fields = [ 'vehicle_make_id', 'vehicle_model_id', 'vehicle_sn', 'vehicle_issue_year', 'vehicle_vin',
+        'vehicle_external_id', 'vehicle_fuel_type', 'vehicle_licence_plate', 'issuing_state_id', 'vehicle_notes',
+        'vehicle_enter_vin_manually_flag', 'eld_id'
+    ];
+    const pars = [ make_id, model_id, vehicle_serial_number, vars.year, vars.vin, vars.truck_number, vars.fuel_type,
+        vars.licence_plate, vars.state_id, vars.notes, vars.enter_vin_manually_flag, vars.eld_id
+    ];
+    const { params, update } = makeUpdateString(fields, pars);
+    params.push(vars.vehicle_id);
+
     try {
-        const params = [ vars.company_id, make_id, model_id, vehicle_serial_number, vars.year, vars.vin, vars.truck_number,
-            vars.fuel_type, vars.licence_plate, vars.state_id, vars.notes, vars.enter_vin_manually_flag, vars.eld_id
-        ];
-        const question_marks = params.map(() => { return '?'; }).join(", ");
-        db = await mQuery(`insert into vehicle (company_id, vehicle_make_id, vehicle_model_id, vehicle_sn, 
-             vehicle_issue_year, vehicle_vin, vehicle_external_id, vehicle_fuel_type, vehicle_licence_plate, 
-             issuing_state_id, vehicle_notes, vehicle_enter_vin_manually_flag, eld_id) 
-             values (${question_marks})`, params);
+        db = await mQuery(`update vehicle set ${update} where vehicle_id = ?`, params);
     } catch (err) {
         return res.status(500).send(makeResponse(4, err));
     }
 
-    return res.status(201).send(makeResponse(0, { vehicle_id: db.insertId }));
+    return res.status(201).send(makeResponse(0, { changedRows: db.changedRows }));
 });
 
 module.exports = router;
