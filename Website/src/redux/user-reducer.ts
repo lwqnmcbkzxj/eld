@@ -2,6 +2,7 @@ import { AppStateType } from '../types/types'
 import { ThunkAction } from 'redux-thunk'
 import { UserType } from '../types/user'
 import Cookies from "js-cookie";
+import { userAPI } from '../api/api';
 
 const SET_LOGGED = 'user/SET_LOGGED'
 const SET_USER_INFO = 'user/SET_USER_INFO'
@@ -62,6 +63,8 @@ export const setUserInfo = (userInfo: any):SetUserInfoType => {
 
 
 export const login = (login: string, password: string): ThunksType => async (dispatch) => {
+	// let response = userAPI.login(login, password)
+
 	dispatch(setLogged(true))
 	// dispatch(setUserInfo({}))
 	if (login === 'admin') {
