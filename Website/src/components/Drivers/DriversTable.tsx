@@ -31,6 +31,7 @@ const CustomTableCell = withStyles((theme) => ({
 	},
 }))(StyledTableCell);
 
+type Order = 'asc' | 'desc';
 
 const DriversTable: FC<PropsType> = ({ rows, ...props }) => {
 	const [page, setPage] = React.useState(0)
@@ -98,6 +99,15 @@ const DriversTable: FC<PropsType> = ({ rows, ...props }) => {
 		{ label: "Device Version" },
 		{ label: "Status" }
 	]
+	const [order, setOrder] = React.useState<Order>('asc');
+	const [orderBy, setOrderBy] = React.useState(labels[0].label);
+
+	const handleRequestSort = (event: React.MouseEvent<unknown>, property: string) => {
+		const isAsc = orderBy === property && order === 'asc';
+		setOrder(isAsc ? 'desc' : 'asc');
+		setOrderBy(property);
+	};
+
 	return (
 		<Paper style={{ boxShadow: 'none' }}>
 			<Toolbar style={{ width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'space-between', boxSizing: 'border-box' }}>
@@ -108,7 +118,13 @@ const DriversTable: FC<PropsType> = ({ rows, ...props }) => {
 			<CustomTable subtractHeight={52}>
 				<TableHead>
 					<TableRow>
-						<CustomTableHeaderCells Component={CustomTableCell} labels={labels} />
+						<CustomTableHeaderCells
+							Component={CustomTableCell}
+							labels={labels}
+							order={order}
+							orderBy={orderBy}
+							onRequestSort={handleRequestSort}
+						/>
 					</TableRow>
 				</TableHead>
 				<TableBody>

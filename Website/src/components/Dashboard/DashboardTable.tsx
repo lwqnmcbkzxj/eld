@@ -27,7 +27,7 @@ const DashboardTable: FC<PropsType> = ({ rows, ...props }) => {
 				letterSpacing: '0.5px',
 				textTransform: 'uppercase',
 				color: colors.primary_text_color,
-				minWidth: '70px',
+				minWidth: '80px',
 				"& span": {
 					color: colors.placholder_text_color
 				},
@@ -37,7 +37,9 @@ const DashboardTable: FC<PropsType> = ({ rows, ...props }) => {
 					justifyContent: 'space-between',
 					maxWidth: '380px',
 					"& canvas": {
-						height: '25px!important'
+						height: '25px!important',
+						width: '100%',
+						paddingRight: '20px'
 					}
 				}
 			}

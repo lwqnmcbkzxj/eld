@@ -1,5 +1,5 @@
 import React, { FC, useState, useEffect, Children } from 'react'
-import { Paper, Table, TableHead, TableRow, TableCell, TableBody, withStyles, makeStyles, TableContainer, TablePagination, Typography, IconButton, createStyles } from '@material-ui/core';
+import { Paper, Table, TableHead, TableRow, TableCell, TableSortLabel, TableBody, withStyles, makeStyles, TableContainer, TablePagination, Typography, IconButton, createStyles } from '@material-ui/core';
 import { colors } from '../../../assets/scss/Colors/Colors';
 
 import cn from 'classnames'
@@ -30,9 +30,9 @@ export const StyledTableCell = withStyles((theme) => ({
 
 export const CustomTable = ({ subtractHeight = 0, ...props }: any) => {
 	let subtractHeightDef = 122
-	
+
 	return (
-		<TableContainer style={{ maxHeight: `calc(100vh - ${subtractHeightDef + subtractHeight }px)` }}>
+		<TableContainer style={{ maxHeight: `calc(100vh - ${subtractHeightDef + subtractHeight}px)` }}>
 			<Table stickyHeader>
 				{props.children}
 			</Table>
@@ -215,24 +215,43 @@ function TablePaginationActions({ count, page, rowsPerPage, onChangePage, ...pro
 // ** PAGINATOR END ** 
 
 
-
+type Order = 'asc' | 'desc';
 type TableHeaderCellsProps = {
 	labels: Array<{
 		label: string
 		align?: string
 	}>
 	Component?: any
+	onRequestSort?: (event: React.MouseEvent<unknown>, property: string) => void;
+	order?: Order;
+	orderBy?: string;
 }
 export const CustomTableHeaderCells: React.FC<TableHeaderCellsProps> = ({ labels, Component, ...props }) => {
 	if (!Component)
 		Component = StyledTableCell
 
+	const { order, orderBy, onRequestSort = () => {} } = props;
+	const createSortHandler = (property: string) => (event: React.MouseEvent<unknown>) => {
+		onRequestSort(event, property);
+	};
+
 	return (
 		<>
 			{
 				labels.map((label, counter) => (
-					<Component key={counter} align={(label.align === 'right') ? label.align : "left"} >
-						{label.label}
+					<Component
+						key={counter}
+						align={(label.align === 'right') ? label.align : "left"}
+						sortDirection={orderBy === label.label ? order : false}>
+
+						<TableSortLabel
+							active={orderBy === label.label}
+							direction={orderBy === label.label ? order : 'asc'}
+							onClick={createSortHandler(label.label)}
+						>
+							{label.label}
+						</TableSortLabel>
+
 					</Component>
 				))
 			}

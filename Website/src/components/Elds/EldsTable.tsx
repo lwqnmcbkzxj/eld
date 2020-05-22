@@ -15,6 +15,7 @@ import EldsModal from '../Common/Modals/PagesModals/EldsModal'
 type PropsType = {
 	rows: Array<EldType>
 }
+type Order = 'asc' | 'desc';
 
 const EldsTable: FC<PropsType> = ({ rows, ...props }) => {
 	// const [page, setPage] = React.useState(0)
@@ -47,7 +48,14 @@ const EldsTable: FC<PropsType> = ({ rows, ...props }) => {
 		{ label: "ELD No." },
 		{ label: "Notes" },
 	]
+	const [order, setOrder] = React.useState<Order>('asc');
+	const [orderBy, setOrderBy] = React.useState(labels[0].label);
 
+	const handleRequestSort = (event: React.MouseEvent<unknown>, property: string) => {
+		const isAsc = orderBy === property && order === 'asc';
+		setOrder(isAsc ? 'desc' : 'asc');
+		setOrderBy(property);
+	};
 	return (
 		<Paper style={{ boxShadow: 'none' }}>
 			<Toolbar style={{ width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'space-between', boxSizing: 'border-box' }}>
@@ -58,7 +66,12 @@ const EldsTable: FC<PropsType> = ({ rows, ...props }) => {
 			<CustomTable>
 				<TableHead>
 					<TableRow>
-						<CustomTableHeaderCells labels={labels} />
+						<CustomTableHeaderCells							
+							labels={labels}
+							order={order}
+							orderBy={orderBy}
+							onRequestSort={handleRequestSort}
+						/>
 					</TableRow>
 				</TableHead>
 				<TableBody>

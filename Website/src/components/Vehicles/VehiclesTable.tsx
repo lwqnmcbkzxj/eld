@@ -13,7 +13,7 @@ import { isContainsSearchText } from '../../utils/isContainsSearchText'
 type PropsType = {
 	rows: Array<VehicleType>
 }
-
+type Order = 'asc' | 'desc';
 const DriversTable: FC<PropsType> = ({ rows, ...props }) => {
 	const [page, setPage] = React.useState(0)
 	const [rowsPerPage, setRowsPerPage] = React.useState(10)
@@ -38,7 +38,14 @@ const DriversTable: FC<PropsType> = ({ rows, ...props }) => {
 		{ label: "Status" },
 	]
 
+	const [order, setOrder] = React.useState<Order>('asc');
+	const [orderBy, setOrderBy] = React.useState(labels[0].label);
 
+	const handleRequestSort = (event: React.MouseEvent<unknown>, property: string) => {
+		const isAsc = orderBy === property && order === 'asc';
+		setOrder(isAsc ? 'desc' : 'asc');
+		setOrderBy(property);
+	};
 
 
 
@@ -82,7 +89,12 @@ const DriversTable: FC<PropsType> = ({ rows, ...props }) => {
 			<CustomTable subtractHeight={52}>
 				<TableHead>
 					<TableRow>
-						<CustomTableHeaderCells labels={labels} />
+						<CustomTableHeaderCells
+							labels={labels}
+							order={order}
+							orderBy={orderBy}
+							onRequestSort={handleRequestSort}
+						/>
 					</TableRow>
 				</TableHead>
 				<TableBody>

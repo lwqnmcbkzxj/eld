@@ -12,6 +12,7 @@ import EnhancedTableToolbar from './UnitsTableToolbar'
 import { CustomTable, CustomPaginator, StyledTableCell, CustomTableHeaderCells } from '../../Common/StyledTableComponents/StyledTableComponents'
 import { isContainsSearchText } from '../../../utils/isContainsSearchText'
 
+type Order = 'asc' | 'desc';
 const EnhancedTableHead: FC<EnhancedTableHeadProps> = ({ onSelectAllClick, numSelected, rowCount, ...props }) => {
 	let labels = [
 		{ label: 'Name', },
@@ -23,6 +24,14 @@ const EnhancedTableHead: FC<EnhancedTableHeadProps> = ({ onSelectAllClick, numSe
 		{ label: 'Description', },
 		{ label: 'Current SPD', align: 'right' }
 	]
+	const [order, setOrder] = React.useState<Order>('asc');
+	const [orderBy, setOrderBy] = React.useState(labels[0].label);
+
+	const handleRequestSort = (event: React.MouseEvent<unknown>, property: string) => {
+		const isAsc = orderBy === property && order === 'asc';
+		setOrder(isAsc ? 'desc' : 'asc');
+		setOrderBy(property);
+	};
 	return (
 		<TableHead>
 			<TableRow>
@@ -35,7 +44,12 @@ const EnhancedTableHead: FC<EnhancedTableHeadProps> = ({ onSelectAllClick, numSe
 					/>
 				</StyledTableCell>
 
-				<CustomTableHeaderCells labels={labels}/>
+				<CustomTableHeaderCells					
+					labels={labels}
+					order={order}
+					orderBy={orderBy}
+					onRequestSort={handleRequestSort}
+				/>
 			</TableRow>
 		</TableHead>
 	);

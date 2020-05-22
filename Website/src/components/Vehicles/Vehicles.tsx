@@ -11,7 +11,9 @@ const Units: FC<PropsType> = ({ vehicles, ...props }) => {
 
 	return (
 		<div className="page units-page">
-			<VehiclesTable rows={vehicles}/>
+			<VehiclesTable
+				rows={vehicles}
+			/>
 		</div>
 	)
 }
