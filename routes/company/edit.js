@@ -49,8 +49,6 @@ router.patch('/', require('express').json(), async (req, res) => {
     const existing_ids = db.map((item) => {
         return item.company_address_id;
     });
-    console.log("Existing:");
-    console.log(existing_ids);
     db = null;
 
     let updated_addresses = [], added_addresses = [], deleted_addresses = [];
@@ -91,8 +89,6 @@ router.patch('/', require('express').json(), async (req, res) => {
     }
     // delete some addresses
     db = null;
-    console.log("Final:");
-    console.log(final_address_ids);
     for (let i = 0; i < existing_ids.length; i++) {
         const to_delete_id = existing_ids[i];
         const is_found = final_address_ids.find((address_id) => { return address_id === to_delete_id; });
