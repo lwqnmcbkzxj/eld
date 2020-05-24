@@ -1,9 +1,8 @@
 const router = require('express').Router();
 const Joi = require('@hapi/joi');
-const { mQuery, makeResponse } = require('../../utils');
-const multer = require('multer');
+const { mQuery, makeResponse, makeUpdateString } = require('../../utils');
 
-router.put('/', multer().none(), async (req, res) => {
+router.patch('/', require('express').json(), async (req, res) => {
     let vars = {}, db = null;
     try {
         const schema = Joi.object({
@@ -11,110 +10,107 @@ router.put('/', multer().none(), async (req, res) => {
             company_name: Joi.string(),
             company_address: Joi.string(),
             subscribe_type: Joi.string().valid('BASIC', 'ADVANCED', 'PREMIUM'),
-            company_timezone: Joi.string().valid('ALASKAN', 'CENTRAL', 'EASTERN', 'HAWAIIAN', 'PACIFIC'),
+            company_timezone: Joi.number().integer().min(1),
             contact_name: Joi.string(),
             contact_phone: Joi.string(),
             email: Joi.string().email(),
-            usdot: Joi.number(),
-            terminal_addresses: Joi.array().items(Joi.string()).required(),
-            company_status: Joi.string().valid('ACTIVE', 'DELETED')
+            usdot: Joi.number().integer(),
+            terminal_addresses: Joi.array().items({
+                company_address_id: Joi.number().integer().min(1),
+                company_address_text: Joi.string(),
+            }).required()
         });
         vars = await schema.validateAsync(req.body);
     } catch (err) {
         return res.status(400).send(makeResponse(1, err));
     }
 
-    let timezone_id = null;
-    if (!vars.company_timezone.localeCompare('ALASKAN')) timezone_id = 1;
-    else if (!vars.company_timezone.localeCompare('CENTRAL')) timezone_id = 2;
-    else if (!vars.company_timezone.localeCompare('EASTERN')) timezone_id = 3;
-    else if (!vars.company_timezone.localeCompare('HAWAIIAN')) timezone_id = 4;
-    else if (!vars.company_timezone.localeCompare('PACIFIC')) timezone_id = 5;
-    else {
-        return res.status(400).send(makeResponse(3, `Could not identify timezone_id by string constant \'${vars.company_timezone}\'`));
-    }
+    const company_id = vars.company_id;
+    const fields = [ 'company_short_name', 'company_subscribe_type', 'company_main_office_address',
+        'timezone_id', 'company_contact_name', 'company_contact_phone', 'company_email', 'company_usdot'
+    ];
+    const values = [ vars.company_name, vars.subscribe_type, vars.company_address, vars.company_timezone,
+        vars.contact_name, vars.contact_phone, vars.email, vars.usdot
+    ];
+    const { params, update } = makeUpdateString(fields, values);
+    params.push(company_id);
 
     try {
-        let params = [], fields = [];
-        if (vars.company_name) {
-            params.push(vars.company_name);
-            fields.push('company_short_name');
-        }
-        if (vars.subscribe_type) {
-            params.push(vars.subscribe_type);
-            fields.push('company_subscribe_type');
-        }
-        if (vars.company_address) {
-            params.push(vars.company_address);
-            fields.push('company_main_office_address');
-        }
-        if (vars.company_timezone) {
-            params.push(timezone_id);
-            fields.push('timezone_id');
-        }
-        if (vars.contact_name) {
-            params.push(vars.contact_name);
-            fields.push('company_contact_name');
-        }
-        if (vars.contact_phone) {
-            params.push(vars.contact_phone);
-            fields.push('company_contact_phone');
-        }
-        if (vars.email) {
-            params.push(vars.email);
-            fields.push('company_email');
-        }
-        if (vars.usdot) {
-            params.push(vars.usdot);
-            fields.push('company_usdot');
-        }
-        if (vars.company_status) {
-            params.push(vars.company_status);
-            fields.push('company_status');
-        }
-        let str_arr = [];
-        for (let i = 0; i < params.length; i++) {
-            str_arr.push(fields[i] + " = ?");
-        }
-        const query = `update company set ${str_arr.join(',')} where company_id = ?`;
-        params.push(vars.company_id);
-        db = await mQuery(query, params);
+        db = await mQuery(`update company set ${update} where company_id = ?`, params);
     } catch (err) {
         return res.status(500).send(makeResponse(2, err));
     }
-    const n = db.changedRows;
-    // company table is now updated
-    // continue update 'company_terminal' table
 
-    db = null;
-    // hard delete all addresses
     try {
-        db = await mQuery(`delete from company_address where company_id = ?`, [ vars.company_id ]);
+        db = await mQuery(`select * from company_address where company_id = ?`, [ company_id ]);
     } catch (err) {
-        return res.status(500).send(makeResponse(4, err));
+        return res.status(500).send(makeResponse(3, err));
+    }
+    const existing_ids = db.map((item) => {
+        return item.company_address_id;
+    });
+    console.log("Existing:");
+    console.log(existing_ids);
+    db = null;
+
+    let updated_addresses = [], added_addresses = [], deleted_addresses = [];
+    let final_address_ids = [];
+    for (let i = 0; i < vars.terminal_addresses.length; i++) {
+        const company_address_item = vars.terminal_addresses[i];
+        const company_address_id = company_address_item.company_address_id;
+        const company_address_text = company_address_item.company_address_text;
+        const is_address_found = existing_ids.find(value => {
+            return value === company_address_id;
+        });
+        db = null;
+        if (is_address_found) {     // need to update existing address
+            try {
+                const prs = [company_address_text, company_address_id];
+                db = await mQuery(`update company_address
+                                   set company_address_text = ?
+                                   where company_address_id = ?`, prs);
+                updated_addresses.push({
+                    company_address_id: company_address_id,
+                    company_address_text: company_address_text
+                });
+                final_address_ids.push(company_address_id);
+            } catch (err) {
+                return res.status(500).send(makeResponse(4, err));
+            }
+        } else {        // insert new address
+            try {
+                const prs = [company_id, company_address_text];
+                db = await mQuery(`insert into company_address (company_id, company_address_text)
+                                   values (?, ?)`, prs);
+                added_addresses.push({company_address_id: db.insertId, company_address_text: company_address_text});
+                final_address_ids.push(db.insertId);
+            } catch (err) {
+                return res.status(500).send(makeResponse(5, err));
+            }
+        }
+    }
+    // delete some addresses
+    db = null;
+    console.log("Final:");
+    console.log(final_address_ids);
+    for (let i = 0; i < existing_ids.length; i++) {
+        const to_delete_id = existing_ids[i];
+        const is_found = final_address_ids.find((address_id) => { return address_id === to_delete_id; });
+        if (!is_found) {        // delete "to_delete_id"
+            try {
+                db = await mQuery(`update company_address set company_address_status = 'DELETED' where company_address_id = ?`, [ to_delete_id ]);
+                deleted_addresses.push({ company_address_id: to_delete_id });
+            } catch (err) {
+                return res.status(500).send(makeResponse(6, err));
+            }
+        }
     }
 
-    // add all terminal addresses
-    db = null;
-    Promise.all(vars.terminal_addresses.map(async terminal_address => {
-        try {
-            const params = [ vars.company_id, terminal_address ];
-            db = await mQuery(`insert into company_address (company_id, company_address_text) values (?, ?)`, params);
-            // terminal_ids_ok.push(db.insertId);
-            return { company_terminal_address: terminal_address, company_terminal_id: db.insertId };
-        } catch (err) {
-            return { company_terminal_address: terminal_address, message: err};
-        }
-    }))
-        .then(terminal_addresses => {
-            return res.status(200).send(makeResponse(0, {
-                changedRows: n,
-                terminal_addresses: terminal_addresses
-            }))
-        .catch(err => {
-            return res.status(500).send(makeResponse(4, err));
-        });
-    });
+    return res.status(200).send(makeResponse(0, {
+        added: added_addresses,
+        updated: updated_addresses,
+        deleted: deleted_addresses
+    }));
 
 });
 
