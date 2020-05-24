@@ -12,6 +12,7 @@ const addVehicle = require('./vehicle/add');
 const listVehicle = require('./vehicle/list');
 const editVehicle = require('./vehicle/edit');
 const deleteVehicle = require('./vehicle/delete');
+const activateVehicle = require('./vehicle/activate');
 const fuelTypesVehicle = require('./vehicle/fuel-types');
 
 router.use('/get', getRouter);
@@ -21,6 +22,7 @@ router.use('/add', addVehicle);
 router.use('/list', listVehicle);
 router.use('/edit', editVehicle);
 router.use('/delete', deleteVehicle);
+router.use('/activate', activateVehicle);
 router.use('/fuel-types', fuelTypesVehicle);
 
 
