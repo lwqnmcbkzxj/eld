@@ -33,6 +33,7 @@ router.post('/', function(req, res) { /* user_login, user_password */
                         return res.header({token: user_token}).status(200).send(makeResponse(0, {
                             login: user_login,
                             token: user_token,
+                            user_id: user_id,
                             role_id: user_info.role_id,
                             company_id: user_info.company_id,
                             session_id: session_id
