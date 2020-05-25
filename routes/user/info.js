@@ -33,8 +33,8 @@ router.get('/:user_id', async (req, res) => {
 
     try {
         db = await mQuery(`select u.user_id, u.user_remark, u.user_status, u.user_first_name, u.user_last_name,
-        u.user_login, u.user_email, u.user_phone, u.user_driver_licence, u.issuing_state_id, ist.issuing_state_name,
-        u.user_trailer_number, u.co_driver_id, cd.user_first_name, cd.user_last_name, ct.company_address_id, ct.company_address_text,
+        u.user_login, u.user_email, u.user_phone, u.user_driver_licence, u.issuing_state_id, ist.issuing_state_name, u.company_id,
+        u.user_trailer_number, u.co_driver_id, u.role_id, cd.user_first_name, cd.user_last_name, ct.company_address_id, ct.company_address_text,
         u.timezone_id, tz.timezone_name, u.user_notes, u.user_personal_conveyance_flag, u.user_eld_flag, u.user_yard_move_flag,
         u.user_manual_drive_flag, u.default_vehicle_id, v.vehicle_id
         from user u left join issuing_state ist on u.issuing_state_id = ist.issuing_state_id
