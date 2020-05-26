@@ -7,15 +7,15 @@ router.patch('/', async (req, res) => {
     try {
         const schema = Joi.object({
             eld_id: Joi.number().integer().required(),
-            serial_number: Joi.string().required(),
-            note: Joi.string().required()
+            eld_serial_number: Joi.string().required(),
+            eld_note: Joi.string().required()
         });
         vars = await schema.validateAsync(req.body);
     } catch (err) {
         return res.status(400).send(makeResponse(1, err));
     }
 
-    const { params, update } = makeUpdateString([ 'eld_serial_number', 'eld_note' ], [ vars.serial_number, vars.note ]);
+    const { params, update } = makeUpdateString([ 'eld_serial_number', 'eld_note' ], [ vars.eld_serial_number, vars.eld_note ]);
     params.push(vars.eld_id);
 
     try {
