@@ -167,7 +167,7 @@ async function getVehicleMakeId(vehicle_make_name) {
     }
 
     if (db.length <= 0) {
-        // create new make in DB
+        // create new vehicle_make_name in DB
         db = null;
         try {
             db = await mQuery(`insert into vehicle_make (vehicle_make_name) values (?)`, [ vehicle_make_name ]);
@@ -192,7 +192,7 @@ async function getVehicleModelId(vehicle_model_name) {
     }
 
     if (db.length <= 0) {
-        // create new make in DB
+        // create new vehicle_make_name in DB
         db = null;
         try {
             db = await mQuery(`insert into vehicle_model (vehicle_model_name) values (?)`, [ vehicle_model_name ]);
