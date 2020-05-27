@@ -8,27 +8,32 @@ import { ModalType } from '../ModalsTypes'
 import { colors } from '../../../../assets/scss/Colors/Colors';
 import { Formik, Field, Form, FieldArray } from 'formik';
 import { CustomField } from '../../FormComponents/FormComponents';
-
 import { CustomDialogActions } from '../ModalsComponents'
 
+import { PasswordObjectType } from '../../../../types/types'
+import { ResultCodesEnum } from '../../../../api/types'
 import * as yup from "yup";
 
+type ChangePasswordType = {
+	submitFunction: (passwordObject: PasswordObjectType) => void
+}
 
-const EditProfileModal = ({ open, handleClose, ...props }: ModalType) => {
+const ChangePassword = ({ open, handleClose, submitFunction, ...props }: ModalType & ChangePasswordType) => {
 	const classes = useStyles();
 
-	const submitPasswordChange = (data: any, setSubmitting: any) => {
+	const handleSubmit = async (data: any, setSubmitting: any) => {
 		setSubmitting(true);
-		// make async call
-		console.log("submit: ", data);
+
+		await submitFunction(data);
+
 		setSubmitting(false);
 		handleClose()
 	}
 
 	const validationSchema = yup.object({
-		password: yup.string().required().min(8).max(24),
+		old_password: yup.string().required().min(8).max(24),
 		new_password: yup.string().required().min(8).max(24),
-		confirm_password: yup.string().required().min(8).max(24).test('passwords-match', `Passwords don't match`, function(value) {
+		new_password_confirmation: yup.string().required().min(8).max(24).test('passwords-match', `Passwords don't match`, function(value) {
 			return this.parent.new_password === value;
 		  }),
 	});
@@ -48,9 +53,9 @@ const EditProfileModal = ({ open, handleClose, ...props }: ModalType) => {
 				<Formik
 					validateOnChange={true}
 					initialValues={{
-						password: '',
+						old_password: '',
 						new_password: '',
-						confirm_password: ''
+						new_password_confirmation: ''
 					}}
 					validationSchema={validationSchema}
 					validate={values => {
@@ -59,7 +64,7 @@ const EditProfileModal = ({ open, handleClose, ...props }: ModalType) => {
 						return errors;
 					}}
 					onSubmit={(data, { setSubmitting }) => {
-						submitPasswordChange(data, setSubmitting)
+						handleSubmit(data, setSubmitting)
 					}}
 				>
 
@@ -67,7 +72,7 @@ const EditProfileModal = ({ open, handleClose, ...props }: ModalType) => {
 						<Form>
 							<DialogContent className={classes.dialog__content}>
 								<CustomField
-									name={'password'}
+									name={'old_password'}
 									label={'Current Password'}
 									placeholder="********"
 									canSeeInputValue={true}
@@ -79,7 +84,7 @@ const EditProfileModal = ({ open, handleClose, ...props }: ModalType) => {
 									canSeeInputValue={true}
 								/>
 								<CustomField 
-									name={'confirm_password'} 
+									name={'new_password_confirmation'} 
 									label={'Confirm Password'} 
 									placeholder="********"
 									canSeeInputValue={true}
@@ -100,4 +105,4 @@ const EditProfileModal = ({ open, handleClose, ...props }: ModalType) => {
 		</React.Fragment>
 	);
 }
-export default EditProfileModal
+export default ChangePassword

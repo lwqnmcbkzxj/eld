@@ -34,25 +34,32 @@ const App = (props: any) => {
 	let pathName = props.location.pathname
 
 	useEffect(() => {
+		dispatch(authUser())
+	}, [])
+
+	useEffect(() => {
 		dispatch(getPageName(pathName))
 	}, [pathName])
 
-	if (!logged) {
+	
+	if (!logged && !userInfo.token) {
 		return <>
-			<Redirect to="/" />
+			{/* <Redirect to="/" /> */}
 			<Login />
 		</>
 	}
-
-
 	if (pathName === "/") {
-		if (userInfo.role === 0) {
+		if (userInfo.role_id === RolesEnum.user) {
 			return <Redirect to="/units" />
-		} else if (userInfo.role === 1) {
+		} else if (userInfo.role_id === RolesEnum.admin) {
 			return <Redirect to="/dashboard" />
 		}
 	}
 		
+
+
+	
+
 	return (
 		<div className="app-wrapper">
 			<CustomHelmet />
@@ -63,7 +70,7 @@ const App = (props: any) => {
 
 				<div className="app-content">
 					<Switch>
-						{userInfo.role === 0 ?
+						{userInfo.role_id === RolesEnum.user ?
 							<>
 								<Route path="/drivers" render={() => <DriversContainer />} />
 								<Route path="/elds" render={() => <EldsContainer />} />

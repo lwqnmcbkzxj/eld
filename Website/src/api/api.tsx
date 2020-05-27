@@ -1,7 +1,12 @@
 import Axios from 'axios';
+import qs from 'querystring'
+import * as ApiTypes from './types'
+import { EldType } from '../types/elds';
+import { PasswordObjectType } from '../types/types';
+
 
 const instance = Axios.create({
-	baseURL: "http://api.eld.sixhands.co/",
+	baseURL: "https://cors-anywhere.herokuapp.com/http://api.eld.sixhands.co/",
 	headers: {
 		'Content-Type': 'application/x-www-form-urlencoded'
 	}

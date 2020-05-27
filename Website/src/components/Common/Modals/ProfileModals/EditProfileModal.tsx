@@ -15,11 +15,19 @@ import ChangePasswordModal from './ChangePasswordModal'
 import { StyledDefaultButtonSmall, StyledConfirmButtonSmall } from '../../StyledTableComponents/StyledButtons';
 
 import { CustomDialogActions } from '../ModalsComponents'
+import { PasswordObjectType } from '../../../../types/types'
+import { UserType } from '../../../../types/user'
 
 import * as yup from "yup";
 
 
-const EditProfileModal = ({ open, handleClose, ...props }: ModalType) => {
+type EditProfileType = {
+	initialValues: UserType
+	changePassword: (passwordObj: PasswordObjectType) => void
+	editProfile: (profileObj: UserType) => void
+}
+
+const EditProfileModal = ({ open, handleClose, changePassword, editProfile, initialValues, ...props }: ModalType & EditProfileType) => {
 	const classes = useStyles();
 
 	const [changePasswordModalOpen, setChangePasswordModalOpen] = useState(false)
@@ -27,9 +35,11 @@ const EditProfileModal = ({ open, handleClose, ...props }: ModalType) => {
 		setChangePasswordModalOpen(false);
 	};
 
-	const submitProfileEdit = (data: any, setSubmitting: any) => {
+	const submitProfileEdit = async (data: any, setSubmitting: any) => {
 		setSubmitting(true);
-		// make async call
+
+		// await editProfile(data)
+
 		console.log("submit: ", data);
 		setSubmitting(false);
 		handleClose()
@@ -65,8 +75,10 @@ const EditProfileModal = ({ open, handleClose, ...props }: ModalType) => {
 				<Formik
 					validateOnChange={true}
 					initialValues={{
-						first_name: "Pac",
+
+						first_name : "Pac",
 						last_name: "Man",
+						user_login: '',
 						email: 'malkovich@mail.ru',
 						phone: '+1 (302) 894-6596',
 						contact_name: 'Marry',
@@ -93,8 +105,6 @@ const EditProfileModal = ({ open, handleClose, ...props }: ModalType) => {
 								<div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gridGap: '64px' }}>
 									<div>
 										<div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gridGap: '32px' }}>
-
-
 											<CustomField name={'first_name'} label={'First Name'} />
 											<CustomField name={'last_name'} label={'Last Name'} />
 										</div>
@@ -119,7 +129,7 @@ const EditProfileModal = ({ open, handleClose, ...props }: ModalType) => {
 
 										<FieldArray name="terminal_adresses" render={arrayHelpers => (
 											<div>
-												{values.terminal_adresses.map((address, counter) => (
+												{values.terminal_adresses && values.terminal_adresses.map((address, counter) => (
 													<CustomField
 														key={counter}
 														name={`terminal_adresses.${counter}`}
@@ -139,19 +149,19 @@ const EditProfileModal = ({ open, handleClose, ...props }: ModalType) => {
 
 							</DialogContent>
 
-							<DialogActions className={classes.dialog__actions} style={{display: 'grid'}}>
+							<DialogActions className={classes.dialog__actions} style={{ display: 'grid' }}>
 								<StyledDefaultButtonSmall
 									onClick={() => { setChangePasswordModalOpen(true) }}
 									style={{ width: '200px' }}
 								>Change password
 								</StyledDefaultButtonSmall>
 
-														
+
 								<CustomDialogActions
 									isSubmitting={isSubmitting}
 									handleClose={handleClose}
 									submitText={"Save"}
-														
+
 									style={{ padding: 0 }}
 								/>
 							</DialogActions>
@@ -160,7 +170,14 @@ const EditProfileModal = ({ open, handleClose, ...props }: ModalType) => {
 				</Formik>
 			</Dialog>
 
-			<ChangePasswordModal open={changePasswordModalOpen} handleClose={handleChangePasswordModalClose} />
+
+
+			{changePassword && changePasswordModalOpen &&
+				<ChangePasswordModal
+					open={changePasswordModalOpen}
+					handleClose={handleChangePasswordModalClose}
+					submitFunction={changePassword}
+				/>}
 
 		</React.Fragment>
 	);

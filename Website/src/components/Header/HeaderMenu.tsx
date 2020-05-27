@@ -1,12 +1,15 @@
 import React, { useState } from 'react';
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { Menu, MenuItem, makeStyles, Button } from '@material-ui/core';
 import { colors } from '../../assets/scss/Colors/Colors';
 
 import ProfileSubscriptionModal from '../Common/Modals/ProfileModals/ProfileSubscriptionModal'
 import EditProfileModal from '../Common/Modals/ProfileModals/EditProfileModal'
 
-import { logout } from '../../redux/user-reducer'
+import { logout, changePassword, editProfile } from '../../redux/user-reducer'
+import { PasswordObjectType, AppStateType } from '../../types/types'
+import { UserType } from '../../types/user';
+
 type HeaderMenuProps = {
 	anchorEl: null | HTMLElement
 	handleClose: () => void
@@ -36,6 +39,15 @@ export const HeaderMenu: React.FC<HeaderMenuProps> = ({ anchorEl, handleClose, .
 	const handleProfileEditModalClose = () => {
 		setProfileEditModalOpen(false);
 	};
+
+	const loggedUser = useSelector<AppStateType, UserType>(state => state.user.userInfo)
+	const changePasswordDispatch = async (passwordObj: PasswordObjectType) => {
+		await dispatch(changePassword(passwordObj))
+	}
+
+	const editProfileDispatch = async (profileObj: UserType) => {
+		await dispatch(editProfile(profileObj))
+	} 
 
 	return (
 		<div style={{ boxShadow: '0px 6px 16px rgba(0, 0, 0, 0.2)', borderRadius: '4px' }}>
@@ -84,7 +96,13 @@ export const HeaderMenu: React.FC<HeaderMenuProps> = ({ anchorEl, handleClose, .
 
 
 			{/* <ProfileSubscriptionModal open={subscriptionModalOpen} handleClose={handleSubscriptionModalClose} /> */}
-			<EditProfileModal open={profileEditModalOpen} handleClose={handleProfileEditModalClose} />
+			<EditProfileModal
+				initialValues={loggedUser}
+				open={profileEditModalOpen}
+				handleClose={handleProfileEditModalClose}
+				editProfile={editProfileDispatch}
+				changePassword={changePasswordDispatch}
+			/>
 		</div>
 	);
 }

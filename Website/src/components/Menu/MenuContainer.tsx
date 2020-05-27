@@ -1,7 +1,7 @@
 import React, { FC } from 'react';
 import { useDispatch, useSelector } from "react-redux";
 import { AppStateType } from '../../types/types'
-import { UserType } from '../../types/user'
+import { UserType, RolesEnum } from '../../types/user'
 import UserMenu from './UserMenu'
 import AdminMenu from './AdminMenu'
 
@@ -11,8 +11,8 @@ const MenuContainer: FC = ({ ...props }) => {
 
 
 	return (
-		userInfo.role === 0 ? <UserMenu /> :
-		userInfo.role === 1 ? <AdminMenu /> : <></>
+		userInfo.role_id === RolesEnum.user ? <UserMenu /> :
+		userInfo.role_id === RolesEnum.admin ? <AdminMenu /> : <></>
 	)
 }
 

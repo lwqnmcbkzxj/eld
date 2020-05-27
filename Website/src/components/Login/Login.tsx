@@ -12,6 +12,8 @@ import { useDispatch } from 'react-redux'
 import { colors } from '../../assets/scss/Colors/Colors'
 import bgLine from '../../assets/img/login-form-line.png'
 
+import { Redirect } from 'react-router-dom'
+
 const Login = () => {
 	const dispatch = useDispatch()
 	const classes = makeStyles(theme => ({
@@ -66,9 +68,9 @@ const Login = () => {
 		}
 	}))()
 
-	const handleLogin = (data: any, setSubmitting: any) => {
+	const handleLogin = async (data: any, setSubmitting: any) => {
 		setSubmitting(true);
-		dispatch(login(data.login, data.password))
+		await dispatch(login(data.login, data.password))
 		setSubmitting(false);
 	}
 	const validationSchema = yup.object({
@@ -84,7 +86,7 @@ const Login = () => {
 			<div className={classes.login_form}>
 				<Formik
 					validateOnChange={true}
-					initialValues={{ login: '', password: '' }}
+					initialValues={{ login: 'sidorov', password: 'Sidorov123' }}
 					validationSchema={validationSchema}
 					validate={values => {
 						const errors: Record<string, string> = {};

@@ -1,19 +1,23 @@
-import { AppStateType } from '../types/types'
+import { AppStateType, AlertStatusEnum, PasswordObjectType } from '../types/types'
 import { ThunkAction } from 'redux-thunk'
 import { UserType } from '../types/user'
 import Cookies from "js-cookie";
-import { userAPI } from '../api/api';
+import { setTokenForAPI, userAPI } from '../api/api';
+import { ResultCodesEnum, GetUserInfoResponseType } from '../api/types'
+import { showAlert } from '../utils/showAlert';
 
 const SET_LOGGED = 'user/SET_LOGGED'
 const SET_USER_INFO = 'user/SET_USER_INFO'
+const SET_TOKEN = 'user/SET_TOKEN'
 
 let initialState = {
 	logged: false,
-	userInfo: { } as UserType
+	userInfo: {} as UserType,
+	token: "" as string
 }
 
 type InitialStateType = typeof initialState;
-type ActionsTypes = SetLoggedType | SetUserInfoType;
+type ActionsTypes = SetLoggedType | SetUserInfoType | SetTokenType;
 
 const userReducer = (state = initialState, action: ActionsTypes): InitialStateType => {
 	switch (action.type) {
@@ -26,7 +30,16 @@ const userReducer = (state = initialState, action: ActionsTypes): InitialStateTy
 		case SET_USER_INFO: {
 			return {
 				...state,
-				userInfo: {...action.userInfo}
+				userInfo: {
+					...state.userInfo,
+					...action.userInfo
+				}
+			}
+		}
+		case SET_TOKEN: {
+			return {
+				...state,
+				token: action.token
 			}
 		}
 		default:
@@ -41,18 +54,24 @@ type SetLoggedType = {
 }
 type SetUserInfoType = {
 	type: typeof SET_USER_INFO,
-	userInfo: any
+	userInfo: UserType
 }
+
+type SetTokenType = {
+	type: typeof SET_TOKEN
+	token: string
+}
+
 type ThunksType = ThunkAction<Promise<void>, AppStateType, unknown, ActionsTypes>
 
 
-export const setLogged = (logged: boolean):SetLoggedType => {
+export const setLogged = (logged: boolean): SetLoggedType => {
 	return {
 		type: SET_LOGGED,
 		logged
 	}
 }
-export const setUserInfo = (userInfo: any):SetUserInfoType => {
+export const setUserInfo = (userInfo: any): SetUserInfoType => {
 	return {
 		type: SET_USER_INFO,
 		userInfo
@@ -61,40 +80,74 @@ export const setUserInfo = (userInfo: any):SetUserInfoType => {
 
 
 
-
 export const login = (login: string, password: string): ThunksType => async (dispatch) => {
-	// let response = userAPI.login(login, password)
+	let response = await userAPI.login(login, password) as GetUserInfoResponseType
 
-	dispatch(setLogged(true))
-	// dispatch(setUserInfo({}))
-	if (login === 'admin') {
-		dispatch(setUserInfo({role: 1}))
-	} else {
-		dispatch(setUserInfo({role: 0}))
+	if (response.status === ResultCodesEnum.Success) {
+		Cookies.set('token', response.result.token, { expires: 10 / 24 });
+		Cookies.set('user_id', response.result.user_id.toString(), { expires: 10 / 24 });
+
+		dispatch(authUser())
 	}
 }
 
 export const logout = (): ThunksType => async (dispatch) => {
-	dispatch(setLogged(false))
-	// dispatch(setAccessToken(""))
-	dispatch(setUserInfo({}))
-	Cookies.remove('access-token')
-}
+	let response = await userAPI.logout()
 
-export const getUserInfo = (): ThunksType => async (dispatch) => {
-	// let response = await userAPI.getUserInfo()
-	// if (!response.message) {
-		// dispatch(setUserInfo(response))
+	// if (response.status === 0) {
+		dispatch(setLogged(false))
+		dispatch(setAccessToken(""))
+		dispatch(setUserInfo({}))
+		Cookies.remove('token')
+	// } else {
+
 	// }
 }
-export const authUser = (): ThunksType => async (dispatch) => {
-	let token = Cookies.get('access-token');
-	
-	if (token) {
-		// dispatch(setAccessToken(token))
-		dispatch(getUserInfo())
-		dispatch(setLogged(true))
+
+export const getUserInfo = (userId: number): ThunksType => async (dispatch) => {
+	let response = await userAPI.getUserInfo(userId)
+	if (response.status === ResultCodesEnum.Success) {
+		dispatch(setUserInfo(response.result))
 	}
+}
+export const authUser = (): ThunksType => async (dispatch) => {
+	let token = Cookies.get('token');
+	let userId = Cookies.get('user_id');
+
+	if (token && userId) {
+		dispatch(setLogged(true))
+		dispatch(setAccessToken(token))
+		await dispatch(getUserInfo(+userId))
+	}
+}
+
+export const changePassword = (passwordObj: PasswordObjectType): ThunksType => async (dispatch) => {
+	let response = await userAPI.changePassword(passwordObj)
+
+	if (response.status === 0) {
+		showAlert(AlertStatusEnum.Success, 'Password changed successfully')
+	} else {
+		showAlert(AlertStatusEnum.Error, 'Failed to change password')
+	}
+}
+export const editProfile = (editProfile: UserType): ThunksType => async (dispatch) => {
+	// let response = userAPI.changePassword()
+
+	// if (response.status === 0) {
+
+	// } else {
+	// 	showAlert(AlertStatusEnum.Error, 'Failed to change profile')
+	// }
+}
+
+
+const setAccessToken = (token: string): ThunksType => async (dispatch) => {
+	setTokenForAPI(token)
+
+	dispatch({
+		type: SET_TOKEN,
+		token
+	})
 }
 
 
