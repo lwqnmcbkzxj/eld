@@ -32,7 +32,11 @@ export const CustomTable = ({ subtractHeight = 0, ...props }: any) => {
 	let subtractHeightDef = 122
 
 	return (
-		<TableContainer style={{ maxHeight: `calc(100vh - ${subtractHeightDef + subtractHeight}px)` }}>
+		<TableContainer style={{
+			maxHeight: `calc(100vh - ${subtractHeightDef + subtractHeight}px)`,
+			width: 'calc(100% - 3px)',
+			marginLeft: '3px'
+		}}>
 			<Table stickyHeader>
 				{props.children}
 			</Table>
@@ -219,6 +223,7 @@ type Order = 'asc' | 'desc';
 type TableHeaderCellsProps = {
 	labels: Array<{
 		label: string
+		name: string
 		align?: string
 	}>
 	Component?: any
@@ -242,12 +247,12 @@ export const CustomTableHeaderCells: React.FC<TableHeaderCellsProps> = ({ labels
 					<Component
 						key={counter}
 						align={(label.align === 'right') ? label.align : "left"}
-						sortDirection={orderBy === label.label ? order : false}>
+						sortDirection={orderBy === label.name ? order : false}>
 
 						<TableSortLabel
-							active={orderBy === label.label}
-							direction={orderBy === label.label ? order : 'asc'}
-							onClick={createSortHandler(label.label)}
+							active={orderBy === label.name}
+							direction={orderBy === label.name ? order : 'asc'}
+							onClick={createSortHandler(label.name)}
 						>
 							{label.label}
 						</TableSortLabel>

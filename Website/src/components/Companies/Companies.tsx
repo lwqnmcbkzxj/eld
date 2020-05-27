@@ -11,7 +11,7 @@ const Companies: FC<PropsType> = ({ companies, ...props }) => {
 
 	return (
 		<div className="page companies-page">
-			<CompaniesTable rows={companies}/>
+			{/* <CompaniesTable rows={companies}/> */}
 		</div>
 	)
 }

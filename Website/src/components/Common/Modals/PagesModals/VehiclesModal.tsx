@@ -17,13 +17,18 @@ import { CustomDialogActions } from '../ModalsComponents'
 
 
 import * as yup from "yup";
+import { VehicleType } from '../../../../types/vehicles';
+import { StatusEnum } from '../../../../types/types';
 
 type VehiclesModalType = {
-	initialValues: any
+	initialValues: VehicleType
 	titleText: string
+
+	handleActivate?: (id: number) => void
+	handleDelete?: (id: number) => void
 }
 
-const EditVehicleModal = ({ open, handleClose, initialValues = {}, titleText, ...props }: ModalType & VehiclesModalType) => {
+const EditVehicleModal = ({ open, handleClose, initialValues, titleText, handleDelete, handleActivate, ...props }: ModalType & VehiclesModalType) => {
 	const classes = useStyles();
 
 	const submitProfileEdit = (data: any, setSubmitting: any) => {
@@ -35,32 +40,33 @@ const EditVehicleModal = ({ open, handleClose, initialValues = {}, titleText, ..
 		handleClose()
 	}
 
-	if (!initialValues.id) {
+	if (!initialValues.vehicle_id) {
 		initialValues = {
-			truck_number: '',
-			eld_number: '',
-			make: '',
-			model: '',
-			year: '',
-			fuel_type: '',
-			licence_number: '',
-			state: '',
-			enter_vin_manually: false,
-			vin_number: '',
+			vehicle_truck_number: '',
+			eld_serial_number: '',
+			vehicle_make_name: '',
+			vehicle_model_name: '',
+			// year: '',
+			// fuel_type: '',
+			vehicle_licence_plate: '',
+			// state: '',
+			// enter_vin_manually: false,
+			// vin_number: '',
+			vehicle_notes: ''
 		}
 	}
 
 	const validationSchema = yup.object({
-		truck_number: yup.string().required(),
-		eld_number: yup.string(),
-		make: yup.string(),
-		model: yup.string(),
-		year: yup.string(),
-		fuel_type: yup.string(),
-		licence_number: yup.string(),
-		state: yup.string(),
-		enter_vin_manually: yup.string(),
-		vin_number: yup.string(),
+		vehicle_truck_number: yup.string().required(),
+		eld_serial_number: yup.string(),
+		vehicle_make_name: yup.string(),
+		vehicle_model_name: yup.string(),
+		// year: yup.string(),
+		// fuel_type: yup.string(),
+		vehicle_licence_plate: yup.string(),
+		// state: yup.string(),
+		// enter_vin_manually: yup.string(),
+		// vin_number: yup.string(),
 	});
 
 	return (
@@ -75,9 +81,25 @@ const EditVehicleModal = ({ open, handleClose, initialValues = {}, titleText, ..
 			>
 				<DialogTitle id="edit-driver-dialog-title" className={classes.dialog__header}>
 					<div style={{ display: 'flex', alignItems: 'center', justifyContent: "flex-start" }}>
-						<div style={{ marginRight: '15px' }}>{titleText} <span>{initialValues.first_name + ' ' + initialValues.last_name} </span></div>
-						<StyledLabel text="active" theme="success" />
+						<div style={{ marginRight: '15px' }}>{titleText} <span>{initialValues.vehicle_truck_number} </span></div>
+						<StyledLabel text={initialValues.vehicle_status} />
 					</div>
+					{initialValues.vehicle_id &&
+					<div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gridGap: '20px' }}>
+						<StyledDefaultButtonSmall
+							onClick={() => {
+								if (initialValues.vehicle_id && handleDelete)
+									handleDelete(initialValues.vehicle_id)
+								handleClose()
+							}}>Delete</StyledDefaultButtonSmall>
+
+						<StyledDefaultButtonSmall
+							onClick={() => {
+								if (initialValues.vehicle_id && handleActivate)
+									handleActivate(initialValues.vehicle_id)
+							}}>{initialValues.vehicle_status === StatusEnum.Deactivated ? "Activate" : "Deactivate"}</StyledDefaultButtonSmall>
+
+					</div>}
 				</DialogTitle>
 
 				<Formik
@@ -99,31 +121,31 @@ const EditVehicleModal = ({ open, handleClose, initialValues = {}, titleText, ..
 								<div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gridGap: '64px' }}>
 									<div>
 										<div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gridGap: '32px' }}>
-											<CustomField name={'truck_number'} label={'Truck No.'} />
-											<CustomField name={'eld_number'} label={'ELD No.'} optional={true} />
+											<CustomField name={'vehicle_truck_number'} label={'Truck No.'} />
+											<CustomField name={'eld_serial_number'} label={'ELD No.'} optional={true} />
 										</div>
 										<div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gridGap: '32px' }}>
-											<CustomField name={'make'} label={'Make'} optional={true}  />
-											<CustomField name={'model'} label={'Model'} canSeeInputValue={true} optional={true} />
+											<CustomField name={'vehicle_make_name'} label={'Make'} optional={true} />
+											<CustomField name={'vehicle_model_name'} label={'Model'} canSeeInputValue={true} optional={true} />
 										</div>
 										<div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gridGap: '32px' }}>
-											<CustomField name={'year'} label={'Year'} optional={true} />
-											<CustomField name={'fuel_type'} label={'Fuel Type'} optional={true} />
+											{/* <CustomField name={'year'} label={'Year'} optional={true} /> */}
+											{/* <CustomField name={'fuel_type'} label={'Fuel Type'} optional={true} /> */}
 										</div>
 										<div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gridGap: '32px' }}>
-											<CustomField name={'licence_number'} label={'Licence Plate'} optional={true} />
-											<CustomField name={'state'} label={'Issuing State/Province'} optional={true} />
+											{/* <CustomField name={'licence_number'} label={'Licence Plate'} optional={true} /> */}
+											{/* <CustomField name={'state'} label={'Issuing State/Province'} optional={true} /> */}
 										</div>
 
 										<div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gridGap: '32px' }}>
-											<CustomCheckBox name="enter_vin_manually" label="Enter VIN manually" optional={true} />
-											<CustomField name={'vin_number'} label={'VIN'} disabled={!values.enter_vin_manually} optional={true} />
+											{/* <CustomCheckBox name="enter_vin_manually" label="Enter VIN manually" optional={true} /> */}
+											{/* <CustomField name={'vin_number'} label={'VIN'} disabled={!values.enter_vin_manually} optional={true} /> */}
 										</div>
 
 									</div>
 
 									<div>
-										<CustomField name={'notes'} label={'Notes'} type="textarea" placeholder="Notes" optional={true} />
+										{/* <CustomField name={'notes'} label={'Notes'} type="textarea" placeholder="Notes" optional={true} /> */}
 									</div>
 								</div>
 

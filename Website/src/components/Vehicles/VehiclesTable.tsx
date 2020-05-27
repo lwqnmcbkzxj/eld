@@ -12,9 +12,12 @@ import { isContainsSearchText } from '../../utils/isContainsSearchText'
 
 type PropsType = {
 	rows: Array<VehicleType>
+
+	handleActivate: (id: number) => void
+	handleDelete: (id: number) => void
 }
 type Order = 'asc' | 'desc';
-const DriversTable: FC<PropsType> = ({ rows, ...props }) => {
+const DriversTable: FC<PropsType> = ({ rows, handleActivate, handleDelete, ...props }) => {
 	const [page, setPage] = React.useState(0)
 	const [rowsPerPage, setRowsPerPage] = React.useState(10)
 	const [searchText, setSearchText] = React.useState("")
@@ -29,13 +32,13 @@ const DriversTable: FC<PropsType> = ({ rows, ...props }) => {
 	};
 
 	let labels = [
-		{ label: "Truck No." },
-		{ label: "Make" },
-		{ label: "Model" },
-		{ label: "License Plate No." },
-		{ label: "ELD No." },
-		{ label: "Notes" },
-		{ label: "Status" },
+		{ label: "Truck No.", name: "vehicle_truck_number" },
+		{ label: "Make", name: "vehicle_make_name" },
+		{ label: "Model", name: "vehicle_model_name" },
+		{ label: "License Plate No.", name: "vehicle_licence_plate" },
+		{ label: "ELD No.", name: "eld_serial_number" },
+		{ label: "Notes", name: "vehicle_notes" },
+		{ label: "Status", name: "vehicle_status" },
 	]
 
 	const [order, setOrder] = React.useState<Order>('asc');
@@ -57,21 +60,7 @@ const DriversTable: FC<PropsType> = ({ rows, ...props }) => {
 	};
 
 
-	let currentModalData = {
-		id: 1,
-		truck_number: '012',
-		eld_number: 'Vehicle-012-2B250D69',
-		make: 'Mack',
-		model: 'Anthem',
-		year: '2012',
-		fuel_type: 'Diesel',
-		licence_number: '1586-986-78-562-3',
-		state: 'Illinois',
-		enter_vin_manually: false,
-		vin_number: '3AKJIFJIEF94850IF94',
-	}
-
-	const [currentVehicleData, setCurrentVehicleData] = useState(currentModalData);
+	const [currentVehicleData, setCurrentVehicleData] = useState({});
 
 	const [vehicleAddModalOpen, setVehicleAddModalOpen] = useState(false)
 	const handleVehicleAddModalClose = () => {
@@ -83,7 +72,7 @@ const DriversTable: FC<PropsType> = ({ rows, ...props }) => {
 		<Paper style={{ boxShadow: 'none' }}>
 			<Toolbar style={{ width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'space-between', boxSizing: 'border-box' }}>
 				<StyledSearchInput searchText={searchText} setSearchText={setSearchText} />
-				<StyledDefaultButtonSmall variant="outlined" onClick={()=>{ setVehicleAddModalOpen(true) }}>Add vehicle</StyledDefaultButtonSmall>
+				<StyledDefaultButtonSmall variant="outlined" onClick={() => { setVehicleAddModalOpen(true) }}>Add vehicle</StyledDefaultButtonSmall>
 			</Toolbar>
 
 			<CustomTable subtractHeight={52}>
@@ -98,26 +87,35 @@ const DriversTable: FC<PropsType> = ({ rows, ...props }) => {
 					</TableRow>
 				</TableHead>
 				<TableBody>
+
+
+
 					{rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map(row => (
-						isContainsSearchText(searchText, row, ['make', 'model', 'license', 'eldNumber']) &&	
+						isContainsSearchText(searchText, row, [
+							'vehicle_truck_number',
+							'vehicle_make_name',
+							'vehicle_model_name',
+							'vehicle_licence_plate',
+							'eld_serial_number',
+							'vehicle_notes']) &&
 
 						<TableRow
-							key={row.id}
+							key={row.vehicle_id}
 							hover
-							onClick={() => {
+							onDoubleClick={() => {
 								setVehicleEditModalOpen(true);
-								// setCurrentVehicleData(row)
+								setCurrentVehicleData(row)
 							}}
-						
+
 						>
-							<StyledTableCell>{row.truckNumber}</StyledTableCell>
-							<StyledTableCell>{row.make}</StyledTableCell>
-							<StyledTableCell>{row.model}</StyledTableCell>
-							<StyledTableCell>{row.license}</StyledTableCell>
-							<StyledTableCell>{row.eldNumber}</StyledTableCell>
-							<StyledTableCell><div className="text-block" style={{ minWidth: '200px', maxWidth: '300px' }} >{row.notes}</div></StyledTableCell>
-							<StyledTableCell><StatusLabel text={row.status.text} theme={row.status.type} /></StyledTableCell>
-							
+							<StyledTableCell>{row.vehicle_truck_number}</StyledTableCell>
+							<StyledTableCell>{row.vehicle_make_name}</StyledTableCell>
+							<StyledTableCell>{row.vehicle_model_name}</StyledTableCell>
+							<StyledTableCell>{row.vehicle_licence_plate}</StyledTableCell>
+							<StyledTableCell>{row.eld_serial_number}</StyledTableCell>
+							<StyledTableCell><div className="text-block" style={{ minWidth: '200px', maxWidth: '300px' }} >{row.vehicle_notes}</div></StyledTableCell>
+							<StyledTableCell><StatusLabel text={row.vehicle_status} /></StyledTableCell>
+
 						</TableRow>
 					))}
 				</TableBody>
@@ -139,6 +137,8 @@ const DriversTable: FC<PropsType> = ({ rows, ...props }) => {
 					handleClose={handleVehicleEditModalClose}
 					initialValues={currentVehicleData}
 					titleText={"Edit Vehicle"}
+					handleActivate={handleActivate}
+					handleDelete={handleDelete}
 				/>}
 
 			{/* Add modal */}

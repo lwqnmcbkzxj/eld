@@ -3,233 +3,14 @@ import { ThunkAction } from 'redux-thunk'
 
 import { VehicleType } from '../types/vehicles'
 
+import { vehiclesAPI } from '../api/api'
+import { ResultCodesEnum } from '../api/types'
+import { showAlert } from '../utils/showAlert'
+
 const SET_VEHICLES = 'SET_VEHICLES'
 
 let initialState = {
-	vehicles: [
-		{
-			id: 1,
-			truckNumber: '032',
-			make: 'Freightliner',
-			model: 'Cascadia (2016)',
-			license: 'P918297',
-			eldNumber: 'Vehicle-032-2B250D69',
-			notes: 'Notes notes',
-			status: {
-				text: 'active',
-				type: 'success'
-			},
-		},
-		{
-			id: 2,
-			truckNumber: '032',
-			make: 'Freightliner',
-			model: 'Cascadia (2016)',
-			license: 'P918297',
-			eldNumber: 'Vehicle-032-2B250D69',
-			notes: 'Notes notes',
-			status: {
-				text: 'deactivated',
-				type: 'error'
-			},
-		},
-		{
-			id: 3,
-			truckNumber: '032',
-			make: 'Freightliner',
-			model: 'Cascadia (2016)',
-			license: 'P918297',
-			eldNumber: 'Vehicle-032-2B250D69',
-			notes: 'Notes notes',
-			status: {
-				text: 'deactivated',
-				type: 'error'
-			},
-		},
-		{
-			id: 4,
-			truckNumber: '032',
-			make: 'Freightliner',
-			model: 'Cascadia (2016)',
-			license: 'P918297',
-			eldNumber: 'Vehicle-032-2B250D69',
-			notes: 'Notes notes',
-			status: {
-				text: 'deactivated',
-				type: 'error'
-			},
-		},
-		{
-			id: 5,
-			truckNumber: '032',
-			make: 'Freightliner',
-			model: 'Cascadia (2016)',
-			license: 'P918297',
-			eldNumber: 'Vehicle-032-2B250D69',
-			notes: 'Notes notes',
-			status: {
-				text: 'deactivated',
-				type: 'error'
-			},
-		},
-		{
-			id: 6,
-			truckNumber: '032',
-			make: 'Freightliner',
-			model: 'Cascadia (2016)',
-			license: 'P918297',
-			eldNumber: 'Vehicle-032-2B250D69',
-			notes: 'Notes notes',
-			status: {
-				text: 'deactivated',
-				type: 'error'
-			},
-		},
-		{
-			id: 7,
-			truckNumber: '032',
-			make: 'Freightliner',
-			model: 'Cascadia (2016)',
-			license: 'P918297',
-			eldNumber: 'Vehicle-032-2B250D69',
-			notes: 'Notes notes',
-			status: {
-				text: 'deactivated',
-				type: 'error'
-			},
-		},
-		{
-			id: 8,
-			truckNumber: '032',
-			make: 'Freightliner',
-			model: 'Cascadia (2016)',
-			license: 'P918297',
-			eldNumber: 'Vehicle-032-2B250D69',
-			notes: 'Notes notes',
-			status: {
-				text: 'deactivated',
-				type: 'error'
-			},
-		},
-		{
-			id: 9,
-			truckNumber: '032',
-			make: 'Freightliner',
-			model: 'Cascadia (2016)',
-			license: 'P918297',
-			eldNumber: 'Vehicle-032-2B250D69',
-			notes: 'Notes notes',
-			status: {
-				text: 'deactivated',
-				type: 'error'
-			},
-		},
-		{
-			id: 10,
-			truckNumber: '032',
-			make: 'Freightliner',
-			model: 'Cascadia (2016)',
-			license: 'P918297',
-			eldNumber: 'Vehicle-032-2B250D69',
-			notes: 'Notes notes',
-			status: {
-				text: 'deactivated',
-				type: 'error'
-			},
-		},
-		{
-			id: 11,
-			truckNumber: '032',
-			make: 'Freightliner',
-			model: 'Cascadia (2016)',
-			license: 'P918297',
-			eldNumber: 'Vehicle-032-2B250D69',
-			notes: 'Notes notes',
-			status: {
-				text: 'deactivated',
-				type: 'error'
-			},
-		},
-		{
-			id: 12,
-			truckNumber: '032',
-			make: 'Freightliner',
-			model: 'Cascadia (2016)',
-			license: 'P918297',
-			eldNumber: 'Vehicle-032-2B250D69',
-			notes: 'Notes notes',
-			status: {
-				text: 'deactivated',
-				type: 'error'
-			},
-		},
-		{
-			id: 13,
-			truckNumber: '032',
-			make: 'Freightliner',
-			model: 'Cascadia (2016)',
-			license: 'P918297',
-			eldNumber: 'Vehicle-032-2B250D69',
-			notes: 'Notes notes',
-			status: {
-				text: 'deactivated',
-				type: 'error'
-			},
-		},
-		{
-			id: 14,
-			truckNumber: '032',
-			make: 'Freightliner',
-			model: 'Cascadia (2016)',
-			license: 'P918297',
-			eldNumber: 'Vehicle-032-2B250D69',
-			notes: 'Notes notes',
-			status: {
-				text: 'deactivated',
-				type: 'error'
-			},
-		},
-		{
-			id: 15,
-			truckNumber: '032',
-			make: 'Freightliner',
-			model: 'Cascadia (2016)',
-			license: 'P918297',
-			eldNumber: 'Vehicle-032-2B250D69',
-			notes: 'Notes notes',
-			status: {
-				text: 'deactivated',
-				type: 'error'
-			},
-		},
-		{
-			id: 16,
-			truckNumber: '032',
-			make: 'Freightliner',
-			model: 'Cascadia (2016)',
-			license: 'P918297',
-			eldNumber: 'Vehicle-032-2B250D69',
-			notes: 'Notes notes',
-			status: {
-				text: 'deactivated',
-				type: 'error'
-			},
-		},
-		{
-			id: 17,
-			truckNumber: '032',
-			make: 'Freightliner',
-			model: 'Cascadia (2016)',
-			license: 'P918297',
-			eldNumber: 'Vehicle-032-2B250D69',
-			notes: 'Notes notes',
-			status: {
-				text: 'deactivated',
-				type: 'error'
-			},
-		}
-
-	]as Array<VehicleType>
+	vehicles: [] as Array<VehicleType>
 }
 
 type InitialStateType = typeof initialState;
@@ -260,8 +41,33 @@ export const setVehicles = (vehicles: Array<VehicleType>): SetVehiclesType => {
 	}
 }
 
-export const getVehiclesFromServer = ():ThunksType => async (dispatch) => {
-	console.log('GETTING VEHICLES FROM SERVER')
+export const getVehiclesFromServer = (companyId: number): ThunksType => async (dispatch) => {
+	let response = await vehiclesAPI.getVehicles(companyId)
+
+	if (response.status === ResultCodesEnum.Success) {
+		dispatch(setVehicles(response.result))
+	}
+}
+
+
+export const deleteVehicle = (id: number): ThunksType => async (dispatch) => {
+	let response = await vehiclesAPI.deleteVehicle(id)
+
+	if (response.status === ResultCodesEnum.Success) {
+		// dispatch(getVehiclesFromServer())
+	} else {
+		showAlert('error', 'Failed to delete vehicle')
+	}
+}
+
+export const activateVehicle = (id: number): ThunksType => async (dispatch) => { 
+	let response = await vehiclesAPI.activateVehicle(id)
+
+	if (response.status === ResultCodesEnum.Success) {
+		
+	} else {
+		showAlert('error', 'Failed to toggle active status')
+	}
 }
 
 type ThunksType = ThunkAction<Promise<void>, AppStateType, unknown, ActionsTypes>

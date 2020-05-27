@@ -13,13 +13,18 @@ import CompanyModal from '../Common/Modals/PagesModals/CompanyModal'
 
 import historyIcon from '../../assets/img/ic_history.svg'
 import editIcon from '../../assets/img/ic_edit.svg'
+import { PasswordObjectType } from '../../types/types';
 
 type PropsType = {
 	rows: Array<CompanyType>
+	changePassword: (passwordObj: PasswordObjectType) => void
+	handleAdd: (company: CompanyType) => void
+	handleEdit: (company: CompanyType) => void
+	handleToggleActive: (companyId: number) => void
 }
 type Order = 'asc' | 'desc';
 
-const CompaniesTable: FC<PropsType> = ({ rows, ...props }) => {
+const CompaniesTable: FC<PropsType> = ({ rows, handleAdd, handleEdit, changePassword, handleToggleActive, ...props }) => {
 	const [page, setPage] = React.useState(0)
 	const [rowsPerPage, setRowsPerPage] = React.useState(10)
 	const [searchText, setSearchText] = React.useState("")
@@ -34,15 +39,15 @@ const CompaniesTable: FC<PropsType> = ({ rows, ...props }) => {
 	};
 
 	let labels = [
-		{ label: "No." },
-		{ label: "Company name" },
-		{ label: "Contact Name" },
-		{ label: "Contact Phone" },
-		{ label: "Active units" },
-		{ label: "Subscribe Type" },
-		{ label: "Current Balance", align: 'right' },
-		{ label: "Status" },
-		{ label: "Actions" },
+		{ label: "No.", name: '' },
+		{ label: "Company name", name: '' },
+		{ label: "Contact Name", name: '' },
+		{ label: "Contact Phone", name: '' },
+		{ label: "Active units", name: '' },
+		{ label: "Subscribe Type", name: '' },
+		{ label: "Current Balance", align: 'right', name: '' },
+		{ label: "Status", name: '' },
+		{ label: "Actions", name: '' },
 	]
 	const [order, setOrder] = React.useState<Order>('asc');
 	const [orderBy, setOrderBy] = React.useState(labels[0].label);
@@ -52,8 +57,6 @@ const CompaniesTable: FC<PropsType> = ({ rows, ...props }) => {
 		setOrder(isAsc ? 'desc' : 'asc');
 		setOrderBy(property);
 	};
-
-
 
 
 	let currentModalDataObj = {
@@ -125,19 +128,19 @@ const CompaniesTable: FC<PropsType> = ({ rows, ...props }) => {
 							<StyledTableCell>{row.subscribe_type}</StyledTableCell>
 							<StyledTableCell align={'right'}>{row.current_balance}</StyledTableCell>
 
-							<StyledTableCell><StatusLabel text={row.status.text} theme={row.status.type} /></StyledTableCell>
+							{/* <StyledTableCell><StatusLabel text={row.status.text} theme={row.status.type} /></StyledTableCell> */}
 							<StyledTableCell style={{ minWidth: '100px', boxSizing: 'border-box', paddingTop: '10px', paddingBottom: '10px' }}>
 								{hoverId === row.id &&
-								<div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-									<button style={{ height: '32px' }}><img src={historyIcon} alt="hisotry-icon" /></button>
-									<button style={{ height: '32px' }}
-										onClick={() => {
-											setEditModalOpen(true);
-											setCurrentModalData(row)
-										}} >
-										<img src={editIcon} alt="hisotry-icon" />
-									</button>
-								</div>
+									<div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+										<button style={{ height: '32px' }}><img src={historyIcon} alt="hisotry-icon" /></button>
+										<button style={{ height: '32px' }}
+											onClick={() => {
+												setEditModalOpen(true);
+												setCurrentModalData(row)
+											}} >
+											<img src={editIcon} alt="hisotry-icon" />
+										</button>
+									</div>
 								}
 							</StyledTableCell>
 
@@ -161,6 +164,9 @@ const CompaniesTable: FC<PropsType> = ({ rows, ...props }) => {
 				<CompanyModal
 					open={editModalOpen}
 					handleClose={handleEditModalClose}
+					submitFunction={handleEdit}
+					handleToggleActive={handleToggleActive}
+					changePassword={changePassword}
 					initialValues={currentModalData}
 					titleText={"Edit Company"}
 				/>}
@@ -170,6 +176,7 @@ const CompaniesTable: FC<PropsType> = ({ rows, ...props }) => {
 				<CompanyModal
 					open={addModalOpen}
 					handleClose={handleAddModalClose}
+					submitFunction={handleAdd}
 					initialValues={{}}
 					titleText={"Add Company"}
 				/>}

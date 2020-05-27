@@ -82,22 +82,16 @@ const DriversTable: FC<PropsType> = ({ rows, ...props }) => {
 		setDriverAddModalOpen(false);
 	};
 
-
-	
-
-
-
-
 	let labels = [
-		{ label: "First Name" },
-		{ label: "Last Name" },
-		{ label: "Username" },
-		{ label: "Phone No." },
-		{ label: "Truck No." },
-		{ label: "Notes" },
-		{ label: "App Version" },
-		{ label: "Device Version" },
-		{ label: "Status" }
+		{ label: "First Name", name: 'first_name' },
+		{ label: "Last Name", name: 'last_name' },
+		{ label: "Username", name: 'user_name' },
+		{ label: "Phone No.", name: 'phone' },
+		{ label: "Truck No.", name: 'truck_number' },
+		{ label: "Notes", name: 'notes' },
+		{ label: "App Version", name: '' },
+		{ label: "Device Version", name: '' },
+		{ label: "Status", name: '' }
 	]
 	const [order, setOrder] = React.useState<Order>('asc');
 	const [orderBy, setOrderBy] = React.useState(labels[0].label);
@@ -139,9 +133,9 @@ const DriversTable: FC<PropsType> = ({ rows, ...props }) => {
 							key={row.id}
 							hover
 							onClick={() => {
-							setDriverEditModalOpen(true)
-							// setCurrentDriverData(row)
-						}}>
+								setDriverEditModalOpen(true)
+								// setCurrentDriverData(row)
+							}}>
 							<CustomTableCell>{row.firstName}</CustomTableCell>
 							<CustomTableCell>{row.lastName}</CustomTableCell>
 							<CustomTableCell>{row.userName}</CustomTableCell>
@@ -154,7 +148,7 @@ const DriversTable: FC<PropsType> = ({ rows, ...props }) => {
 							</CustomTableCell>
 							<CustomTableCell>{row.deviceVersion}</CustomTableCell>
 							<CustomTableCell>
-								<StatusLabel text={row.status.text} theme={row.status.type} />
+								{/* <StatusLabel text={row.status.text} theme={row.status.type} /> */}
 							</CustomTableCell>
 						</TableRow>
 					))}

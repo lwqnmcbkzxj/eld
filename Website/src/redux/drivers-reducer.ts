@@ -9,7 +9,7 @@ let initialState = {
 	drivers: [
 		{
 			id: 1,
-			firstName: 'Andrew',
+			firstName: '1Andrew',
 			lastName: 'Weas',
 			userName: 'andrew',
 			phone: '+12345 5623',
@@ -25,13 +25,13 @@ let initialState = {
 		},
 		{
 			id: 2,
-			firstName: 'Andrew',
-			lastName: 'Weas',
-			userName: 'andrew',
-			phone: '+12345 5623',
-			truckNumber: '032',
-			notes: 'ABAHS KGDHQJWGJHBs hzjgduiasgduq wgchjz asd as as das',
-			appVersion: '2.3.5',
+			firstName: '2Andrew',
+			lastName: 'asdasdWeas',
+			userName: 'ccccandrew',
+			phone: '123+12345 5623',
+			truckNumber: 'c032',
+			notes: 'hjjABAHS KGDHQJWGJHBs hzjgduiasgduq wgchjz asd as as das',
+			appVersion: 'qwds2.3.5',
 			appVersionStatus: 'error',
 			deviceVersion: 'Wireless Link/BL.02.48',
 			status: {

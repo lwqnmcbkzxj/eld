@@ -7,3 +7,24 @@ export type StatusType = {
 	text: string
 	type: string
 }
+
+
+export enum StatusEnum {
+	Active = 'ACTIVE',
+	Deactivated = 'DEACTiVATED',
+	// Active = 'ACTIVE',
+	// Active = 'ACTIVE',
+}
+
+export enum AlertStatusEnum {
+	Success = 'success',
+	Error = 'error',
+	Warn = 'warn'
+}
+
+export type PasswordObjectType = {
+	old_password: string
+	new_password: string
+	new_password_confirmation: string
+}
+

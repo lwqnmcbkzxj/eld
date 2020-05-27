@@ -11,10 +11,10 @@ type PropsType = {
 
 const DashboardTable: FC<PropsType> = ({ rows, ...props }) => {
 	let labels = [
-		{ label: "Plans" },
-		{ label: "Estimate Profit" },
-		{ label: "Companies", align: 'right' },
-		{ label: "Price", align: 'right' },
+		{ label: "Plans", name: '' },
+		{ label: "Estimate Profit", name: '' },
+		{ label: "Companies", align: 'right', name: '' },
+		{ label: "Price", align: 'right', name: '' },
 	]
 
 	const classes = makeStyles(theme => ({

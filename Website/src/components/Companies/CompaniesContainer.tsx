@@ -2,9 +2,11 @@ import React, { FC, useEffect } from 'react';
 import { useDispatch, useSelector } from "react-redux";
 import { AppStateType } from '../../types/types'
 
-import Companies from './Companies'
+import CompaniesTable from './CompaniesTable'
 import { CompanyType } from '../../types/companies';
 import { getCompaniesFromServer } from '../../redux/companies-reducer';
+
+import { PasswordObjectType } from '../../types/types'
 
 const CompaniesContainer: FC = ({ ...props }) => {
 	const dispatch = useDispatch()
@@ -18,10 +20,34 @@ const CompaniesContainer: FC = ({ ...props }) => {
 		getCompaniesDispatch()
 
 	}, []);
+
+
+	const changeCompanyPasswordDispatch = (passwordObj: PasswordObjectType) => {
+		// dispatch(changeCompanyPassword)
+	}
+
+	const addCompanyDispatch = () => {
+		// dispatch(editCompany)
+	}
+	const editCompanyDispatch = () => {
+		// dispatch(editCompany)
+	}
+
+	const toggleActiveStatusDispatch = (companyId: number) => {
+		// dispatch(toggleActiveStatus)
+	}
+
 	return (
-		<Companies
-			companies={companies}
-		/>
+		<div className="page companies-page">
+			<CompaniesTable
+				rows={companies}
+				changePassword={changeCompanyPasswordDispatch}
+				handleAdd={addCompanyDispatch}
+				handleEdit={editCompanyDispatch}
+				handleToggleActive={toggleActiveStatusDispatch}
+			
+			/>
+		</div>
 	)
 }
 

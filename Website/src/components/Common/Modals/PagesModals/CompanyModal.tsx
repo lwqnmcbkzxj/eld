@@ -16,15 +16,20 @@ import { StyledDefaultButtonSmall, StyledConfirmButtonSmall } from '../../Styled
 import { CustomDialogActions } from '../ModalsComponents'
 
 import * as yup from "yup";
-
+import { CompanyType } from '../../../../types/companies';
+import { PasswordObjectType } from '../../../../types/types'
 
 
 type CompanyModalType = {
 	initialValues: any
 	titleText: string
+
+	submitFunction: (company: CompanyType) => void
+	changePassword?: (passwordObj: PasswordObjectType) => void
+	handleToggleActive?:(comapnyId: number) => void
 }
 
-const EditCompanyModal = ({ open, handleClose, titleText, initialValues, ...props }: ModalType & CompanyModalType) => {
+const EditCompanyModal = ({ open, handleClose, titleText, initialValues, submitFunction, changePassword, handleToggleActive, ...props }: ModalType & CompanyModalType) => {
 	const classes = useStyles();
 
 	const [changePasswordModalOpen, setChangePasswordModalOpen] = useState(false)
@@ -32,9 +37,12 @@ const EditCompanyModal = ({ open, handleClose, titleText, initialValues, ...prop
 		setChangePasswordModalOpen(false);
 	};
 
-	const handleSubmit = (data: any, setSubmitting: any) => {
+	const handleSubmit = async (data: CompanyType, setSubmitting: any) => {
 		setSubmitting(true);
 		// make async call
+
+		// await submitFunction(data)
+
 		console.log("submit: ", data);
 		setSubmitting(false);
 		handleClose()
@@ -176,7 +184,12 @@ const EditCompanyModal = ({ open, handleClose, titleText, initialValues, ...prop
 				</Formik>
 			</Dialog>
 
-			<ChangePasswordModal open={changePasswordModalOpen} handleClose={handleChangePasswordModalClose} />
+			{ changePassword && changePasswordModalOpen &&
+			<ChangePasswordModal
+				open={changePasswordModalOpen}
+				handleClose={handleChangePasswordModalClose}
+				submitFunction={changePassword}
+			/> }
 
 		</React.Fragment>
 	);

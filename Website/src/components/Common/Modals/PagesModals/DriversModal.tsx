@@ -16,6 +16,7 @@ import StyledLabel from '../../StatusLabel/StatusLabel'
 import { CustomDialogActions } from '../ModalsComponents'
 
 import * as yup from "yup";
+import { StatusEnum } from '../../../../types/types';
 
 type DriversModal = {
 	initialValues: any
@@ -91,7 +92,7 @@ const EditProfileModal = ({ open, handleClose, initialValues, titleText, ...prop
 				<DialogTitle id="edit-driver-dialog-title" className={classes.dialog__header}>
 					<div style={{ display: 'flex', alignItems: 'center', justifyContent: "flex-start" }}>
 						<div style={{ marginRight: '15px' }}>{titleText} <span>{initialValues.first_name + ' ' + initialValues.last_name} </span></div>
-						<StyledLabel text="active" theme="success"/>
+						<StyledLabel text={StatusEnum.Active}/>
 					</div>
 				
 					{ initialValues.id && 

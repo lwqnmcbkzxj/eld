@@ -1,12 +1,12 @@
-import { StatusType } from './types'
+import { StatusEnum } from './types'
 
 export type VehicleType = {
-	id: number
-	truckNumber: string
-	make: string
-	model: string
-	license: string
-	eldNumber: string
-	notes: string
-	status: StatusType
+	vehicle_id?: number,
+	vehicle_truck_number?: string,
+	vehicle_make_name?: string
+	vehicle_model_name?: string
+	vehicle_licence_plate?: string
+	eld_serial_number?: string
+	vehicle_notes?: string
+	vehicle_status?: StatusEnum
 }

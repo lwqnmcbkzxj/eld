@@ -6,15 +6,18 @@ import EldsTable from './EldsTable'
 
 type PropsType = {
 	elds: Array<EldType>
+	addFunction: () => void
+	editFunction: () => void
 }
 
 const Elds:FC<PropsType> = ({ elds, ...props }) => {
 
 	return (
 		<div className="page elds-page">
+			{/* <EldsTable
+				rows={elds}
 			
-			
-			<EldsTable rows={elds}/>
+			/> */}
 		</div>
 	)
 }

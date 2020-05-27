@@ -15,14 +15,14 @@ import { isContainsSearchText } from '../../../utils/isContainsSearchText'
 type Order = 'asc' | 'desc';
 const EnhancedTableHead: FC<EnhancedTableHeadProps> = ({ onSelectAllClick, numSelected, rowCount, ...props }) => {
 	let labels = [
-		{ label: 'Name', },
-		{ label: 'Truck No.', },
-		{ label: 'Last Location', },
-		{ label: 'Share', },
-		{ label: 'Date & Time', },
-		{ label: 'Status', },
-		{ label: 'Description', },
-		{ label: 'Current SPD', align: 'right' }
+		{ label: 'Name', name: '' },
+		{ label: 'Truck No.', name: '', },
+		{ label: 'Last Location', name: '', },
+		{ label: 'Share', name: '', },
+		{ label: 'Date & Time', name: '', },
+		{ label: 'Status', name: '', },
+		{ label: 'Description', name: '', },
+		{ label: 'Current SPD', name: '', align: 'right' }
 	]
 	const [order, setOrder] = React.useState<Order>('asc');
 	const [orderBy, setOrderBy] = React.useState(labels[0].label);
@@ -159,7 +159,7 @@ const EnhancedTable: FC<EnhancedTableProps> = ({ rows, getUnits, ...props }) => 
 										</StyledTableCell>
 										<StyledTableCell>{row.date}</StyledTableCell>
 										<StyledTableCell>
-											<StatusLabel text={row.status.text} theme={row.status.type} />
+											{/* <StatusLabel text={row.status.text} theme={row.status.type} /> */}
 										</StyledTableCell>
 										<StyledTableCell style={{}}><div className="text-block">{row.description}</div></StyledTableCell>
 										<StyledTableCell align="right">{getLocaleSpeed(row.currentSPD)}</StyledTableCell>

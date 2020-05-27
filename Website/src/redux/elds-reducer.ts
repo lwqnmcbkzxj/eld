@@ -1,44 +1,22 @@
 import { AppStateType } from '../types/types'
 import { ThunkAction } from 'redux-thunk'
-
 import { EldType } from '../types/elds'
+import { eldsAPI } from '../api/api'
 
-const SET_ELDS = 'SET_ELDS'
+import { showAlert } from '../utils/showAlert'
+import { AlertStatusEnum } from '../types/types'
+
+const SET_ELDS = 'elds/SET_ELDS'
+const SET_ELD = 'elds/SET_ELD'
 
 let initialState = {
-	elds: [
-		{
-			id: 1,
-			serial_number: 'Vehicle-009-2B250D691',
-			notes: 'Record is automatically created for the vehicle 009'
-		},
-		{
-			id: 2,
-			serial_number: 'Vehicle-009-2B250D692',
-			notes: 'Record is automatically created for the vehicle 009'
-		},
-		{
-			id: 3,
-			serial_number: 'Vehicle-009-2B250D693',
-			notes: 'Record is automatically created for the vehicle 009'
-		},
-		{
-			id: 4,
-			serial_number: 'Vehicle-009-2B250D694',
-			notes: 'Record is automatically created for the vehicle 009'
-		},
-		{
-			id: 5,
-			serial_number: 'Vehicle-009-2B250D695',
-			notes: 'Record is automatically created for the vehicle 009'
-		},
-	] as Array<EldType>
+	elds: [ ] as Array<EldType>
 }
 
 type InitialStateType = typeof initialState;
-type ActionsTypes = SetEldsType;
+type ActionsTypes = SetEldsType | SetEldType;
 
-const unitsReducer = (state = initialState, action: ActionsTypes): InitialStateType => {
+const eldsReducer = (state = initialState, action: ActionsTypes): InitialStateType => {
 	switch (action.type) {
 		case SET_ELDS: {
 			return {
@@ -46,6 +24,7 @@ const unitsReducer = (state = initialState, action: ActionsTypes): InitialStateT
 				elds: [...action.elds]
 			}
 		}
+		
 		default:
 			return state;
 	}
@@ -55,18 +34,74 @@ type SetEldsType = {
 	type: typeof SET_ELDS,
 	elds: Array<EldType>
 }
-
-export const setUnits = (elds: Array<EldType>): SetEldsType => {
+type SetEldType = {
+	type: typeof SET_ELD,
+	eld: EldType
+}
+export const setElds = (elds: Array<EldType>): SetEldsType => {
 	return {
 		type: SET_ELDS,
 		elds
 	}
 }
+export const setEld = (eld: EldType): SetEldType => {
+	return {
+		type: SET_ELD,
+		eld
+	}
+}
+export const getEldsFromServer = (companyId: number, page?: number, limit?: number): ThunksType => async (dispatch) => {
+	let response = await eldsAPI.getElds(companyId, page, limit)
+	if (response.status === 0) {
+		dispatch(setElds(response.result))
+	}
+}
+export const getEldFromServer = (id: number): ThunksType => async (dispatch) => {
+	let response = await eldsAPI.getEld(id)
+	if (response.status === 0) {
+		dispatch(setEld(response.result))
+	}
+}
+export const addEld = (dataObject: EldType): ThunksType => async (dispatch) => {
+	let eldObject = {
+		company_id: dataObject.company_id,
+		eld_serial_number: dataObject.eld_serial_number,
+		eld_note: dataObject.eld_note
+	} as EldType
 
-export const getEldsFromServer = ():ThunksType => async (dispatch) => {
-	console.log('GETTING ELDS FROM SERVER')
+	let response = await eldsAPI.addEld(eldObject)
+	if (response.status === 0) {
+		dispatch(getEldsFromServer(eldObject.company_id))
+	}else {
+		showAlert(AlertStatusEnum.Error, 'Failed to add ELD')
+	}
+}
+
+export const editEld = (dataObject: EldType): ThunksType => async (dispatch) => {
+	let eldObject = {
+		eld_id: dataObject.eld_id,
+		eld_serial_number: dataObject.eld_serial_number,
+		eld_note: dataObject.eld_note
+	} as EldType
+
+	let response = await eldsAPI.editEld(eldObject)
+	if (response.status === 0) {
+		dispatch(getEldsFromServer(dataObject.company_id))
+	}else {
+		showAlert(AlertStatusEnum.Error, 'Failed to edit ELD')
+	}
+}
+
+export const deleteEld = (id: number, companyId: number): ThunksType => async (dispatch) => {
+	let response = await eldsAPI.deleteEld(id)
+
+	if (response.status === 0) {
+		dispatch(getEldsFromServer(companyId))
+	} else {
+		showAlert(AlertStatusEnum.Error, 'Failed to delete ELD')
+	}
 }
 
 type ThunksType = ThunkAction<Promise<void>, AppStateType, unknown, ActionsTypes>
 
-export default unitsReducer;
+export default eldsReducer;

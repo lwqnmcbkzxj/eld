@@ -7,47 +7,41 @@ import { StyledSearchInput } from '../Common/StyledTableComponents/StyledInputs'
 import { StyledDefaultButtonSmall } from '../Common/StyledTableComponents/StyledButtons'
 
 import { EldType } from '../../types/elds'
-
 import { isContainsSearchText } from '../../utils/isContainsSearchText'
-
 import EldsModal from '../Common/Modals/PagesModals/EldsModal'
+
+import { getComparator, stableSort } from '../../utils/tableFilters'
 
 type PropsType = {
 	rows: Array<EldType>
+	handleAdd: (dataObj: EldType) => void
+	handleEdit: (dataObj: EldType) => void
+	handleDelete: (id: number) => void
 }
 type Order = 'asc' | 'desc';
 
-const EldsTable: FC<PropsType> = ({ rows, ...props }) => {
-	// const [page, setPage] = React.useState(0)
-	// const [rowsPerPage, setRowsPerPage] = React.useState(10)
+const EldsTable: FC<PropsType> = ({ rows, handleAdd, handleEdit, handleDelete, ...props }) => {
 	const [searchText, setSearchText] = React.useState("")
 
-	// const handleChangePage = (event: unknown, newPage: number) => {
-	// 	setPage(newPage)
-	// };
+	// MODALS
+	const [currentModalData, setCurrentModalData] = useState({});
 
-	// const handleChangeRowsPerPage = (event: React.ChangeEvent<HTMLInputElement>) => {
-	// 	setRowsPerPage(parseInt(event.target.value, 10))
-	// 	setPage(0)
-	// };
-
-	const [eldEditModalOpen, setEldEditModalOpen] = useState(false)
-	const handleEldEditModalClose = () => {
-		setEldEditModalOpen(false);
-	}; 
-
-	const [currentEldData, setCurrentEldData] = useState({});
-
-	const [eldAddModalOpen, setEldAddModalOpen] = useState(false)
-	const handleEldAddModalClose = () => {
-		setEldAddModalOpen(false);
+	const [addModalOpen, setAddModalOpen] = useState(false)
+	const handleAddModalClose = () => {
+		setAddModalOpen(false);
 	};
+	const [editModalOpen, setEditModalOpen] = useState(false)
+	const handleEditModalClose = () => {
+		setEditModalOpen(false);
+	};
+	// MODALS
 
 
 	let labels = [
-		{ label: "ELD No." },
-		{ label: "Notes" },
+		{ label: "ELD No.", name: 'eld_serial_number' },
+		{ label: "Notes", name: 'eld_note' },
 	]
+	// SORTING
 	const [order, setOrder] = React.useState<Order>('asc');
 	const [orderBy, setOrderBy] = React.useState(labels[0].label);
 
@@ -56,17 +50,19 @@ const EldsTable: FC<PropsType> = ({ rows, ...props }) => {
 		setOrder(isAsc ? 'desc' : 'asc');
 		setOrderBy(property);
 	};
+	// SORTING
+
 	return (
 		<Paper style={{ boxShadow: 'none' }}>
 			<Toolbar style={{ width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'space-between', boxSizing: 'border-box' }}>
 				<StyledSearchInput searchText={searchText} setSearchText={setSearchText} />
-				<StyledDefaultButtonSmall variant="outlined" onClick={()=>{ setEldAddModalOpen(true) }}>Add ELD</StyledDefaultButtonSmall>
+				<StyledDefaultButtonSmall variant="outlined" onClick={() => { setAddModalOpen(true) }}>Add ELD</StyledDefaultButtonSmall>
 			</Toolbar>
 
 			<CustomTable>
 				<TableHead>
 					<TableRow>
-						<CustomTableHeaderCells							
+						<CustomTableHeaderCells
 							labels={labels}
 							order={order}
 							orderBy={orderBy}
@@ -75,45 +71,40 @@ const EldsTable: FC<PropsType> = ({ rows, ...props }) => {
 					</TableRow>
 				</TableHead>
 				<TableBody>
-					{rows.map(row => (
-						isContainsSearchText(searchText, row, ['serial_number']) &&	
-						<TableRow key={row.id} onClick={() => {
-							setCurrentEldData(row)
-							setEldEditModalOpen(true)
+					{stableSort(rows, getComparator(order, orderBy)).map(row => (
+						isContainsSearchText(searchText, row, ['eld_serial_number']) &&
+						<TableRow key={row.eld_id} onDoubleClick={() => {
+							setCurrentModalData(row)
+							setEditModalOpen(true)
 						}}>
-							<StyledTableCell style={{ width: '200px' }}><div className="text-block" style={{ maxWidth: '200px' }} >{row.serial_number}</div></StyledTableCell>
-							<StyledTableCell><div className="text-block" style={{ minWidth: '200px' }} >{row.notes}</div></StyledTableCell>
+							<StyledTableCell style={{ maxWidth: '200px' }} >{row.eld_serial_number}</StyledTableCell>
+							<StyledTableCell><div className="text-block" style={{ minWidth: '200px' }} >{row.eld_note}</div></StyledTableCell>
 						</TableRow>
 					))}
 				</TableBody>
 			</CustomTable>
 
-			{/* <CustomPaginator
-				length={rows.length}
-				rowsPerPage={rowsPerPage}
-				currentPage={page}
-				handleChangePage={handleChangePage}
-				handleChangeRowsPerPage={handleChangeRowsPerPage}
-			/> */}
-
 			{/* Edit modal */}
-			{ eldEditModalOpen && 
-			<EldsModal
-				open={eldEditModalOpen}
-				handleClose={handleEldEditModalClose}
-				initialValues={currentEldData}
-				titleText={"Edit ELD"}
-			/> }
+			{editModalOpen &&
+				<EldsModal
+					open={editModalOpen}
+					handleClose={handleEditModalClose}
+					submitFunction={handleEdit}
+					deleteFunction={handleDelete}
+					initialValues={currentModalData}
+					titleText={"Edit ELD"}
+				/>}
 
 			{/* Add modal */}
-			{eldAddModalOpen &&
-			<EldsModal
-				open={eldAddModalOpen}
-				handleClose={handleEldAddModalClose}
-				initialValues={{}}
-				titleText={"Add ELD"}
-			/> }
-			
+			{addModalOpen &&
+				<EldsModal
+					open={addModalOpen}
+					handleClose={handleAddModalClose}
+					submitFunction={handleAdd}
+					initialValues={{}}
+					titleText={"Add ELD"}
+				/>}
+
 		</Paper>
 	)
 }
