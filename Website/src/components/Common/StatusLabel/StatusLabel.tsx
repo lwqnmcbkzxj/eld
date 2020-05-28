@@ -4,7 +4,7 @@ import './StatusLabel.scss'
 import { StatusEnum } from '../../../types/types'
 
 type PropsType = {
-	text?: StatusEnum
+	text?: StatusEnum | string
 }
 
 const StatusLabel: FC<PropsType> = ({ text = "", ...props }) => {

@@ -5,6 +5,7 @@ import { AppStateType } from '../../types/types'
 import Drivers from './Drivers'
 import { DriverType } from '../../types/drivers';
 import { getDriversFromServer } from '../../redux/drivers-reducer';
+import { withRouter } from 'react-router';
 
 const DriversContainer: FC = ({ ...props }) => {
 	const dispatch = useDispatch()
@@ -14,6 +15,8 @@ const DriversContainer: FC = ({ ...props }) => {
 		dispatch(getDriversFromServer())
 	}
 
+
+
 	return (
 		<Drivers
 			drivers={drivers}
@@ -22,4 +25,4 @@ const DriversContainer: FC = ({ ...props }) => {
 	)
 }
 
-export default DriversContainer;
+export default withRouter(DriversContainer);

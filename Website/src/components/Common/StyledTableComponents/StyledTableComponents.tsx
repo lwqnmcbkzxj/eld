@@ -37,7 +37,7 @@ export const CustomTable = ({ subtractHeight = 0, ...props }: any) => {
 			width: 'calc(100% - 3px)',
 			marginLeft: '3px'
 		}}>
-			<Table stickyHeader>
+			<Table stickyHeader style={{ borderCollapse: 'collapse' }}>
 				{props.children}
 			</Table>
 		</TableContainer>
@@ -240,10 +240,11 @@ export const CustomTableHeaderCells: React.FC<TableHeaderCellsProps> = ({ labels
 		onRequestSort(event, property);
 	};
 
+
+
 	return (
 		<>
-			{
-				labels.map((label, counter) => (
+			{ labels.map((label, counter) => (
 					<Component
 						key={counter}
 						align={(label.align === 'right') ? label.align : "left"}
@@ -258,8 +259,7 @@ export const CustomTableHeaderCells: React.FC<TableHeaderCellsProps> = ({ labels
 						</TableSortLabel>
 
 					</Component>
-				))
-			}
+				)) }
 		</>
 	)
 }

@@ -1,0 +1,128 @@
+@import '../../../assets/scss/Colors/Colors.scss';
+
+.driverPreview {
+	padding: 18px 24px;
+	box-sizing: border-box;
+	background: $bg_white_color;
+
+	& .preview {
+		&__header {
+			display: flex;
+			flex-direction: row;
+			align-items: center;
+			justify-content: flex-start;
+
+			& .header__name {
+				font-family: 'Heebo Bold';
+				font-size: 20px;
+				line-height: 29px;
+				letter-spacing: 1px;
+				text-transform: uppercase;
+				color: $primary_text_color;
+				margin-right: 12px;
+			}
+		}
+
+		&__info {
+			display: flex;
+			align-items: center;
+			margin: 13px 0 30px 0;
+
+			& .info__element {
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				margin-right: 40px;
+
+				&:last-child {
+					margin: 0;
+				}
+
+				& img {
+					filter: invert(35%) sepia(65%) saturate(4721%) hue-rotate(210deg) brightness(92%) contrast(95%);
+					margin-right: 8px;
+				}
+
+				& p {
+					font-size: 16px;
+					line-height: 24px;
+					color: $primary_text_color;
+				}
+			}
+		}
+
+		&__stats {
+			display: grid;
+			grid-template-columns: 1fr 1fr;
+			align-items: center;
+
+			& .stats__charts {
+				display: flex;
+				align-items: center;
+				display: grid;
+				grid-template-columns: 1fr 1fr 1fr 1fr;
+
+				& .chartBlock {
+					& canvas {
+						width: 100% !important;
+						height: auto !important;
+					}
+
+					& .chartLabel {
+						font-family: 'heebo Bold';
+						font-size: 12px;
+						line-height: 18px;
+						letter-spacing: 0.5px;
+						text-transform: uppercase;
+						text-align: center;
+						color: #97939A;
+						margin-top: -8px;
+					}
+				}
+			}
+
+			& .stats__info {
+				height: 100%;
+				display: flex;
+				align-items: center;
+				border-left: 1px solid $light_line_color;
+
+				& .info__element {
+					font-family: 'Heebo Bold';
+					margin-left: 64px;
+
+					& .element__count {
+						font-size: 20px;
+						line-height: 29px;
+						letter-spacing: 1px;
+						text-transform: uppercase;
+						color: $primary_text_color;
+
+						&.error {
+							color: #E63C22;
+						}
+					}
+
+					& .element__text {
+						font-size: 12px;
+						line-height: 18px;
+						letter-spacing: 0.5px;
+						text-transform: uppercase;
+						color: $placholder_text_color;
+					}
+				}
+			}
+		}
+	}
+}
+
+.tableHeader {
+	font-family: 'Heebo Bold';
+	font-size: 14px;
+	line-height: 16px;
+	letter-spacing: 0.5px;
+	text-transform: uppercase;
+	color: #323033;
+	padding-left: 10px;
+	border-left: 4px solid $main_blue_color;
+}

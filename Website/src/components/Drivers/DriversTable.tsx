@@ -3,12 +3,12 @@ import { Paper, TableHead, TableRow, TableBody, withStyles, Toolbar, Button } fr
 import StatusLabel from '../Common/StatusLabel/StatusLabel'
 import androidIcon from '../../assets/img/ic_android.svg'
 import { StyledTableCell, CustomTable, CustomPaginator, CustomTableHeaderCells } from '../Common/StyledTableComponents/StyledTableComponents'
-
+import { withRouter, RouteComponentProps } from 'react-router'
 import { StyledSearchInput } from '../Common/StyledTableComponents/StyledInputs'
 import { StyledDefaultButtonSmall } from '../Common/StyledTableComponents/StyledButtons'
 
 import { DriverType } from '../../types/drivers'
-
+import { Link } from 'react-router-dom'
 import DriversModal from '../Common/Modals/PagesModals/DriversModal'
 
 type PropsType = {
@@ -33,7 +33,11 @@ const CustomTableCell = withStyles((theme) => ({
 
 type Order = 'asc' | 'desc';
 
-const DriversTable: FC<PropsType> = ({ rows, ...props }) => {
+
+
+interface RouterProps extends RouteComponentProps<any> {}
+
+const DriversTable: FC<PropsType & RouterProps> = ({ rows, ...props }) => {
 	const [page, setPage] = React.useState(0)
 	const [rowsPerPage, setRowsPerPage] = React.useState(10)
 	const [searchText, setSearchText] = React.useState("")
@@ -94,7 +98,7 @@ const DriversTable: FC<PropsType> = ({ rows, ...props }) => {
 		{ label: "Status", name: '' }
 	]
 	const [order, setOrder] = React.useState<Order>('asc');
-	const [orderBy, setOrderBy] = React.useState(labels[0].label);
+	const [orderBy, setOrderBy] = React.useState(labels[0].name);
 
 	const handleRequestSort = (event: React.MouseEvent<unknown>, property: string) => {
 		const isAsc = orderBy === property && order === 'asc';
@@ -129,28 +133,37 @@ const DriversTable: FC<PropsType> = ({ rows, ...props }) => {
 							row.lastName.includes(searchText) ||
 							row.phone.includes(searchText)) &&
 
+
 						<TableRow
 							key={row.id}
 							hover
-							onClick={() => {
+							onDoubleClick={(e: any) => {
 								setDriverEditModalOpen(true)
 								// setCurrentDriverData(row)
-							}}>
-							<CustomTableCell>{row.firstName}</CustomTableCell>
-							<CustomTableCell>{row.lastName}</CustomTableCell>
-							<CustomTableCell>{row.userName}</CustomTableCell>
-							<CustomTableCell>{row.phone}</CustomTableCell>
-							<CustomTableCell>{row.truckNumber}</CustomTableCell>
-							<CustomTableCell><div className="text-block">{row.notes}</div></CustomTableCell>
-							<CustomTableCell className="app-version">
-								<img src={androidIcon} alt="" className={`anroidSvgIcon ${row.appVersionStatus}`} />
-								<p>{row.appVersion}</p>
-							</CustomTableCell>
-							<CustomTableCell>{row.deviceVersion}</CustomTableCell>
-							<CustomTableCell>
-								{/* <StatusLabel text={row.status.text} theme={row.status.type} /> */}
-							</CustomTableCell>
+								e.preventDefault()
+							}}
+							onClick={() => { 
+								props.history.push(`/drivers/${row.id}`)
+							 }}
+						>
+							{/* <Link to={`/drivers/${row.id}`}> */}
+								<CustomTableCell>{row.firstName}</CustomTableCell>
+								<CustomTableCell>{row.lastName}</CustomTableCell>
+								<CustomTableCell>{row.userName}</CustomTableCell>
+								<CustomTableCell>{row.phone}</CustomTableCell>
+								<CustomTableCell>{row.truckNumber}</CustomTableCell>
+								<CustomTableCell><div className="text-block">{row.notes}</div></CustomTableCell>
+								<CustomTableCell className="app-version">
+									<img src={androidIcon} alt="" className={`anroidSvgIcon ${row.appVersionStatus}`} />
+									<p>{row.appVersion}</p>
+								</CustomTableCell>
+								<CustomTableCell>{row.deviceVersion}</CustomTableCell>
+								<CustomTableCell>
+									{/* <StatusLabel text={row.status.text} theme={row.status.type} /> */}
+								</CustomTableCell>
+							{/* </Link> */}
 						</TableRow>
+
 					))}
 				</TableBody>
 			</CustomTable>
@@ -186,4 +199,4 @@ const DriversTable: FC<PropsType> = ({ rows, ...props }) => {
 	)
 }
 
-export default DriversTable;
+export default withRouter(DriversTable);

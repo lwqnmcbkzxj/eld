@@ -33,6 +33,8 @@ import Login from './components/Login/Login'
 
 
 const DriversContainer = React.lazy(() => import('./components/Drivers/DriversContainer'))
+const DriverContainer = React.lazy(() => import('./components/Drivers/Driver/DriverContainer'))
+
 const EldsContainer = React.lazy(() => import('./components/Elds/EldsContainer'))
 const LogsContainer = React.lazy(() => import('./components/Logs/LogsContainer'))
 const UnitsContainer = React.lazy(() => import('./components/Units/UnitsContainer'))
@@ -64,28 +66,36 @@ const App = (props: any) => {
 	}, [pathName])
 
 	
-	if (!logged && !userInfo.token) {
-		return <>
-			{/* <Redirect to="/" /> */}
-			<Login />
-		</>
-	}
-	if (pathName === "/") {
+	useEffect(() => {
+		if (!logged) {
+			props.history.push('/login')
+		}
+	}, [logged])
+
+	useEffect(() => {
+		if (!logged) {
+			props.history.push('/login')
+		}
+	}, [])
+
+	if (pathName === "/" || pathName === "/login") {
 		if (userInfo.role_id === RolesEnum.user) {
 			return <Redirect to="/units" />
 		} else if (userInfo.role_id === RolesEnum.admin) {
 			return <Redirect to="/dashboard" />
 		}
 	}
-		
 
-
+	if (pathName === '/login' || !logged) {
+		return <Login />
+	}
 	
 
 	return (
 		<div className="app-wrapper">
 			<CustomHelmet />
 			<HeaderContainer />
+
 
 			<div className='app-container'>
 				<MenuContainer />
@@ -94,7 +104,8 @@ const App = (props: any) => {
 					<Switch>
 						{userInfo.role_id === RolesEnum.user ?
 							<>
-								<Route path="/drivers" render={withSuspense(DriversContainer)} />
+								<Route exact path="/drivers" render={withSuspense(DriversContainer)} />
+								<Route path="/drivers/:driverId" render={withSuspense(DriverContainer)} />
 								<Route path="/elds" render={withSuspense(EldsContainer)}/>
 								<Route path="/logs"  render={withSuspense(LogsContainer)}/>
 								<Route path="/units" render={withSuspense(UnitsContainer)} />
