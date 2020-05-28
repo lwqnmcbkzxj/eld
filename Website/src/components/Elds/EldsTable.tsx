@@ -43,9 +43,10 @@ const EldsTable: FC<PropsType> = ({ rows, handleAdd, handleEdit, handleDelete, .
 	]
 	// SORTING
 	const [order, setOrder] = React.useState<Order>('asc');
-	const [orderBy, setOrderBy] = React.useState(labels[0].label);
+	const [orderBy, setOrderBy] = React.useState(labels[0].name);
 
 	const handleRequestSort = (event: React.MouseEvent<unknown>, property: string) => {
+
 		const isAsc = orderBy === property && order === 'asc';
 		setOrder(isAsc ? 'desc' : 'asc');
 		setOrderBy(property);
@@ -71,7 +72,8 @@ const EldsTable: FC<PropsType> = ({ rows, handleAdd, handleEdit, handleDelete, .
 					</TableRow>
 				</TableHead>
 				<TableBody>
-					{stableSort(rows, getComparator(order, orderBy)).map(row => (
+					{stableSort(rows, getComparator(order, orderBy))
+						.map(row => (
 						isContainsSearchText(searchText, row, ['eld_serial_number']) &&
 						<TableRow key={row.eld_id} onDoubleClick={() => {
 							setCurrentModalData(row)

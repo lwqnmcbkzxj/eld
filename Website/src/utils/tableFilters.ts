@@ -1,12 +1,35 @@
 type Order = 'asc' | 'desc';
 
 export function descendingComparator<T>(a: T, b: T, orderBy: keyof T) {
-	if (b[orderBy] < a[orderBy]) {
-		return -1;
+	let aStr = a[orderBy] as unknown as string
+	let bStr = b[orderBy] as unknown as string
+
+	if (typeof aStr === 'boolean') return 0
+
+	debugger
+	if (!!(+aStr)) {
+		let aNum = a[orderBy] as unknown as number
+		let bNum = b[orderBy] as unknown as number
+
+		if (bNum < aNum) {
+			return -1;
+		}
+		if (bNum > aNum) {
+			return 1;
+		}
+
+	} else {
+		aStr = aStr.toLowerCase()
+		bStr = bStr.toLowerCase()
+
+		if (bStr < aStr) {
+			return -1;
+		}
+		if (bStr > aStr) {
+			return 1;
+		}
 	}
-	if (b[orderBy] > a[orderBy]) {
-		return 1;
-	}
+
 	return 0;
 }
 

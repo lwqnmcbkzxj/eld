@@ -4,7 +4,7 @@ import * as ApiTypes from './types'
 import { EldType } from '../types/elds';
 import { PasswordObjectType } from '../types/types';
 
-
+// https://cors-anywhere.herokuapp.com/
 const instance = Axios.create({
 	baseURL: "https://cors-anywhere.herokuapp.com/http://api.eld.sixhands.co/",
 	headers: {

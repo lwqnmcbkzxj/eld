@@ -42,7 +42,7 @@ const DriversTable: FC<PropsType> = ({ rows, handleActivate, handleDelete, ...pr
 	]
 
 	const [order, setOrder] = React.useState<Order>('asc');
-	const [orderBy, setOrderBy] = React.useState(labels[0].label);
+	const [orderBy, setOrderBy] = React.useState(labels[0].name);
 
 	const handleRequestSort = (event: React.MouseEvent<unknown>, property: string) => {
 		const isAsc = orderBy === property && order === 'asc';

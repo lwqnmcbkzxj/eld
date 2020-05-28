@@ -8,13 +8,15 @@ import { CustomField } from '../Common/FormComponents/FormComponents'
 import { StyledConfirmButton } from '../Common/StyledTableComponents/StyledButtons'
 import { StyledFilledInput } from '../Common/StyledTableComponents/StyledInputs'
 import { login } from '../../redux/user-reducer'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { colors } from '../../assets/scss/Colors/Colors'
 import bgLine from '../../assets/img/login-form-line.png'
-
+import Cookies from "js-cookie";
 import { Redirect } from 'react-router-dom'
+import { AppStateType } from '../../types/types';
 
 const Login = () => {
+	const startURL= useSelector<AppStateType, string>(state => state.app.pageUrl)
 	const dispatch = useDispatch()
 	const classes = makeStyles(theme => ({
 		login_form: {
@@ -80,6 +82,10 @@ const Login = () => {
 
 	});
 
+
+	if (Cookies.get('token')) {
+		return <Redirect to={startURL}/>
+	}
 
 	return (
 		<div className="page login_form-page">

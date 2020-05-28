@@ -28,3 +28,8 @@ export type PasswordObjectType = {
 	new_password_confirmation: string
 }
 
+export type LabelType = {
+	name: string
+	label: string
+	align?: "inherit" | "left" | "center" | "right" | "justify" | undefined
+}

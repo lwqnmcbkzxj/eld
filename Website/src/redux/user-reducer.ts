@@ -12,7 +12,7 @@ const SET_TOKEN = 'user/SET_TOKEN'
 
 let initialState = {
 	logged: false,
-	userInfo: {} as UserType,
+	userInfo: { } as UserType,
 	token: "" as string
 }
 
@@ -83,11 +83,13 @@ export const setUserInfo = (userInfo: any): SetUserInfoType => {
 export const login = (login: string, password: string): ThunksType => async (dispatch) => {
 	let response = await userAPI.login(login, password) as GetUserInfoResponseType
 
-	if (response.status === ResultCodesEnum.Success) {
+	if (response && response.status === ResultCodesEnum.Success) {
 		Cookies.set('token', response.result.token, { expires: 10 / 24 });
 		Cookies.set('user_id', response.result.user_id.toString(), { expires: 10 / 24 });
 
 		dispatch(authUser())
+	} else {
+		showAlert('error', 'Failed to login')
 	}
 }
 
