@@ -1,24 +1,23 @@
 import React, { useState } from 'react';
 
 import { Dialog, DialogActions, DialogContent, DialogTitle } from '@material-ui/core';
+import { Formik, Field, Form, FieldArray } from 'formik';
 
 import { useStyles } from '../ModalsStyle'
 
 import { ModalType } from '../ModalsTypes'
-import { colors } from '../../../../assets/scss/Colors/Colors';
-import { Formik, Field, Form, FieldArray } from 'formik';
-import { CustomField } from '../../FormComponents/FormComponents';
-
-import { StyledFilledInputSmall } from '../../../Common/StyledTableComponents/StyledInputs'
-
-import ChangePasswordModal from './ChangePasswordModal'
-import { StyledDefaultButtonSmall, StyledConfirmButtonSmall } from '../../StyledTableComponents/StyledButtons';
-
-import { CustomDialogActions } from '../ModalsComponents'
-import { PasswordObjectType } from '../../../../types/types'
 import { UserType } from '../../../../types/user'
+import { PasswordObjectType } from '../../../../types/types'
 
 import * as yup from "yup";
+
+import { CustomField, CustomDropdown } from '../../FormComponents/FormComponents';
+
+import { StyledFilledInputSmall } from '../../../Common/StyledTableComponents/StyledInputs'
+import ChangePasswordModal from './ChangePasswordModal'
+import { StyledDefaultButtonSmall, StyledConfirmButtonSmall } from '../../StyledTableComponents/StyledButtons';
+import { CustomDialogActions } from '../ModalsComponents'
+
 
 
 type EditProfileType = {
@@ -76,7 +75,7 @@ const EditProfileModal = ({ open, handleClose, changePassword, editProfile, init
 					validateOnChange={true}
 					initialValues={{
 
-						first_name : "Pac",
+						first_name: "Pac",
 						last_name: "Man",
 						user_login: '',
 						email: 'malkovich@mail.ru',
@@ -99,7 +98,7 @@ const EditProfileModal = ({ open, handleClose, changePassword, editProfile, init
 					}}
 				>
 
-					{({ values, errors, isSubmitting }) => (
+					{({ values, errors, isSubmitting, setFieldValue }) => (
 						<Form>
 							<DialogContent className={classes.dialog__content}>
 								<div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gridGap: '64px' }}>
@@ -118,7 +117,18 @@ const EditProfileModal = ({ open, handleClose, changePassword, editProfile, init
 										</div>
 										<div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gridGap: '32px' }}>
 											<CustomField name={'usdot'} label={'USDOT'} />
-											<CustomField name={'company_timezone'} label={'Company Timezone'} />
+
+
+											<CustomField
+												name={'company_timezone'}
+												label={'Company Timezone'}
+												Component={CustomDropdown}
+												values={[
+													{ value: 'Central Standart Time', id: 1 },
+													{ value: 'Central Standart Time', id: 2 },
+												]}
+												onValueChange={setFieldValue}
+											/>
 										</div>
 
 										<CustomField name={'company_name'} label={'Company Name'} />

@@ -1,12 +1,12 @@
 import React, { FC, useState } from 'react'
 import { makeStyles, withStyles } from '@material-ui/core'
-import { FormControl, FilledInput, InputAdornment, TextField, Checkbox, FormControlLabel } from '@material-ui/core'
+import { FormControl,  InputAdornment, TextField, InputBase, InputLabel, createStyles } from '@material-ui/core'
 import { colors } from '../../../assets/scss/Colors/Colors'
 
 import searchIcon from '../../../assets/img/pctg_search.svg'
 
 
-export const StyledFilledInput = withStyles((theme) => ({
+const inputStyle = {
 	root: {
 		"& .MuiInputBase-root": {
 			borderBottom: `1px solid ${colors.bg_component_color}`,
@@ -62,7 +62,9 @@ export const StyledFilledInput = withStyles((theme) => ({
 		}
 
 	},
-}))(TextField);
+}
+
+export const StyledFilledInput = withStyles((theme) => (inputStyle))(TextField);
 
 export const StyledFilledInputSmall = withStyles((theme) => ({
 	root: {
@@ -110,3 +112,20 @@ export const StyledSearchInput: FC<SearchInputTypes> = ({ searchText, setSearchT
 	);
 };
 // ** SEARCH INPUT END**
+
+
+export const StyledInputBase = withStyles((theme) => ({
+	root: {
+		width: '100%',
+		borderBottom: `1px solid ${colors.bg_component_color}`,
+		backgroundColor: colors.bg_component_color,
+		borderRadius: '4px',
+		fontSize: '14px',
+		lineHeight: '21px',
+		color: colors.primary_text_color,
+		height: '32px',
+		padding: '12px',
+	},
+}))(InputBase);
+
+

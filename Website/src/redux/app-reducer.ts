@@ -72,7 +72,7 @@ export const setIsRootPage = (isRootPage: boolean):SetIsRootPageType => {
 }
 
 export const getPageName = (pathname: string): ThunksType => async (dispatch) => {
-	let pagesArray = ['units', 'drivers','vehicles','logs','driving-event','elds','transfer-eld-data', 'dashboard', 'companies', 'plans', 'accounting', 'settings']
+	let pagesArray = ['units', 'drivers','vehicles','trips','logs','driving-event','elds','transfer-eld-data', 'dashboard', 'companies', 'plans', 'accounting', 'settings']
 	let pathParts = pathname.split('/').slice(1)
 	
 

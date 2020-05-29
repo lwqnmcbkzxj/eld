@@ -5,6 +5,7 @@ import useStyles from "./style"
 import mapIcon from '../../assets/img/ic_map.svg'
 import driverIcon from '../../assets/img/ic_driver.svg'
 import vehicleIcon from '../../assets/img/ic_vehicles.svg'
+import tripsIcon from '../../assets/img/ic_trips.svg'
 import logsIcon from '../../assets/img/ic_logs.svg'
 import eventIcon from '../../assets/img/ic_event.svg'
 import eldIcon from '../../assets/img/ic_eld.svg'
@@ -39,6 +40,14 @@ const UserMenu = (props: any) => {
 						activeClassName={classes.list__item_active} >
 						<img src={vehicleIcon} alt="vehicle-icon" className="svgIcon" />
 						<p>Vehicles</p>
+					</MenuItem>
+					<MenuItem
+						component={NavLink}
+						to="/trips"
+						className={classes.list__item}
+						activeClassName={classes.list__item_active} >
+						<img src={tripsIcon} alt="trips-icon" className="svgIcon" />
+						<p>Trips</p>
 					</MenuItem>
 					<MenuItem
 						component={NavLink}

@@ -1,4 +1,4 @@
-import { StatusType } from '../../../types/types'
+import { StatusType, LabelType } from '../../../types/types'
 
 export type EnhancedTableToolbarProps = {
 	numSelected: number
@@ -10,11 +10,16 @@ export type EnhancedTableToolbarProps = {
 	getUnits: () => void
 }
 
+type Order = 'asc' | 'desc';
 
 export type EnhancedTableHeadProps = {
 	numSelected: number
 	onSelectAllClick: (event: React.ChangeEvent<HTMLInputElement>) => void
 	rowCount: number
+	labels: Array<LabelType>
+	onRequestSort?: (event: React.MouseEvent<unknown>, property: string) => void;
+	order?: Order;
+	orderBy?: string;
 }
 
 export type EnhancedTableProps = {

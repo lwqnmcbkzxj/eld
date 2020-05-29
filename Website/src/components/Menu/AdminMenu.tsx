@@ -21,7 +21,7 @@ const AdminMenu = (props: any) => {
 						to="/dashboard"
 						className={classes.list__item}
 						activeClassName={classes.list__item_active} >
-						<img src={dashBoardIcon} alt="" className="svgIcon" />
+						<img src={dashBoardIcon} alt="icon" className="svgIcon" />
 						<p>Dashboard</p>
 					</MenuItem>
 					<MenuItem
@@ -29,7 +29,7 @@ const AdminMenu = (props: any) => {
 						to="/companies"
 						className={classes.list__item}
 						activeClassName={classes.list__item_active} >
-						<img src={companiesIcon} alt="" className="svgIcon" />
+						<img src={companiesIcon} alt="icon" className="svgIcon" />
 						<p>Companies</p>
 					</MenuItem>
 					<MenuItem
@@ -37,7 +37,7 @@ const AdminMenu = (props: any) => {
 						to="/plans"
 						className={classes.list__item}
 						activeClassName={classes.list__item_active} >
-						<img src={plansIcon} alt="" className="svgIcon" />
+						<img src={plansIcon} alt="icon" className="svgIcon" />
 						<p>Plans</p>
 					</MenuItem>
 					<MenuItem
@@ -45,7 +45,7 @@ const AdminMenu = (props: any) => {
 						to="/accounting"
 						className={classes.list__item}
 						activeClassName={classes.list__item_active} >
-						<img src={accountingIcon} alt="" className="svgIcon" />
+						<img src={accountingIcon} alt="icon" className="svgIcon" />
 						<p>Accounting</p>
 					</MenuItem>
 					<MenuItem
@@ -53,7 +53,7 @@ const AdminMenu = (props: any) => {
 						to="/settings"
 						className={classes.list__item}
 						activeClassName={classes.list__item_active} >
-						<img src={settingsIcon} alt="" className="svgIcon" />
+						<img src={settingsIcon} alt="icon" className="svgIcon" />
 						<p>Settings</p>
 					</MenuItem>
 				</MenuList>

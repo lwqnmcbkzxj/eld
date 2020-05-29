@@ -1,12 +1,13 @@
-import React, { FC, useState, MouseEvent } from 'react';
+import React, { FC, useState, useEffect } from 'react';
 import './Header.scss'
 import Logo from '../Common/Logo/Logo'
 import GoBackBlock from '../Common/GoBackBlock/GoBackBlock'
-import { Link } from 'react-router-dom'
+import { NavLink, withRouter, RouteComponentProps } from 'react-router-dom'
 import { Tabs, Tab, MenuList, MenuItem, makeStyles } from '@material-ui/core';
 
 import dashboardIcon from '../../assets/img/ic_dashboard.svg'
 import companiesIcon from '../../assets/img/ic_companies.svg'
+import driversIcon from '../../assets/img/ic_driver.svg'
 import logsIcon from '../../assets/img/ic_logs.svg'
 
 import cn from 'classnames'
@@ -20,12 +21,23 @@ type PropsType = {
 }
 
 
-const AdminMiddleHeader: FC<PropsType> = ({ ...props }) => {
+const AdminMiddleHeader: FC<PropsType & RouteComponentProps> = ({ ...props }) => {
 	const [value, setValue] = React.useState(0);
 
 	const handleChange = (event: React.ChangeEvent<{}>, newValue: number) => {
 		setValue(newValue);
 	};
+	let pathNames = ['dashboard','companies','drivers','logs']
+
+	let pathName = props.location.pathname
+	useEffect(() => {
+		pathNames.map((path, counter) => {
+			if (pathName.includes(path)) {
+				setValue(counter)
+			}
+		})
+	}, [pathName]);
+	
 
 	const classes = makeStyles((theme) => ({
 		root: {
@@ -60,6 +72,7 @@ const AdminMiddleHeader: FC<PropsType> = ({ ...props }) => {
 		},
 	  }))();
 
+
 	return (
 		<>
 			<Tabs
@@ -67,13 +80,14 @@ const AdminMiddleHeader: FC<PropsType> = ({ ...props }) => {
 				value={value}
 				indicatorColor="primary"
 				className={classes.root}
-			>
-				<Tab label='dashboard' to='/dashboard' component={Link} icon={<img src={dashboardIcon} alt="" className="svgIcon" />} />
-				<Tab label='companies' to='/companies' component={Link} icon={<img src={companiesIcon} alt="" className="svgIcon" />}/>
-				<Tab label='logs' to='/logs' component={Link} icon={<img src={logsIcon} alt="" className="svgIcon" />}/>
+			> 
+				<Tab label={`${pathNames[0]}`} to={`/${pathNames[0]}`} activeClassName={"Mui-selected"} component={NavLink} icon={<img src={dashboardIcon} alt="menu-icon" className="svgIcon" />} />
+				<Tab label={`${pathNames[1]}`} to={`/${pathNames[1]}`} component={NavLink} icon={<img src={companiesIcon} alt="menu-icon" className="svgIcon" />}/>
+				<Tab label={`${pathNames[2]}`} to={`/${pathNames[2]}`} component={NavLink} icon={<img src={driversIcon} alt="menu-icon" className="svgIcon" />}/>
+				<Tab label={`${pathNames[3]}`} to={`/${pathNames[3]}`} component={NavLink} icon={<img src={logsIcon} alt="menu-icon" className="svgIcon" />}/>
 			</Tabs>
 		</>
 	)
 }
 
-export default AdminMiddleHeader;
+export default withRouter(AdminMiddleHeader);

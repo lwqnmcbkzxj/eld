@@ -84,10 +84,16 @@ export const login = (login: string, password: string): ThunksType => async (dis
 	let response = await userAPI.login(login, password) as GetUserInfoResponseType
 
 	if (response && response.status === ResultCodesEnum.Success) {
-		Cookies.set('token', response.result.token, { expires: 10 / 24 });
-		Cookies.set('user_id', response.result.user_id.toString(), { expires: 10 / 24 });
 
-		dispatch(authUser())
+
+		dispatch(setLogged(true))
+		dispatch(setAccessToken(response.result.token))
+		await dispatch(getUserInfo( response.result.user_id))
+
+		// Cookies.set('token', response.result.token, { expires: 1 / 24 });
+		// Cookies.set('user_id', response.result.user_id.toString(), { expires: 1 / 24 });
+
+		// dispatch(authUser())
 	} else {
 		showAlert('error', 'Failed to login')
 	}
@@ -101,6 +107,7 @@ export const logout = (): ThunksType => async (dispatch) => {
 		dispatch(setAccessToken(""))
 		dispatch(setUserInfo({}))
 		Cookies.remove('token')
+		Cookies.remove('user_id')
 	// } else {
 
 	// }

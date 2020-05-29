@@ -1,7 +1,7 @@
-import React, { FC, useState } from 'react'
+import React, { FC, useState, useEffect } from 'react'
 import { Table, TableBody, TableContainer, TableHead, TablePagination, TableRow, Toolbar, FormControlLabel, makeStyles } from '@material-ui/core'
 import { Paper, Checkbox } from '@material-ui/core'
-
+import { LabelType } from '../../../types/types'
 import StatusLabel from '../../Common/StatusLabel/StatusLabel'
 import shareIcon from '../../../assets/img/ic_share.svg'
 
@@ -11,27 +11,12 @@ import EnhancedTableToolbar from './UnitsTableToolbar'
 
 import { CustomTable, CustomPaginator, StyledTableCell, CustomTableHeaderCells } from '../../Common/StyledTableComponents/StyledTableComponents'
 import { isContainsSearchText } from '../../../utils/isContainsSearchText'
+import { getComparator, stableSort } from '../../../utils/tableFilters'
+
 
 type Order = 'asc' | 'desc';
-const EnhancedTableHead: FC<EnhancedTableHeadProps> = ({ onSelectAllClick, numSelected, rowCount, ...props }) => {
-	let labels = [
-		{ label: 'Name', name: '' },
-		{ label: 'Truck No.', name: '', },
-		{ label: 'Last Location', name: '', },
-		{ label: 'Share', name: '', },
-		{ label: 'Date & Time', name: '', },
-		{ label: 'Status', name: '', },
-		{ label: 'Description', name: '', },
-		{ label: 'Current SPD', name: '', align: 'right' }
-	]
-	const [order, setOrder] = React.useState<Order>('asc');
-	const [orderBy, setOrderBy] = React.useState(labels[0].name);
+const EnhancedTableHead: FC<EnhancedTableHeadProps> = ({ onSelectAllClick, numSelected, rowCount, labels, order, orderBy, onRequestSort, ...props }) => {
 
-	const handleRequestSort = (event: React.MouseEvent<unknown>, property: string) => {
-		const isAsc = orderBy === property && order === 'asc';
-		setOrder(isAsc ? 'desc' : 'asc');
-		setOrderBy(property);
-	};
 	return (
 		<TableHead>
 			<TableRow>
@@ -44,11 +29,11 @@ const EnhancedTableHead: FC<EnhancedTableHeadProps> = ({ onSelectAllClick, numSe
 					/>
 				</StyledTableCell>
 
-				<CustomTableHeaderCells					
+				<CustomTableHeaderCells
 					labels={labels}
 					order={order}
 					orderBy={orderBy}
-					onRequestSort={handleRequestSort}
+					onRequestSort={onRequestSort}
 				/>
 			</TableRow>
 		</TableHead>
@@ -58,8 +43,7 @@ const EnhancedTableHead: FC<EnhancedTableHeadProps> = ({ onSelectAllClick, numSe
 const EnhancedTable: FC<EnhancedTableProps> = ({ rows, getUnits, ...props }) => {
 	const classes = useTableStyles()
 	const [selected, setSelected] = React.useState<string[]>([])
-	// const [page, setPage] = React.useState(0)
-	// const [rowsPerPage, setRowsPerPage] = React.useState(2)
+	
 	const [searchText, setSearchText] = useState("")
 
 	const handleSelectAllClick = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -87,19 +71,8 @@ const EnhancedTable: FC<EnhancedTableProps> = ({ rows, getUnits, ...props }) => 
 				selected.slice(selectedIndex + 1),
 			);
 		}
-
 		setSelected(newSelected)
 	};
-
-	// const handleChangePage = (event: unknown, newPage: number) => {
-	// 	setPage(newPage)
-	// };
-
-	// const handleChangeRowsPerPage = (event: React.ChangeEvent<HTMLInputElement>) => {
-	// 	setRowsPerPage(parseInt(event.target.value, 10))
-	// 	setPage(0)
-	// };
-
 
 	const getLocaleSpeed = (value: number) => {
 		let valueWithComma = (value).toFixed(1)
@@ -112,6 +85,26 @@ const EnhancedTable: FC<EnhancedTableProps> = ({ rows, getUnits, ...props }) => 
 	const deleteItem = (id: number) => {
 		console.log(id)
 	}
+
+	let labels = [
+		{ label: 'Name', name: 'name' },
+		{ label: 'Truck No.', name: 'truckNumber', },
+		{ label: 'Last Location', name: 'lastLocation', },
+		{ label: 'Share', name: '', },
+		{ label: 'Date & Time', name: 'date', },
+		{ label: 'Status', name: '', },
+		{ label: 'Description', name: 'description', },
+		{ label: 'Current SPD', name: 'currentSPD', align: 'right' }
+	] as Array<LabelType>
+
+	const [order, setOrder] = React.useState<Order>('asc');
+	const [orderBy, setOrderBy] = React.useState(labels[0].name);
+
+	const handleRequestSort = (event: React.MouseEvent<unknown>, property: string) => {
+		const isAsc = orderBy === property && order === 'asc';
+		setOrder(isAsc ? 'desc' : 'asc');
+		setOrderBy(property);
+	};
 
 	return (
 
@@ -127,59 +120,53 @@ const EnhancedTable: FC<EnhancedTableProps> = ({ rows, getUnits, ...props }) => 
 					getUnits={getUnits}
 				/>
 
-				<CustomTable>
+				<CustomTable subtractHeight={420}>
 					<EnhancedTableHead
 						numSelected={selected.length}
 						onSelectAllClick={handleSelectAllClick}
 						rowCount={rows.length}
+						labels={labels}
+						order={order}
+						orderBy={orderBy}
+						onRequestSort={handleRequestSort}
 					/>
 					<TableBody>
-						{rows
+						{stableSort(rows as any, getComparator(order, orderBy))
 							// .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
 							.map((row, index) => {
 
-							const isItemSelected = isSelected(row.id.toString());
-							if (isContainsSearchText(searchText, row, ['name', 'truckNumber'])) {
-								return (
-									<TableRow
-										hover
-										onClick={(event) => handleClick(event, row.id.toString())}
-										tabIndex={-1}
-										key={row.id}
-									>
-										<StyledTableCell padding="checkbox">
-											<Checkbox checked={isItemSelected} color="primary" />
-										</StyledTableCell>
+								const isItemSelected = isSelected(row.id.toString());
+								if (isContainsSearchText(searchText, row, ['name', 'truckNumber'])) {
+									return (
+										<TableRow
+											hover
+											onClick={(event) => handleClick(event, row.id.toString())}
+											tabIndex={-1}
+											key={row.id}
+										>
+											<StyledTableCell padding="checkbox">
+												<Checkbox checked={isItemSelected} color="primary" />
+											</StyledTableCell>
 
-										<StyledTableCell>{row.name}</StyledTableCell>
-										<StyledTableCell>{row.truckNumber}</StyledTableCell>
-										<StyledTableCell>{row.lastLocation}</StyledTableCell>
-										<StyledTableCell>
-											<button> <img src={shareIcon} alt="share" onClick={(e) => { console.log('share'); e.stopPropagation() }} /> </button>
-										</StyledTableCell>
-										<StyledTableCell>{row.date}</StyledTableCell>
-										<StyledTableCell>
-											{/* <StatusLabel text={row.status.text} theme={row.status.type} /> */}
-										</StyledTableCell>
-										<StyledTableCell style={{}}><div className="text-block">{row.description}</div></StyledTableCell>
-										<StyledTableCell align="right">{getLocaleSpeed(row.currentSPD)}</StyledTableCell>
+											<StyledTableCell>{row.name}</StyledTableCell>
+											<StyledTableCell>{row.truckNumber}</StyledTableCell>
+											<StyledTableCell>{row.lastLocation}</StyledTableCell>
+											<StyledTableCell>
+												<button> <img src={shareIcon} alt="share" onClick={(e) => { console.log('share'); e.stopPropagation() }} /> </button>
+											</StyledTableCell>
+											<StyledTableCell>{row.date}</StyledTableCell>
+											<StyledTableCell>
+												<StatusLabel text={"Status"} />
+											</StyledTableCell>
+											<StyledTableCell style={{}}><div className="text-block">{row.description}</div></StyledTableCell>
+											<StyledTableCell align="right">{getLocaleSpeed(+row.currentSPD)}</StyledTableCell>
+										</TableRow>
+									);
+								}
 
-
-									</TableRow>
-								);
-							}
-
-						})}
+							})}
 					</TableBody>
 				</CustomTable>
-				
-				{/* <CustomPaginator
-					length={rows.length}
-					rowsPerPage={rowsPerPage}
-					currentPage={page}
-					handleChangePage={handleChangePage}
-					handleChangeRowsPerPage={handleChangeRowsPerPage}
-				/>  */}
 			</Paper>
 		</div>
 

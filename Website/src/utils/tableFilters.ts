@@ -6,8 +6,7 @@ export function descendingComparator<T>(a: T, b: T, orderBy: keyof T) {
 
 	if (typeof aStr === 'boolean') return 0
 
-	debugger
-	if (!!(+aStr)) {
+	if (!!(+aStr) || (+aStr) === 0 || (+bStr) === 0) {
 		let aNum = a[orderBy] as unknown as number
 		let bNum = b[orderBy] as unknown as number
 

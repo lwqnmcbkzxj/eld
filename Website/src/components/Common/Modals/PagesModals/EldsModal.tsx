@@ -5,16 +5,11 @@ import { Dialog, DialogActions, DialogContent, DialogTitle } from '@material-ui/
 import { useStyles } from '../ModalsStyle'
 
 import { ModalType } from '../ModalsTypes'
-import { colors } from '../../../../assets/scss/Colors/Colors';
 import { Formik, Field, Form, FieldArray } from 'formik';
 import { CustomField } from '../../FormComponents/FormComponents';
 
-import { StyledFilledInputSmall } from '../../../Common/StyledTableComponents/StyledInputs'
-
 import { StyledDefaultButtonSmall, StyledConfirmButtonSmall } from '../../StyledTableComponents/StyledButtons';
-
 import { CustomDialogActions } from '../ModalsComponents'
-
 import * as yup from "yup";
 import { EldType } from '../../../../types/elds';
 
@@ -95,7 +90,6 @@ const EditProfileModal = ({ open, handleClose, initialValues, titleText, submitF
 
 								<CustomField name={'eld_serial_number'} label={'Serial No.'} />
 								<CustomField name={'eld_note'} label={'Notes'} type="textarea" placeholder="Notes"/>
-
 
 							</DialogContent>
 

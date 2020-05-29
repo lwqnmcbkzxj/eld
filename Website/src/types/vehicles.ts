@@ -9,4 +9,12 @@ export type VehicleType = {
 	eld_serial_number?: string
 	vehicle_notes?: string
 	vehicle_status?: StatusEnum
+
+
+	year?: string
+	fuel_type?: string
+	state?: string
+	enter_vin_manually?: boolean
+	vin_number?: string
+
 }

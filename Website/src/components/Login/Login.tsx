@@ -93,6 +93,7 @@ const Login = () => {
 				<Formik
 					validateOnChange={true}
 					initialValues={{ login: 'sidorov', password: 'Sidorov123' }}
+
 					validationSchema={validationSchema}
 					validate={values => {
 						const errors: Record<string, string> = {};
@@ -107,6 +108,10 @@ const Login = () => {
 						<Form>
 							<div style={{ textAlign: 'center' }}><Logo height={64} /></div>
 
+
+							{/* <p>adm: sergeev Sergeev123</p>
+							<p>user: sidorov Sidorov123</p>
+							 */}
 							<div className={classes.login_form__inputs}>
 								<CustomField name={'login'} placeholder={'Login'} Component={StyledFilledInput} />
 								<CustomField name={'password'} placeholder={'Password'} canSeeInputValue={true} Component={StyledFilledInput} />

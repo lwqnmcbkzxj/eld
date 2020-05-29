@@ -6,6 +6,7 @@ import DeleteIcon from '@material-ui/icons/Delete'
 import refreshIcon from '../../../assets/img/ic_refresh.svg'
 import toggleBlockIcon from '../../../assets/img/ic_arrow_bottom.svg'
 
+
 import { StyledSearchInput } from '../../Common/StyledTableComponents/StyledInputs'
 
 import { useToolbarStyles  } from './UntisTableStyle.js'
@@ -23,16 +24,7 @@ const EnhancedTableToolbar: FC<EnhancedTableToolbarProps> = ({ numSelected, sele
 	return (
 		<Toolbar className={cn(classes.toolBar, { [classes.toolBar_active]: numSelected > 0 })}>
 
-			<StyledSearchInput searchText={searchText} setSearchText={setSearchText} />
-
-			{numSelected > 0 && <div className="delete-selected">
-				<div style={{ flex: '1 1 100%' }}>{numSelected} rows selected</div>
-				<Tooltip title="Delete">
-					<IconButton>
-						<DeleteIcon onClick={() => { deleteItems(selected) }} />
-					</IconButton>
-				</Tooltip>
-			</div>}
+			<StyledSearchInput searchText={searchText} setSearchText={setSearchText} />			
 
 			<div className="service-icons">
 				<IconButton onClick={getUnits}><img src={refreshIcon} alt="referesh-icon" /></IconButton>

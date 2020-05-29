@@ -1,23 +1,19 @@
-import React, { useState } from 'react';
+import React from 'react';
 
-import { Dialog, DialogActions, DialogContent, DialogTitle, Checkbox, TextField } from '@material-ui/core';
+import { Dialog, DialogContent, DialogTitle } from '@material-ui/core';
+import { Formik, Form } from 'formik';
 
 import { useStyles } from '../ModalsStyle'
 
 import { ModalType } from '../ModalsTypes'
-import { colors } from '../../../../assets/scss/Colors/Colors';
-import { Formik, Field, Form, FieldArray } from 'formik';
-import { CustomField, CustomCheckBox } from '../../FormComponents/FormComponents';
+import { VehicleType } from '../../../../types/vehicles';
 
-import { StyledFilledInputSmall } from '../../StyledTableComponents/StyledInputs'
-
-import { StyledDefaultButtonSmall, StyledConfirmButtonSmall } from '../../StyledTableComponents/StyledButtons';
+import { CustomField, CustomCheckBox, CustomDropdown } from '../../FormComponents/FormComponents';
+import { StyledDefaultButtonSmall } from '../../StyledTableComponents/StyledButtons';
 import StyledLabel from '../../StatusLabel/StatusLabel'
 import { CustomDialogActions } from '../ModalsComponents'
 
-
 import * as yup from "yup";
-import { VehicleType } from '../../../../types/vehicles';
 import { StatusEnum } from '../../../../types/types';
 
 type VehiclesModalType = {
@@ -46,12 +42,16 @@ const EditVehicleModal = ({ open, handleClose, initialValues, titleText, handleD
 			eld_serial_number: '',
 			vehicle_make_name: '',
 			vehicle_model_name: '',
-			// year: '',
-			// fuel_type: '',
+
+			year: '',
+			fuel_type: '',
+
 			vehicle_licence_plate: '',
-			// state: '',
-			// enter_vin_manually: false,
-			// vin_number: '',
+
+			state: '',
+			enter_vin_manually: false,
+			vin_number: '',
+			
 			vehicle_notes: ''
 		}
 	}
@@ -61,12 +61,12 @@ const EditVehicleModal = ({ open, handleClose, initialValues, titleText, handleD
 		eld_serial_number: yup.string(),
 		vehicle_make_name: yup.string(),
 		vehicle_model_name: yup.string(),
-		// year: yup.string(),
-		// fuel_type: yup.string(),
+		year: yup.string(),
+		fuel_type: yup.string(),
 		vehicle_licence_plate: yup.string(),
-		// state: yup.string(),
-		// enter_vin_manually: yup.string(),
-		// vin_number: yup.string(),
+		state: yup.string(),
+		enter_vin_manually: yup.string(),
+		vin_number: yup.string(),
 	});
 
 	return (
@@ -115,7 +115,7 @@ const EditVehicleModal = ({ open, handleClose, initialValues, titleText, handleD
 					}}
 				>
 
-					{({ values, errors, isSubmitting, }) => (
+					{({ values, errors, isSubmitting, setFieldValue }) => (
 						<Form>
 							<DialogContent className={classes.dialog__content}>
 								<div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gridGap: '64px' }}>
@@ -126,26 +126,61 @@ const EditVehicleModal = ({ open, handleClose, initialValues, titleText, handleD
 										</div>
 										<div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gridGap: '32px' }}>
 											<CustomField name={'vehicle_make_name'} label={'Make'} optional={true} />
-											<CustomField name={'vehicle_model_name'} label={'Model'} canSeeInputValue={true} optional={true} />
+											<CustomField name={'vehicle_model_name'} label={'Model'} optional={true} />
 										</div>
 										<div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gridGap: '32px' }}>
-											{/* <CustomField name={'year'} label={'Year'} optional={true} /> */}
-											{/* <CustomField name={'fuel_type'} label={'Fuel Type'} optional={true} /> */}
+											<CustomField
+												name={'year'}
+												label={'Year'}
+												Component={CustomDropdown}
+												values={[
+													{ value: '2012', id: 1 },
+													{ value: '2011', id: 2 },
+													{ value: '2010', id: 3 },
+													{ value: '2009', id: 4 },
+												]}
+												onValueChange={setFieldValue}
+												optional={true} 
+											/>
+											<CustomField
+												name={'fuel_type'}
+												label={'Fuel Type'}
+												Component={CustomDropdown}
+												values={[
+													{ value: 'Diesel', id: 1 },
+													{ value: 'D2', id: 2 },
+													{ value: 'D3', id: 3 },
+													{ value: 'D4', id: 4 },
+												]}
+												onValueChange={setFieldValue}
+												optional={true}
+											/>
 										</div>
 										<div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gridGap: '32px' }}>
-											{/* <CustomField name={'licence_number'} label={'Licence Plate'} optional={true} /> */}
-											{/* <CustomField name={'state'} label={'Issuing State/Province'} optional={true} /> */}
+											<CustomField name={'licence_number'} label={'Licence Plate'} optional={true} />
+											<CustomField
+												name={'state'}
+												label={'Issuing State/Province'}
+												Component={CustomDropdown}
+												values={[
+													{ value: 'Illinois', id: 1 },
+													{ value: 'Washington', id: 2 },
+													{ value: 'Kentucky', id: 3 },
+													{ value: 'Louisiana', id: 4 },
+												]}
+												onValueChange={setFieldValue}
+											/>
 										</div>
 
 										<div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gridGap: '32px' }}>
-											{/* <CustomCheckBox name="enter_vin_manually" label="Enter VIN manually" optional={true} /> */}
-											{/* <CustomField name={'vin_number'} label={'VIN'} disabled={!values.enter_vin_manually} optional={true} /> */}
+											<CustomCheckBox name="enter_vin_manually" label="Enter VIN manually" optional={true} />
+											<CustomField name={'vin_number'} label={'VIN'} disabled={!values.enter_vin_manually} optional={true} />
 										</div>
 
 									</div>
 
 									<div>
-										{/* <CustomField name={'notes'} label={'Notes'} type="textarea" placeholder="Notes" optional={true} /> */}
+										<CustomField name={'notes'} label={'Notes'} type="textarea" placeholder="Notes" optional={true} />
 									</div>
 								</div>
 

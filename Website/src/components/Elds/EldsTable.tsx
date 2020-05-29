@@ -79,7 +79,7 @@ const EldsTable: FC<PropsType> = ({ rows, handleAdd, handleEdit, handleDelete, .
 							setCurrentModalData(row)
 							setEditModalOpen(true)
 						}}>
-							<StyledTableCell style={{ maxWidth: '200px' }} >{row.eld_serial_number}</StyledTableCell>
+							<StyledTableCell style={{ width: '200px' }} >{row.eld_serial_number}</StyledTableCell>
 							<StyledTableCell><div className="text-block" style={{ minWidth: '200px' }} >{row.eld_note}</div></StyledTableCell>
 						</TableRow>
 					))}

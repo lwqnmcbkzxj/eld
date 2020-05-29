@@ -89,7 +89,6 @@ const DriversTable: FC<PropsType> = ({ rows, handleActivate, handleDelete, ...pr
 				<TableBody>
 
 
-
 					{rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map(row => (
 						isContainsSearchText(searchText, row, [
 							'vehicle_truck_number',

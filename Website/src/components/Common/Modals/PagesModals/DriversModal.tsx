@@ -1,22 +1,23 @@
 import React, { useState } from 'react';
 
 import { Dialog, DialogActions, DialogContent, DialogTitle, Checkbox } from '@material-ui/core';
+import { Formik, Field, Form, FieldArray } from 'formik';
 
 import { useStyles } from '../ModalsStyle'
 
 import { ModalType } from '../ModalsTypes'
+import { StatusEnum } from '../../../../types/types';
+
 import { colors } from '../../../../assets/scss/Colors/Colors';
-import { Formik, Field, Form, FieldArray } from 'formik';
-import { CustomField, CustomCheckBox } from '../../FormComponents/FormComponents';
 
+import { CustomField, CustomCheckBox, CustomDropdown } from '../../FormComponents/FormComponents';
 import { StyledFilledInputSmall } from '../../StyledTableComponents/StyledInputs'
-
 import { StyledDefaultButtonSmall, StyledConfirmButtonSmall } from '../../StyledTableComponents/StyledButtons';
 import StyledLabel from '../../StatusLabel/StatusLabel'
 import { CustomDialogActions } from '../ModalsComponents'
 
 import * as yup from "yup";
-import { StatusEnum } from '../../../../types/types';
+
 
 type DriversModal = {
 	initialValues: any
@@ -31,7 +32,7 @@ const EditProfileModal = ({ open, handleClose, initialValues, titleText, ...prop
 		// make async call
 		console.log("submit: ", data);
 		setSubmitting(false);
-		handleClose()
+		// handleClose()
 	}
 
 	const validationSchema = yup.object({
@@ -53,7 +54,6 @@ const EditProfileModal = ({ open, handleClose, initialValues, titleText, ...prop
 		home_terminal_address: yup.string(),
 		home_termial_timezone: yup.string(),
 		notes: yup.string(),
-		
 	});
 
 	if (!initialValues.id) {
@@ -75,7 +75,7 @@ const EditProfileModal = ({ open, handleClose, initialValues, titleText, ...prop
 			co_driver: '',
 			home_terminal_address: '',
 			home_termial_timezone: '',
-			notes: ''
+			notes: '',
 		}
 	}
 
@@ -92,16 +92,16 @@ const EditProfileModal = ({ open, handleClose, initialValues, titleText, ...prop
 				<DialogTitle id="edit-driver-dialog-title" className={classes.dialog__header}>
 					<div style={{ display: 'flex', alignItems: 'center', justifyContent: "flex-start" }}>
 						<div style={{ marginRight: '15px' }}>{titleText} <span>{initialValues.first_name + ' ' + initialValues.last_name} </span></div>
-						<StyledLabel text={StatusEnum.Active}/>
+						<StyledLabel text={StatusEnum.Active} />
 					</div>
-				
-					{ initialValues.id && 
-					<StyledDefaultButtonSmall
-						onClick={() => {
-							console.log('DEACTIVATING ' + initialValues.id);
-							handleClose()
-						}}
-					>Deactivate</StyledDefaultButtonSmall> } 
+
+					{initialValues.id &&
+						<StyledDefaultButtonSmall
+							onClick={() => {
+								console.log('DEACTIVATING ' + initialValues.id);
+								handleClose()
+							}}
+						>Deactivate</StyledDefaultButtonSmall>}
 				</DialogTitle>
 
 				<Formik
@@ -117,7 +117,7 @@ const EditProfileModal = ({ open, handleClose, initialValues, titleText, ...prop
 					}}
 				>
 
-					{({ values, errors, isSubmitting }) => (
+					{({ values, errors, isSubmitting, setFieldValue }) => (
 						<Form>
 							<DialogContent className={classes.dialog__content}>
 								<div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gridGap: '64px' }}>
@@ -128,19 +128,44 @@ const EditProfileModal = ({ open, handleClose, initialValues, titleText, ...prop
 										</div>
 										<div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gridGap: '32px' }}>
 											<CustomField name={'user_name'} label={'Username'} />
-											<CustomField name={'password'} label={'Password'} canSeeInputValue={true}/>
+											<CustomField name={'password'} label={'Password'} canSeeInputValue={true} />
 										</div>
 										<div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gridGap: '32px' }}>
-											<CustomField name={'email'} label={'Email'} optional={true}/>
+											<CustomField name={'email'} label={'Email'} optional={true} />
 											<CustomField name={'phone'} label={'Phone No.'} />
 										</div>
 										<div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gridGap: '32px' }}>
 											<CustomField name={'licence_number'} label={'Driver’s Licence No.'} />
-											<CustomField name={'state'} label={'Issuing State/Province'} />
+
+											<CustomField
+												name={'state'}
+												label={'Issuing State/Province'}
+												Component={CustomDropdown}
+												values={[
+													{ value: 'Illinois', id: 1 },
+													{ value: 'Washington', id: 2 },
+													{ value: 'Kentucky', id: 3 },
+													{ value: 'Louisiana', id: 4 },
+												]}
+												onValueChange={setFieldValue}
+											/>
 										</div>
 										<div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gridGap: '32px' }}>
-											<CustomField name={'truck_number'} label={'Truck No.'} optional={true}/>
-											<CustomField name={'trailer_number'} label={'Trailer No.'} optional={true}/>
+											<CustomField name={'truck_number'} label={'Truck No.'} optional={true} />
+
+											<CustomField
+												name={'trailer_number'}
+												label={'Trailer No.'}
+												Component={CustomDropdown}
+												values={[
+													{ value: '043', id: 1 },
+													{ value: '044', id: 2 },
+													{ value: '045', id: 3 },
+													{ value: '046', id: 4 },
+												]}
+												onValueChange={setFieldValue}
+												optional={true}
+											/>
 										</div>
 										<div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gridGap: '32px' }}>
 											<CustomCheckBox name="personal_conveyance" label="Personal Conveyance" />
@@ -151,23 +176,55 @@ const EditProfileModal = ({ open, handleClose, initialValues, titleText, ...prop
 											<CustomCheckBox name="allow_manual_drive_time" label="Allow Manual Drive Time" />
 										</div>
 									</div>
-									
-									<div>
-										<CustomField name={'co_driver'} label={'Co-Driver'} optional={true}/>
-										<CustomField name={'home_terminal_address'} label={'Home Terminal Address'} optional={true}/>
-										<CustomField name={'home_termial_timezone'} label={'Home Terminal Timezone'} optional={true}/>
-										<CustomField name={'notes'} label={'Notes'} type="textarea" placeholder="Notes" optional={true}/>
 
+									<div>
+										<CustomField
+											name={'co_driver'}
+											label={'Co-Driver'}
+											Component={CustomDropdown}
+											values={[
+												{ value: 'Donald Duck', id: 1 },
+												{ value: 'Donald Duck', id: 2 },
+												{ value: 'Donald Duck', id: 3 },
+												{ value: 'Donald Duck', id: 4 },
+											]}
+											onValueChange={setFieldValue}
+											optional={true}
+										/>
+										<CustomField
+											name={'home_terminal_address'}
+											label={'Home Terminal Address'}
+											Component={CustomDropdown}
+											values={[
+												{ value: '2400 Hassel Road, #400 Hoffman Estates, IL 60169', id: 1 },
+												{ value: '2400 Hassel Road, #400 Hoffman Estates, IL 60169', id: 2 },
+											]}
+											onValueChange={setFieldValue}
+											optional={true}
+										/>
+										<CustomField
+											name={'home_termial_timezone'}
+											label={'Home Terminal Timezone'}
+											Component={CustomDropdown}
+											values={[
+												{ value: 'Central Standart Time', id: 1 },
+												{ value: 'Central Standart Time', id: 2 },
+											]}
+											onValueChange={setFieldValue}
+											optional={true}
+										/>
+
+										<CustomField name={'notes'} label={'Notes'} type="textarea" placeholder="Notes" optional={true} />
 									</div>
 								</div>
 
 							</DialogContent>
 
-								<CustomDialogActions
-									isSubmitting={isSubmitting}
-									handleClose={handleClose}
-									submitText={"Save"}
-								/>
+							<CustomDialogActions
+								isSubmitting={isSubmitting}
+								handleClose={handleClose}
+								submitText={"Save"}
+							/>
 						</Form>
 					)}
 				</Formik>

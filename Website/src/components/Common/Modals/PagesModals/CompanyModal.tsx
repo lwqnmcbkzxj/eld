@@ -1,22 +1,18 @@
 import React, { useState } from 'react';
 
 import { Dialog, DialogActions, DialogContent, DialogTitle } from '@material-ui/core';
-
 import { useStyles } from '../ModalsStyle'
+import { Formik, Form, FieldArray } from 'formik';
 
 import { ModalType } from '../ModalsTypes'
-import { colors } from '../../../../assets/scss/Colors/Colors';
-import { Formik, Field, Form, FieldArray } from 'formik';
-import { CustomField } from '../../FormComponents/FormComponents';
+import { CompanyType } from '../../../../types/companies';
 
-import { StyledFilledInputSmall } from '../../StyledTableComponents/StyledInputs'
-import ChangePasswordModal from '../ProfileModals/ChangePasswordModal'
-import { StyledDefaultButtonSmall, StyledConfirmButtonSmall } from '../../StyledTableComponents/StyledButtons';
-
+import { CustomField, CustomDropdown } from '../../FormComponents/FormComponents';
+import { StyledDefaultButtonSmall } from '../../StyledTableComponents/StyledButtons';
 import { CustomDialogActions } from '../ModalsComponents'
+import ChangePasswordModal from '../ProfileModals/ChangePasswordModal'
 
 import * as yup from "yup";
-import { CompanyType } from '../../../../types/companies';
 import { PasswordObjectType } from '../../../../types/types'
 
 
@@ -26,7 +22,7 @@ type CompanyModalType = {
 
 	submitFunction: (company: CompanyType) => void
 	changePassword?: (passwordObj: PasswordObjectType) => void
-	handleToggleActive?:(comapnyId: number) => void
+	handleToggleActive?: (comapnyId: number) => void
 }
 
 const EditCompanyModal = ({ open, handleClose, titleText, initialValues, submitFunction, changePassword, handleToggleActive, ...props }: ModalType & CompanyModalType) => {
@@ -118,7 +114,7 @@ const EditCompanyModal = ({ open, handleClose, titleText, initialValues, submitF
 					}}
 				>
 
-					{({ values, isSubmitting }) => (
+					{({ values, isSubmitting, setFieldValue }) => (
 						<Form>
 							<DialogContent className={classes.dialog__content}>
 								<div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gridGap: '64px' }}>
@@ -127,8 +123,30 @@ const EditCompanyModal = ({ open, handleClose, titleText, initialValues, submitF
 										<CustomField name={'company_address'} label={'Company Address'} />
 
 										<div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gridGap: '32px' }}>
-											<CustomField name={'subscribe_type'} label={'Subscribe Type'} />
-											<CustomField name={'company_timezone'} label={'Company Timezone'} />
+											<CustomField
+												name={'subscribe_type'}
+												label={'Subscribe Type'}
+												Component={CustomDropdown}
+												values={[
+													{ value: 'Basic', id: 1 },
+													{ value: 'Basic2', id: 2 },
+													{ value: 'Basic3', id: 3 },
+													{ value: 'Basic4', id: 4 },
+												]}
+												onValueChange={setFieldValue}
+											/>
+											<CustomField
+												name={'company_timezone'}
+												label={'Company Timezone'}
+												Component={CustomDropdown}
+												values={[
+													{ value: 'Pacific', id: 1 },
+													{ value: 'Pacific2', id: 2 },
+													{ value: 'Pacific3', id: 3 },
+													{ value: 'Pacific4', id: 4 },
+												]}
+												onValueChange={setFieldValue}
+											/>
 										</div>
 										<div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gridGap: '32px' }}>
 											<CustomField name={'contact_name'} label={'Contact Name'} />
@@ -184,12 +202,12 @@ const EditCompanyModal = ({ open, handleClose, titleText, initialValues, submitF
 				</Formik>
 			</Dialog>
 
-			{ changePassword && changePasswordModalOpen &&
-			<ChangePasswordModal
-				open={changePasswordModalOpen}
-				handleClose={handleChangePasswordModalClose}
-				submitFunction={changePassword}
-			/> }
+			{changePassword && changePasswordModalOpen &&
+				<ChangePasswordModal
+					open={changePasswordModalOpen}
+					handleClose={handleChangePasswordModalClose}
+					submitFunction={changePassword}
+				/>}
 
 		</React.Fragment>
 	);
