@@ -1,7 +1,7 @@
 import React, { FC, useState, useEffect, Children } from 'react'
 import { Paper, Table, TableHead, TableRow, TableCell, TableSortLabel, TableBody, withStyles, makeStyles, TableContainer, TablePagination, Typography, IconButton, createStyles } from '@material-ui/core';
 import { colors } from '../../../assets/scss/Colors/Colors';
-
+import { LabelType } from '../../../types/types'
 import cn from 'classnames'
 
 export const StyledTableCell = withStyles((theme) => ({
@@ -14,12 +14,13 @@ export const StyledTableCell = withStyles((theme) => ({
 	},
 	body: {
 		color: '#323033',
-		fontSize: ' 14px',
+		fontSize: ' 15px',
 		lineHeight: '21px',
 		whiteSpace: 'nowrap',
 		overflow: 'hidden',
 		textOverflow: 'ellipsis',
 		"& .text-block": {
+			minWidth: '200px',
 			whiteSpace: 'nowrap',
 			overflow: 'hidden',
 			textOverflow: 'ellipsis',
@@ -221,17 +222,14 @@ function TablePaginationActions({ count, page, rowsPerPage, onChangePage, ...pro
 
 type Order = 'asc' | 'desc';
 type TableHeaderCellsProps = {
-	labels: Array<{
-		label: string
-		name: string
-		align?: string
-	}>
+	labels: Array<LabelType | any>
 	Component?: any
 	onRequestSort?: (event: React.MouseEvent<unknown>, property: string) => void;
 	order?: Order;
 	orderBy?: string;
+	noSorting?: boolean
 }
-export const CustomTableHeaderCells: React.FC<TableHeaderCellsProps> = ({ labels, Component, ...props }) => {
+export const CustomTableHeaderCells: React.FC<TableHeaderCellsProps> = ({ labels, Component, noSorting = false, ...props }) => {
 	if (!Component)
 		Component = StyledTableCell
 
@@ -250,6 +248,9 @@ export const CustomTableHeaderCells: React.FC<TableHeaderCellsProps> = ({ labels
 						align={(label.align === 'right') ? label.align : "left"}
 						sortDirection={orderBy === label.name ? order : false}>
 
+					
+					{noSorting || label.name === "" || label.notSortable ?
+						<div>{label.label}</div> :  
 						<TableSortLabel
 							active={orderBy === label.name}
 							direction={orderBy === label.name ? order : 'asc'}
@@ -257,6 +258,9 @@ export const CustomTableHeaderCells: React.FC<TableHeaderCellsProps> = ({ labels
 						>
 							{label.label}
 						</TableSortLabel>
+						}
+
+						
 
 					</Component>
 				)) }

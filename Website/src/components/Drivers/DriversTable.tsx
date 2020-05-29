@@ -1,5 +1,5 @@
 import React, { FC, useState } from 'react'
-import { Paper, TableHead, TableRow, TableBody, withStyles, Toolbar, Button } from '@material-ui/core';
+import { Paper, TableHead, TableRow, TableBody, withStyles, Toolbar, IconButton } from '@material-ui/core';
 import StatusLabel from '../Common/StatusLabel/StatusLabel'
 import androidIcon from '../../assets/img/ic_android.svg'
 import { StyledTableCell, CustomTable, CustomPaginator, CustomTableHeaderCells } from '../Common/StyledTableComponents/StyledTableComponents'
@@ -10,7 +10,13 @@ import { StyledDefaultButtonSmall } from '../Common/StyledTableComponents/Styled
 import { DriverType } from '../../types/drivers'
 import { Link } from 'react-router-dom'
 import DriversModal from '../Common/Modals/PagesModals/DriversModal'
+import { isContainsSearchText } from '../../utils/isContainsSearchText'
+import { getComparator, stableSort } from '../../utils/tableFilters'
 
+import editIcon from '../../assets/img/ic_edit.svg'
+import refreshIcon from '../../assets/img/ic_refresh.svg'
+import { LabelType } from '../../types/types';
+ 
 type PropsType = {
 	rows: Array<DriverType>
 }
@@ -51,13 +57,10 @@ const DriversTable: FC<PropsType & RouterProps> = ({ rows, ...props }) => {
 		setPage(0)
 	};
 
-	const [driverEditModalOpen, setDriverEditModalOpen] = useState(false)
-	const handleDriverEditModalClose = () => {
-		setDriverEditModalOpen(false);
-	};
+	
 
 
-	let currentModalData = {
+	let currentModalDataObj = {
 		id: 1,
 		first_name: "John",
 		last_name: "Malkovich",
@@ -79,24 +82,29 @@ const DriversTable: FC<PropsType & RouterProps> = ({ rows, ...props }) => {
 		notes: ''
 	}
 
-	const [currentDriverData, setCurrentDriverData] = useState(currentModalData);
-
-	const [driverAddModalOpen, setDriverAddModalOpen] = useState(false)
-	const handleDriverAddModalClose = () => {
-		setDriverAddModalOpen(false);
+	const [currentModalData, setCurrentModalData] = useState(currentModalDataObj);
+	const [editModalOpen, setEditModalOpen] = useState(false)
+	const handleEditModalClose = () => {
+		setEditModalOpen(false);
+	};
+	const [addModalOpen, setAddModalOpen] = useState(false)
+	const handleAddModalClose = () => {
+		setAddModalOpen(false);
 	};
 
 	let labels = [
-		{ label: "First Name", name: 'first_name' },
-		{ label: "Last Name", name: 'last_name' },
-		{ label: "Username", name: 'user_name' },
+		{ label: "First Name", name: 'firstName' },
+		{ label: "Last Name", name: 'lastName' },
+		{ label: "Username", name: 'userName' },
 		{ label: "Phone No.", name: 'phone' },
-		{ label: "Truck No.", name: 'truck_number' },
+		{ label: "Truck No.", name: 'truckNumber' },
 		{ label: "Notes", name: 'notes' },
-		{ label: "App Version", name: '' },
-		{ label: "Device Version", name: '' },
-		{ label: "Status", name: '' }
-	]
+		{ label: "App Version", name: 'appVersionStatus' },
+		{ label: "Device Version", name: 'deviceVersion' },
+		{ label: "Status", name: 'status', notSortable: true },
+		{ label: "", name: '', notSortable: true },
+	] as Array<LabelType>
+
 	const [order, setOrder] = React.useState<Order>('asc');
 	const [orderBy, setOrderBy] = React.useState(labels[0].name);
 
@@ -105,12 +113,18 @@ const DriversTable: FC<PropsType & RouterProps> = ({ rows, ...props }) => {
 		setOrder(isAsc ? 'desc' : 'asc');
 		setOrderBy(property);
 	};
-
+	const [hoverId, setHoverId] = useState(-1)
+	
+	const editButtonRef = React.createRef<HTMLDivElement>()
 	return (
 		<Paper style={{ boxShadow: 'none' }}>
 			<Toolbar style={{ width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'space-between', boxSizing: 'border-box' }}>
 				<StyledSearchInput searchText={searchText} setSearchText={setSearchText} />
-				<StyledDefaultButtonSmall variant="outlined" onClick={() => { setDriverAddModalOpen(true) }}>Add driver</StyledDefaultButtonSmall>
+				<div>
+					<StyledDefaultButtonSmall variant="outlined" onClick={() => { setEditModalOpen(true) }}>Add driver</StyledDefaultButtonSmall>
+					<IconButton><img src={refreshIcon} alt="referesh-icon" /></IconButton>
+				</div>
+
 			</Toolbar>
 
 			<CustomTable subtractHeight={52}>
@@ -126,27 +140,27 @@ const DriversTable: FC<PropsType & RouterProps> = ({ rows, ...props }) => {
 					</TableRow>
 				</TableHead>
 				<TableBody>
-					{rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map(row => (
 
-						(row.userName.includes(searchText) ||
-							row.firstName.includes(searchText) ||
-							row.lastName.includes(searchText) ||
-							row.phone.includes(searchText)) &&
-
-
+				{stableSort(rows as any, getComparator(order, orderBy))
+					.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map(row => (
+					
+					isContainsSearchText(searchText, row, ['userName', 'firstName', 'lastName', 'phone']) && 
 						<TableRow
 							key={row.id}
 							hover
 							onDoubleClick={(e: any) => {
-								setDriverEditModalOpen(true)
-								// setCurrentDriverData(row)
+								setEditModalOpen(true)
+								// setCurrentModalData(row)
 								e.preventDefault()
 							}}
-							onClick={() => { 
-								props.history.push(`/drivers/${row.id}`)
+							onMouseEnter={() => { setHoverId(+row.id) }}
+							onMouseLeave={() => { setHoverId(-1) }}
+							onClick={(e: any) => { 
+								if (editButtonRef.current && !editButtonRef.current.contains(e.target)) {
+									props.history.push(`/drivers/${row.id}`)
+								}
 							 }}
 						>
-							{/* <Link to={`/drivers/${row.id}`}> */}
 								<CustomTableCell>{row.firstName}</CustomTableCell>
 								<CustomTableCell>{row.lastName}</CustomTableCell>
 								<CustomTableCell>{row.userName}</CustomTableCell>
@@ -159,9 +173,22 @@ const DriversTable: FC<PropsType & RouterProps> = ({ rows, ...props }) => {
 								</CustomTableCell>
 								<CustomTableCell>{row.deviceVersion}</CustomTableCell>
 								<CustomTableCell>
-									{/* <StatusLabel text={row.status.text} theme={row.status.type} /> */}
-								</CustomTableCell>
-							{/* </Link> */}
+									<StatusLabel text={"Status"}/>
+							</CustomTableCell>
+							<StyledTableCell style={{ minWidth: '70px', boxSizing: 'border-box', paddingTop: '10px', paddingBottom: '10px' }}>
+								{hoverId === row.id &&
+									<div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }} ref={editButtonRef}>
+										<button style={{ height: '32px' }}
+											onClick={(e) => {
+												setEditModalOpen(true);
+												// setCurrentModalData(row)
+												e.preventDefault()
+											}} >
+											<img src={editIcon} alt="edit-icon" />
+										</button>
+									</div>
+								}
+							</StyledTableCell>
 						</TableRow>
 
 					))}
@@ -177,19 +204,19 @@ const DriversTable: FC<PropsType & RouterProps> = ({ rows, ...props }) => {
 			/>
 
 			{/* Edit modal */}
-			{driverEditModalOpen &&
+			{editModalOpen &&
 				<DriversModal
-					open={driverEditModalOpen}
-					handleClose={handleDriverEditModalClose}
-					initialValues={currentDriverData}
+					open={editModalOpen}
+					handleClose={handleEditModalClose}
+					initialValues={currentModalData}
 					titleText={"Edit Driver"}
 				/>}
 
 			{/* Add modal */}
-			{driverAddModalOpen &&
+			{addModalOpen &&
 				<DriversModal
-					open={driverAddModalOpen}
-					handleClose={handleDriverAddModalClose}
+					open={addModalOpen}
+					handleClose={handleAddModalClose}
 					initialValues={{}}
 					titleText={"Add Driver"}
 				/>}

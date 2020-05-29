@@ -1,0 +1,108 @@
+@import '../../../assets/scss/Colors/Colors.scss';
+
+.logPreview {
+	box-sizing: border-box;
+	background: $bg_white_color;
+	margin-bottom: 20px;
+
+	& .preview__content {
+		padding: 18px 24px;
+
+		& .preview {
+			&__header {
+				display: flex;
+				flex-direction: row;
+				align-items: center;
+				justify-content: space-between;
+	
+				& .header__title {
+					display: flex;
+					align-items: center;
+					justify-content: space-between;
+					& .header__name {
+						font-family: 'Heebo Bold';
+						font-size: 20px;
+						line-height: 29px;
+						letter-spacing: 1px;
+						text-transform: uppercase;
+						color: $primary_text_color;
+						margin-right: 12px;
+					}
+				}
+				& .header__buttons {
+					display: grid;
+					grid-template-columns: 1fr 1fr;
+					grid-gap: 24px;
+				}
+				
+			}
+	
+			&__info {
+				display: flex;
+				align-items: center;
+				margin-top: 13px;
+	
+				& .info__element {
+					display: flex;
+					align-items: center;
+					justify-content: center;
+					margin-right: 40px;
+	
+					&:last-child {
+						margin: 0;
+					}
+	
+					& img {
+						filter: invert(35%) sepia(65%) saturate(4721%) hue-rotate(210deg) brightness(92%) contrast(95%);
+						margin-right: 8px;
+					}
+	
+					& p {
+						font-size: 16px;
+						line-height: 24px;
+						color: $primary_text_color;
+					}
+				}
+			}
+		}
+	}
+
+	& .preview__admin_buttons {
+		padding: 24px;
+		border-top: 1px solid $light_line_color;
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		& .buttons__scripts {
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+			& button {
+				margin-right: 24px;
+				&:last-child {
+					margin: 0;
+				}
+			}
+		}
+	}
+}
+
+
+.tableHeader {
+	font-family: 'Heebo Bold';
+	font-size: 14px;
+	line-height: 16px;
+	letter-spacing: 0.5px;
+	text-transform: uppercase;
+	color: #323033;
+	padding-left: 10px;
+	border-left: 4px solid $main_blue_color;
+}
+
+.logsInfoTable {
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+	& table:first-child {
+		border-right: 1px solid $light_line_color;
+	}
+}

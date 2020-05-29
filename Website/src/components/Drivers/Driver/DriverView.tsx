@@ -1,11 +1,15 @@
 import React, { FC, useState, useEffect } from 'react'
+import { useSelector } from 'react-redux'
+
 import DriversTable from '../DriversTable'
 import DriverPreview from './DriverPreview'
-
-import DriverTable from './DriverTable'
-import GoogleMap from '../../Common/GoogleMap/GoogleMap'
+import { AppStateType } from '../../../types/types'
+import { UserType } from '../../../types/user'
 import { LabelType } from '../../../types/types'
 
+import SimpeTable from '../../Common/SimpleTable/SimpleTable'
+import GoogleMap from '../../Common/GoogleMap/GoogleMap'
+import DriversModal from '../../Common/Modals/PagesModals/DriversModal'
 
 
 let driverRecentItemValues = [
@@ -83,27 +87,48 @@ const DriverView: FC<PropsType> = ({ ...props }) => {
 		{ label: 'Trip', name: 'trip', align: 'right' }
 	] as Array<LabelType>
 	
+
+	const [currentModalData, setModalData] = useState({});
+	const [editModalOpen, setEditModalOpen] = useState(false)
+	const handleEditModalClose = () => {
+		setEditModalOpen(false);
+	};
 	
 	return (
 		<div className={"page driver-page"}>
-			<DriverPreview />
+			<DriverPreview
+				setEditModalOpen={setEditModalOpen}
+				setModalData={setModalData}
+			/>
 			<GoogleMap
 				
 			
 			/>
 
 
-			<DriverTable
+			<SimpeTable
 				tableTitle="Recent item"
-				buttonLink={"/logs"}
+				button={{
+					link: "/logs",
+					text: "View logs"
+				}}
 				rows={driverRecentItemValues}
 				labels={recentItemLabels}
 			/>
-			<DriverTable
+			<SimpeTable
 				tableTitle="Trips"
 				rows={driverTripsValues}
 				labels={tripsLabels}
 			/>
+
+			{/* Edit modal */}
+			{editModalOpen &&
+				<DriversModal
+					open={editModalOpen}
+					handleClose={handleEditModalClose}
+					initialValues={currentModalData}
+					titleText={"Edit Driver"}
+				/>}
 		</div>
 	)
 }

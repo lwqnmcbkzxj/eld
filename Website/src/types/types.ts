@@ -32,4 +32,5 @@ export type LabelType = {
 	name: string
 	label: string
 	align?: "inherit" | "left" | "center" | "right" | "justify" | undefined
+	notSortable?: boolean
 }

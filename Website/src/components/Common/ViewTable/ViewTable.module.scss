@@ -1,0 +1,38 @@
+@import '../../../assets/scss/Colors/Colors.scss';
+
+.viewTable {
+background: $bg_white_color;
+}
+
+.tableHeader {
+	font-family: 'Heebo Bold';
+	font-size: 14px;
+	line-height: 16px;
+	letter-spacing: 0.5px;
+	text-transform: uppercase;
+	color: #323033;
+	padding-left: 10px;
+	border-left: 4px solid $main_blue_color;
+}
+
+.errorBlock {
+	display: flex;
+    flex-direction: column;
+    align-items: center;
+	justify-content: center;
+	padding: 20px;
+	box-sizing: border-box;
+    height: calc(100% - 90px);
+	& p {
+		margin-top: 12px;
+		color: $main_red_color;
+		font-family: 'Heebo Bold';
+		font-size: 11px;
+		line-height: 15px;
+		/* identical to box height, or 136% */
+
+		text-align: center;
+		letter-spacing: 0.2px;
+		text-transform: uppercase;
+	}
+}

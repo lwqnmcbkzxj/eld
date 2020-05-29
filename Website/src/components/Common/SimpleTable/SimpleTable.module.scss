@@ -1,0 +1,13 @@
+@import '../../../assets/scss/Colors/Colors.scss';
+
+
+.tableHeader {
+	font-family: 'Heebo Bold';
+	font-size: 14px;
+	line-height: 16px;
+	letter-spacing: 0.5px;
+	text-transform: uppercase;
+	color: #323033;
+	padding-left: 10px;
+	border-left: 4px solid $main_blue_color;
+}

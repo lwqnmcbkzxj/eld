@@ -1,5 +1,5 @@
 import React, { FC, useState, useEffect } from 'react'
-import { Paper, TableHead, TableRow, TableBody, withStyles, Toolbar, Button } from '@material-ui/core';
+import { Paper, TableHead, TableRow, TableBody, withStyles, Toolbar, Button, Checkbox } from '@material-ui/core';
 import { StyledTableCell, CustomTable, CustomPaginator, CustomTableHeaderCells } from '../Common/StyledTableComponents/StyledTableComponents'
 import { withRouter, RouteComponentProps } from 'react-router'
 import { StyledSearchInput } from '../Common/StyledTableComponents/StyledInputs'
@@ -73,17 +73,64 @@ const LogsTable: FC<PropsType & RouteComponentProps> = ({ labels, rows, ...props
 		setOrderBy(property);
 	};
 
+
+
+	// Checkboxes
+	const [selected, setSelected] = React.useState<string[]>([])
+	const isSelected = (id: string) => selected.indexOf(id) !== -1;
+
+	const handleSelectAllClick = (event: React.ChangeEvent<HTMLInputElement>) => {
+		if (event.target.checked) {
+			const newSelecteds = rows.map((row) => row.id.toString())
+			setSelected(newSelecteds)
+			return;
+		}
+		setSelected([])
+	};
+
+	const handleClick = (event: React.MouseEvent<unknown>, id: string) => {
+		const selectedIndex = selected.indexOf(id);
+		let newSelected = [] as string[]
+
+		if (selectedIndex === -1) {
+			newSelected = newSelected.concat(selected, id);
+		} else if (selectedIndex === 0) {
+			newSelected = newSelected.concat(selected.slice(1));
+		} else if (selectedIndex === selected.length - 1) {
+			newSelected = newSelected.concat(selected.slice(0, -1));
+		} else if (selectedIndex > 0) {
+			newSelected = newSelected.concat(
+				selected.slice(0, selectedIndex),
+				selected.slice(selectedIndex + 1),
+			);
+		}
+		setSelected(newSelected)
+	};
+
+
+
+
+
 	return (
 		<div className="page logs-page">
 			<Paper style={{ boxShadow: 'none' }}>
 				<Toolbar style={{ width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'space-between', boxSizing: 'border-box' }}>
 					<StyledSearchInput searchText={searchText} setSearchText={setSearchText} />
+					FILTERS HERE
 					<StyledDefaultButtonSmall variant="outlined" onClick={() => { console.log("REPORT") }}>Report</StyledDefaultButtonSmall>
 				</Toolbar>
 
 				<CustomTable subtractHeight={52}>
 					<TableHead>
 						<TableRow>
+							<StyledTableCell>
+								<Checkbox
+									indeterminate={selected.length > 0 && selected.length < rows.length}
+									checked={rows.length > 0 && selected.length === rows.length}
+									onChange={handleSelectAllClick}
+									color="primary"
+								/>
+							</StyledTableCell>
 							<CustomTableHeaderCells
 								labels={labels}
 								order={order}
@@ -95,23 +142,38 @@ const LogsTable: FC<PropsType & RouteComponentProps> = ({ labels, rows, ...props
 					<TableBody>
 						{stableSort(rows, getComparator(order, orderBy))
 							.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-							.map((row: any) => (
+							.map((row: any) => {
 
-							isContainsSearchText(searchText, row, [
-								'date',
-								'driver',
-								'hours_worked',
-								'distance',
-								'hours_of_service',
-								'form_and_manner']) &&
+								const isItemSelected = isSelected(row.id.toString());
+								let checkBoxRef = React.createRef<any>()
 
-							<TableRow key={row.id} hover onClick={() => { props.history.push(`/logs/${row.id}`) }}>
-								{labels.map(label => checkField(label, row[label.name]))}
-							</TableRow>
+								return (
+									isContainsSearchText(searchText, row, [
+										'date',
+										'driver',
+										'hours_worked',
+										'distance',
+										'hours_of_service',
+										'form_and_manner']) &&
 
-							))}
-						
-					
+									<TableRow key={row.id} hover onClick={(e) => {
+										if (checkBoxRef.current && !checkBoxRef.current.contains(e.target)) {
+											props.history.push(`/logs/${row.id}`)
+										}
+									}}>
+										<StyledTableCell ref={checkBoxRef}>
+											<Checkbox
+												checked={isItemSelected}
+												color="primary"
+												onClick={(event) => handleClick(event, row.id.toString())} />
+										</StyledTableCell>
+										{labels.map(label => checkField(label, row[label.name]))}
+									</TableRow>
+
+								)
+							})}
+
+
 					</TableBody>
 				</CustomTable>
 

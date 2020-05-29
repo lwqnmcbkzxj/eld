@@ -19,6 +19,7 @@ const LogsContainer: FC = ({ ...props }) => {
 
 	let logs = [
 		{
+			id: 1,
 			date: 'Mar 14',
 			driver: '1Bruce Wayne',
 			hours_worked: 'q10:30',
@@ -28,6 +29,7 @@ const LogsContainer: FC = ({ ...props }) => {
 			dvir: true,
 		},
 		{
+			id: 2,
 			date: 'Mar 13',
 			driver: '2Bruce Wayne',
 			hours_worked: '10:30',

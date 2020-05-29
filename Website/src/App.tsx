@@ -37,10 +37,14 @@ const DriverContainer = React.lazy(() => import('./components/Drivers/Driver/Dri
 
 const EldsContainer = React.lazy(() => import('./components/Elds/EldsContainer'))
 const LogsContainer = React.lazy(() => import('./components/Logs/LogsContainer'))
+const LogContainer = React.lazy(() => import('./components/Logs/Log/LogContainer'))
+
+
 const UnitsContainer = React.lazy(() => import('./components/Units/UnitsContainer'))
 const VehiclesContainer = React.lazy(() => import('./components/Vehicles/VehiclesContainer'))
 const CompaniesContainer = React.lazy(() => import('./components/Companies/CompaniesContainer'))
 const DashboardContainer = React.lazy(() => import('./components/Dashboard/DashboardContainer'))
+const TripsContainer = React.lazy(() => import('./components/Trips/TripsContainer'))
 
 
 
@@ -107,12 +111,20 @@ const App = (props: any) => {
 								<Route exact path="/drivers" render={withSuspense(DriversContainer)} />
 								<Route path="/drivers/:driverId" render={withSuspense(DriverContainer)} />
 								<Route path="/elds" render={withSuspense(EldsContainer)}/>
-								<Route path="/logs"  render={withSuspense(LogsContainer)}/>
+								<Route exact path="/logs"  render={withSuspense(LogsContainer)}/>
+								<Route path="/logs/:logId"  render={withSuspense(LogContainer)}/>
 								<Route path="/units" render={withSuspense(UnitsContainer)} />
+								<Route path="/trips" render={withSuspense(TripsContainer)} />
 								<Route path="/vehicles" render={withSuspense(VehiclesContainer)}/>
 							</> : <>
 								<Route path="/companies" render={withSuspense(CompaniesContainer)}/>
 								<Route path="/dashboard" render={withSuspense(DashboardContainer)} />
+
+								<Route exact path="/drivers" render={withSuspense(DriversContainer)} />
+								<Route path="/drivers/:driverId" render={withSuspense(DriverContainer)} />
+								
+								<Route exact path="/logs"  render={withSuspense(LogsContainer)}/>
+								<Route path="/logs/:logId"  render={withSuspense(LogContainer)}/>
 							</>}
 
 						<Route component={NotFound} />

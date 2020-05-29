@@ -9,7 +9,7 @@ let initialState = {
 	drivers: [
 		{
 			id: 1,
-			firstName: '1Andrew',
+			firstName: 'A1ndrew',
 			lastName: 'Weas',
 			userName: 'andrew',
 			phone: '+12345 5623',
@@ -25,7 +25,7 @@ let initialState = {
 		},
 		{
 			id: 2,
-			firstName: '2Andrew',
+			firstName: 'A1ndrew',
 			lastName: 'asdasdWeas',
 			userName: 'ccccandrew',
 			phone: '123+12345 5623',
