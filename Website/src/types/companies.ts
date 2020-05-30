@@ -9,7 +9,7 @@ export type CompanyType = {
 	active_units: string
 	subscribe_type: string
 	current_balance: string
-	status: StatusType
+	status: string
 
 	company_address: string
 	company_timezone: string

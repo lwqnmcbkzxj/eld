@@ -9,9 +9,10 @@ import { useTableStyles } from './UntisTableStyle.js'
 import { EnhancedTableHeadProps, EnhancedTableProps } from './UnitsTableTypes'
 import EnhancedTableToolbar from './UnitsTableToolbar'
 
-import { CustomTable, CustomPaginator, StyledTableCell, CustomTableHeaderCells } from '../../Common/StyledTableComponents/StyledTableComponents'
+import { CustomTable, CustomPaginator, StyledTableCell, StyledTableRow, CustomTableHeaderCells } from '../../Common/StyledTableComponents/StyledTableComponents'
 import { isContainsSearchText } from '../../../utils/isContainsSearchText'
 import { getComparator, stableSort } from '../../../utils/tableFilters'
+import { withRouter, RouteComponentProps } from 'react-router-dom'
 
 
 type Order = 'asc' | 'desc';
@@ -40,10 +41,12 @@ const EnhancedTableHead: FC<EnhancedTableHeadProps> = ({ onSelectAllClick, numSe
 	);
 }
 
-const EnhancedTable: FC<EnhancedTableProps> = ({ rows, getUnits, ...props }) => {
+
+interface RouterProps extends RouteComponentProps<any> { }
+const EnhancedTable: FC<EnhancedTableProps & RouterProps> = ({ rows, getUnits, toggleTable, tableVisible, ...props }) => {
 	const classes = useTableStyles()
 	const [selected, setSelected] = React.useState<string[]>([])
-	
+
 	const [searchText, setSearchText] = useState("")
 
 	const handleSelectAllClick = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -107,7 +110,6 @@ const EnhancedTable: FC<EnhancedTableProps> = ({ rows, getUnits, ...props }) => 
 	};
 
 	return (
-
 		<div className={classes.root}>
 			<Paper>
 				<EnhancedTableToolbar
@@ -118,9 +120,12 @@ const EnhancedTable: FC<EnhancedTableProps> = ({ rows, getUnits, ...props }) => 
 					setSearchText={setSearchText}
 
 					getUnits={getUnits}
+
+					toggleTable={toggleTable}
+					tableVisible={tableVisible}
 				/>
 
-				<CustomTable subtractHeight={420}>
+				<CustomTable subtractHeight={420} display={tableVisible && 'none'}>
 					<EnhancedTableHead
 						numSelected={selected.length}
 						onSelectAllClick={handleSelectAllClick}
@@ -132,23 +137,22 @@ const EnhancedTable: FC<EnhancedTableProps> = ({ rows, getUnits, ...props }) => 
 					/>
 					<TableBody>
 						{stableSort(rows as any, getComparator(order, orderBy))
-							// .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
 							.map((row, index) => {
-
 								const isItemSelected = isSelected(row.id.toString());
-								if (isContainsSearchText(searchText, row, ['name', 'truckNumber'])) {
+								if (isContainsSearchText(searchText, row, ['name', 'truckNumber', 'lastLocation', 'date', 'description', 'currentSPD'])) {
 									return (
-										<TableRow
+										<StyledTableRow
 											hover
 											onClick={(event) => handleClick(event, row.id.toString())}
 											tabIndex={-1}
 											key={row.id}
+											selected={isItemSelected}
 										>
 											<StyledTableCell padding="checkbox">
 												<Checkbox checked={isItemSelected} color="primary" />
 											</StyledTableCell>
 
-											<StyledTableCell>{row.name}</StyledTableCell>
+											<StyledTableCell onDoubleClick={() => { props.history.push(`/drivers/${row.id}`) }}>{row.name}</StyledTableCell>
 											<StyledTableCell>{row.truckNumber}</StyledTableCell>
 											<StyledTableCell>{row.lastLocation}</StyledTableCell>
 											<StyledTableCell>
@@ -160,10 +164,9 @@ const EnhancedTable: FC<EnhancedTableProps> = ({ rows, getUnits, ...props }) => 
 											</StyledTableCell>
 											<StyledTableCell style={{}}><div className="text-block">{row.description}</div></StyledTableCell>
 											<StyledTableCell align="right">{getLocaleSpeed(+row.currentSPD)}</StyledTableCell>
-										</TableRow>
+										</StyledTableRow>
 									);
 								}
-
 							})}
 					</TableBody>
 				</CustomTable>
@@ -174,4 +177,4 @@ const EnhancedTable: FC<EnhancedTableProps> = ({ rows, getUnits, ...props }) => 
 }
 
 
-export default EnhancedTable
+export default withRouter(EnhancedTable)

@@ -20,19 +20,20 @@ export const StyledDefaultButton = withStyles((theme) => ({
 	root: {
 		color: colors.primary_text_color,
 		background: colors.bg_white_color,
-		border: `1px solid ${colors.main_gray_color}`,
+		border: `1px solid ${colors.dark_line_color}`,
 		"&:hover": {
 			border: `1px solid ${colors.placholder_text_color}`,
 			background: colors.bg_white_color,
+			color: colors.primary_text_color
 		},
 		"&:active": {
 			background: colors.bg_page_color,
-			border: `1px solid ${colors.main_gray_color}`,
+			border: `1px solid ${colors.dark_line_color}`,
 			color: colors.placholder_text_color
 		},
 		"&:disabled": {
-			border: `1px solid ${colors.main_gray_color}`,
-			color: colors.primary_text_color,
+			border: `1px solid ${colors.dark_line_color}`,
+			color: colors.dark_line_color,
 		}
 	}
 }))(CustomButton);

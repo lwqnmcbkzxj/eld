@@ -6,7 +6,10 @@ import { withRouter, RouteComponentProps } from 'react-router'
 import { LabelType } from '../../../types/types'
 import { StyledSearchInput } from '../StyledTableComponents/StyledInputs'
 import { StyledDefaultButtonSmall } from '../StyledTableComponents/StyledButtons'
-import arrowIcon from '../../../assets/img/ic_arrow_bottom.svg'
+
+import iconArrowBottom from '../../../assets/img/ic_arrow_bottom.svg'
+import iconArrowUp from '../../../assets/img/ic_arrow_up.svg'
+
 import iconDone from '../../../assets/img/mark_done.svg'
 import iconNone from '../../../assets/img/mark_none.svg'
 import iconAlert from '../../../assets/img/mark_error.svg'
@@ -17,16 +20,18 @@ import StatusLabel from '../StatusLabel/StatusLabel';
 
 type PropsType = {
 	button?: {
-		link: string
+		func: () => void
 		text: string
 	}
 
 	tableTitle?: string
 	rows: Array<any>
 	labels: Array<LabelType>
+	additionalButton?: () => void
+	doubleClickFunction?: () => void
 }
 
-const SimpleTable: FC<PropsType & RouteComponentProps> = ({ tableTitle, rows = [], labels, button, ...props }) => {
+const SimpleTable: FC<PropsType & RouteComponentProps> = ({ tableTitle, rows = [], labels, button, additionalButton, doubleClickFunction, ...props }) => {
 
 	const checkField = (label: LabelType, rowItem: string) => {
 		let filedElem
@@ -45,17 +50,31 @@ const SimpleTable: FC<PropsType & RouteComponentProps> = ({ tableTitle, rows = [
 				<img src={iconDone} alt="icon-done" /> :
 				<img src={iconNone} alt="icon-none" />
 		} else if (label.name === 'status') {
-			filedElem = <StatusLabel text={rowItem} />
+			let description = ""
+			if (rowItem === 'no defects found' || rowItem === 'defects found')
+				description = "I detected the following defect or deficiencies in this motor vehicle that would be likely to affect the safety of its operation on result in its mechanical breakdown"
+
+			filedElem = <StatusLabel
+				text={rowItem}
+				description={description}
+			/>
 		} else {
 			filedElem = rowItem
 		}
 
 		return (
-			<StyledTableCell align={label.align ? label.align : "left"}>
+			<StyledTableCell align={label.align ? label.align : "left"} onDoubleClick={doubleClickFunction}>
 				{filedElem}
 			</StyledTableCell>
 		)
 	}
+
+
+	const [blockVisibility, setBlockVisibility] = useState(true)
+	const toggleBlockVisibility = () => {
+		setBlockVisibility(!blockVisibility)
+	}
+
 
 	return (
 		<Paper style={{ boxShadow: 'none', marginBottom: '20px' }}>
@@ -64,28 +83,28 @@ const SimpleTable: FC<PropsType & RouteComponentProps> = ({ tableTitle, rows = [
 					<div className={s.tableHeader}>{tableTitle}</div>
 					<div>
 						{button &&
-							<StyledDefaultButtonSmall variant="outlined" onClick={() => { props.history.push(button.link) }}>{button.text}</StyledDefaultButtonSmall>}
+							<StyledDefaultButtonSmall variant="outlined" onClick={button.func}>{button.text}</StyledDefaultButtonSmall>}
 
-						<IconButton><img src={arrowIcon} alt="arrow-icon" /></IconButton>
+						<IconButton><img src={ blockVisibility ? iconArrowUp : iconArrowBottom} alt="arrow-icon" onClick={toggleBlockVisibility} /></IconButton>
 					</div>
-
 				</Toolbar> : null}
 
-			<CustomTable subtractHeight={52}>
+			{ blockVisibility && <CustomTable subtractHeight={52}>
 				<TableHead>
 					<TableRow>
-						<CustomTableHeaderCells labels={labels} noSorting={true} />
+						<CustomTableHeaderCells labels={labels} noSorting={true} additionalButton={additionalButton} />
 					</TableRow>
 				</TableHead>
 				<TableBody>
 					{rows.map(row => (
 						<TableRow key={row.id} hover>
 							{labels.map(label => checkField(label, row[label.name]))}
+							{additionalButton && <StyledTableCell></StyledTableCell>}
 						</TableRow>
-
 					))}
+					
 				</TableBody>
-			</CustomTable>
+			</CustomTable>}
 		</Paper>
 	)
 }

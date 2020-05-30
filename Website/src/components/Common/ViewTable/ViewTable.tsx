@@ -13,6 +13,8 @@ type PropsType = {
 	rows: Array<any>
 	labels: Array<LabelType>
 	style?: any
+	rightComponent?: any
+	tableVisible?: boolean
 }
 
 const CustomTableCell = withStyles((theme) => ({
@@ -27,36 +29,40 @@ const CustomTableCell = withStyles((theme) => ({
 	},
 }))(StyledTableCell);
 
-const ViewTable: FC<PropsType & RouteComponentProps> = ({ tableTitle, rows = [], labels, style = {}, ...props }) => {
+const ViewTable: FC<PropsType & RouteComponentProps> = ({ tableTitle, rows = [], labels, style = {}, rightComponent ="", tableVisible = true, ...props }) => {
 	return (
 		<div style={{ boxShadow: 'none', marginBottom: '20px', ...style }} className={s.viewTable}>
 			{tableTitle ?
 				<Toolbar style={{ width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'space-between', boxSizing: 'border-box' }}>
 					<div className={s.tableHeader}>{tableTitle}</div>
+					{rightComponent}
 				</Toolbar> : null}
 
 
-			{rows.length === 0 ?
+			{tableVisible &&
+			
+				(
+					rows.length === 0 ?
 
-				<div className={s.errorBlock}>
-					<img src={errorIcon} alt="error-icon" />
-					<p>No {tableTitle}</p>
-				</div> :
+					<div className={s.errorBlock}>
+						<img src={errorIcon} alt="error-icon" />
+						<p>No {tableTitle}</p>
+					</div> :
+					<CustomTable>
+						<TableBody>
+							{labels.map((label, counter) => (
+								<TableRow key={counter}>
+									<CustomTableCell className={"label"}>{label.label}</CustomTableCell>
 
-
-				<CustomTable>
-					<TableBody>
-						{labels.map((label, counter) => (
-							<TableRow key={counter}>
-								<CustomTableCell className={"label"}>{label.label}</CustomTableCell>
-
-								{rows.map(row =>
-									<CustomTableCell>{row[label.name]}</CustomTableCell>
-								)}
-							</TableRow>
-						))}
-					</TableBody>
-				</CustomTable>}
+									{rows.map(row =>
+										<CustomTableCell>{row[label.name]}</CustomTableCell>
+									)}
+								</TableRow>
+							))}
+						</TableBody>
+					</CustomTable>
+				)
+			}
 		</div>
 	)
 }

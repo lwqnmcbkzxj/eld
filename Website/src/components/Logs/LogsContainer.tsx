@@ -3,9 +3,11 @@ import { useDispatch, useSelector } from "react-redux";
 import { AppStateType, LabelType } from '../../types/types'
 
 import LogsTable from './LogsTable'
+import { UserType, RolesEnum } from '../../types/user';
 
 const LogsContainer: FC = ({ ...props }) => {
 	const dispatch = useDispatch()
+	const loggedUser = useSelector<AppStateType, UserType>(state => state.user.userInfo)
 
 	let labels = [
 		{ label: 'Date', name: 'date' },
@@ -17,10 +19,15 @@ const LogsContainer: FC = ({ ...props }) => {
 		{ label: 'DVIR', name: 'dvir' },
 	]as Array<LabelType>
 
+	if (loggedUser.role_id === RolesEnum.admin) {
+		labels.splice(1, 0, { label: 'Company', name: 'company' });
+	}
+
 	let logs = [
 		{
 			id: 1,
 			date: 'Mar 14',
+			company: 'FedEx',
 			driver: '1Bruce Wayne',
 			hours_worked: 'q10:30',
 			distance: 'q201.3 mi',
@@ -31,6 +38,7 @@ const LogsContainer: FC = ({ ...props }) => {
 		{
 			id: 2,
 			date: 'Mar 13',
+			company: 'FedEx',
 			driver: '2Bruce Wayne',
 			hours_worked: '10:30',
 			distance: '201.3 mi',
@@ -39,6 +47,9 @@ const LogsContainer: FC = ({ ...props }) => {
 			dvir: false,
 		},
 	]
+
+
+
 
 	return (
 		<LogsTable

@@ -7,14 +7,16 @@ import { vehiclesAPI } from '../api/api'
 import { ResultCodesEnum } from '../api/types'
 import { showAlert } from '../utils/showAlert'
 
-const SET_VEHICLES = 'SET_VEHICLES'
+const SET_VEHICLES = 'vehicles/SET_VEHICLES'
+const SET_VEHICLE = 'vehicles/SET_VEHICLE'
 
 let initialState = {
-	vehicles: [] as Array<VehicleType>
+	vehicles: [] as Array<VehicleType>,
+	currentVehicle: {} as VehicleType
 }
 
 type InitialStateType = typeof initialState;
-type ActionsTypes = SetVehiclesType;
+type ActionsTypes = SetVehiclesType | SetVehicleType;
 
 const unitsReducer = (state = initialState, action: ActionsTypes): InitialStateType => {
 	switch (action.type) {
@@ -22,6 +24,12 @@ const unitsReducer = (state = initialState, action: ActionsTypes): InitialStateT
 			return {
 				...state,
 				vehicles: [...action.vehicles]
+			}
+		}
+		case SET_VEHICLE: {
+			return {
+				...state,
+				currentVehicle: action.vehicle
 			}
 		}
 		default:
@@ -33,6 +41,10 @@ type SetVehiclesType = {
 	type: typeof SET_VEHICLES,
 	vehicles: Array<VehicleType>
 }
+type SetVehicleType = {
+	type: typeof SET_VEHICLE,
+	vehicle: VehicleType
+}
 
 export const setVehicles = (vehicles: Array<VehicleType>): SetVehiclesType => {
 	return {
@@ -40,7 +52,12 @@ export const setVehicles = (vehicles: Array<VehicleType>): SetVehiclesType => {
 		vehicles
 	}
 }
-
+export const setVehicle = (vehicle: VehicleType): SetVehicleType => {
+	return {
+		type: SET_VEHICLE,
+		vehicle
+	}
+}
 export const getVehiclesFromServer = (companyId: number): ThunksType => async (dispatch) => {
 	let response = await vehiclesAPI.getVehicles(companyId)
 
@@ -48,7 +65,13 @@ export const getVehiclesFromServer = (companyId: number): ThunksType => async (d
 		dispatch(setVehicles(response.result))
 	}
 }
+export const getVehicleFromServer = (vehicleId: number): ThunksType => async (dispatch) => {
+	let response = await vehiclesAPI.getVehicle(vehicleId)
 
+	if (response.status === ResultCodesEnum.Success) {
+		dispatch(setVehicle(response.result))
+	}
+}
 
 export const deleteVehicle = (id: number): ThunksType => async (dispatch) => {
 	let response = await vehiclesAPI.deleteVehicle(id)

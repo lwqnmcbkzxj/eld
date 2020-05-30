@@ -1,16 +1,17 @@
 import React, { FC, useState, useEffect } from 'react'
-import { useSelector } from 'react-redux'
+import { useSelector, useDispatch } from 'react-redux'
 
 import DriversTable from '../DriversTable'
 import DriverPreview from './DriverPreview'
 import { AppStateType } from '../../../types/types'
 import { UserType } from '../../../types/user'
 import { LabelType } from '../../../types/types'
+import { withRouter, RouteComponentProps } from 'react-router'
 
 import SimpeTable from '../../Common/SimpleTable/SimpleTable'
 import GoogleMap from '../../Common/GoogleMap/GoogleMap'
 import DriversModal from '../../Common/Modals/PagesModals/DriversModal'
-
+import { setSearchText } from '../../../redux/logs-reducer'
 
 let driverRecentItemValues = [
 	{
@@ -66,7 +67,8 @@ type PropsType = {
 	// driver: DriverType
 }
 
-const DriverView: FC<PropsType> = ({ ...props }) => {
+const DriverView: FC<PropsType & RouteComponentProps> = ({ ...props }) => {
+	const dispatch = useDispatch()
 	let recentItemLabels = [
 		{ label: "Date", name: 'date' },
 		{ label: "Hours worked", name: 'hours_worked' },
@@ -101,7 +103,6 @@ const DriverView: FC<PropsType> = ({ ...props }) => {
 				setModalData={setModalData}
 			/>
 			<GoogleMap
-				
 			
 			/>
 
@@ -109,7 +110,7 @@ const DriverView: FC<PropsType> = ({ ...props }) => {
 			<SimpeTable
 				tableTitle="Recent item"
 				button={{
-					link: "/logs",
+					func: () => { props.history.push(`/logs`); dispatch(setSearchText("Потом тут будет имя водителя"))    },
 					text: "View logs"
 				}}
 				rows={driverRecentItemValues}
@@ -133,4 +134,4 @@ const DriverView: FC<PropsType> = ({ ...props }) => {
 	)
 }
 
-export default DriverView;
+export default withRouter(DriverView);

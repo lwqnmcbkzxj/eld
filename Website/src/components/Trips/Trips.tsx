@@ -2,13 +2,12 @@ import React, { FC, useState } from 'react'
 import { Paper, TableHead, TableRow, TableBody, Toolbar } from '@material-ui/core';
 import StatusLabel from '../Common/StatusLabel/StatusLabel'
 import { StyledTableCell, CustomTable, CustomPaginator, CustomTableHeaderCells } from '../Common/StyledTableComponents/StyledTableComponents'
-
 import { StyledSearchInput } from '../Common/StyledTableComponents/StyledInputs'
 
 import { isContainsSearchText } from '../../utils/isContainsSearchText'
 import { LabelType } from '../../types/types'
 import TripsModal from '../Common/Modals/PagesModals/TripsModal'
-
+import { DatePicker } from '../Common/DatePicker/DatePicker'
 import iconDone from '../../assets/img/mark_done.svg'
 import iconProgress from '../../assets/img/mark_progress.svg'
 import { getComparator, stableSort } from '../../utils/tableFilters'
@@ -72,9 +71,15 @@ const DriversTable: FC<PropsType> = ({ rows, labels, ...props }) => {
 
 	return (
 		<Paper style={{ boxShadow: 'none' }}>
-			<Toolbar style={{ width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'space-between', boxSizing: 'border-box' }}>
+			<Toolbar style={{ width: '100%', display: 'flex', alignItems: 'center', boxSizing: 'border-box' }}>
 				<StyledSearchInput searchText={searchText} setSearchText={setSearchText} />
-				 FILTERS HERE 
+
+				<div style={{ marginLeft: '24px' }}>
+				<DatePicker />
+
+				</div>
+
+
 			</Toolbar>
 
 			<CustomTable subtractHeight={52}>
@@ -93,38 +98,38 @@ const DriversTable: FC<PropsType> = ({ rows, labels, ...props }) => {
 					{stableSort(rows as any, getComparator(order, orderBy))
 						.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
 						.map(row => (
-						isContainsSearchText(searchText, row, [
-							'start_time',
-							'driver_name',
-							'truck_number',
-							'origin',
-							'distance',
-							'duration',
-							'note']) &&
+							isContainsSearchText(searchText, row, [
+								'start_time',
+								'driver_name',
+								'truck_number',
+								'origin',
+								'distance',
+								'duration',
+								'note']) &&
 
-						<TableRow
-							key={row.id}
-							hover
+							<TableRow
+								key={row.id}
+								hover
 								onDoubleClick={() => {
-								setCurrentModalData(row)
-								setEditModalOpen(true);
-							}}
-						>
-							<StyledTableCell>{row.start_time}</StyledTableCell>
-							<StyledTableCell>{row.driver_name}</StyledTableCell>
-							<StyledTableCell>{row.truck_number}</StyledTableCell>
-							<StyledTableCell><StatusLabel text={"Status"} /></StyledTableCell>
-							<StyledTableCell>{row.origin}</StyledTableCell>
-							<StyledTableCell>{row.distance}</StyledTableCell>
-							<StyledTableCell>{row.duration}</StyledTableCell>
-							<StyledTableCell><div className="text-block">{row.note}</div></StyledTableCell>
-							<StyledTableCell>
-								{row.trip ?
-									<img src={iconDone} alt="icon-done" /> :
-									<img src={iconProgress} alt="icon-progress" />}
-							</StyledTableCell>
-						</TableRow>
-					))}
+									setCurrentModalData(row)
+									setEditModalOpen(true);
+								}}
+							>
+								<StyledTableCell>{row.start_time}</StyledTableCell>
+								<StyledTableCell>{row.driver_name}</StyledTableCell>
+								<StyledTableCell>{row.truck_number}</StyledTableCell>
+								<StyledTableCell><StatusLabel text={"Status"} /></StyledTableCell>
+								<StyledTableCell>{row.origin}</StyledTableCell>
+								<StyledTableCell>{row.distance}</StyledTableCell>
+								<StyledTableCell>{row.duration}</StyledTableCell>
+								<StyledTableCell><div className="text-block">{row.note}</div></StyledTableCell>
+								<StyledTableCell>
+									{row.trip ?
+										<img src={iconDone} alt="icon-done" /> :
+										<img src={iconProgress} alt="icon-progress" />}
+								</StyledTableCell>
+							</TableRow>
+						))}
 				</TableBody>
 			</CustomTable>
 

@@ -6,7 +6,6 @@ import { Field, useField, FieldAttributes } from "formik";
 import { makeStyles, FormControl, Select, MenuItem, Checkbox, FormControlLabel, Radio, FormHelperText, TextField } from '@material-ui/core'
 
 import { StyledFilledInputSmall, StyledFilledInput } from '../../Common/StyledTableComponents/StyledInputs'
-import { StyledInputBase } from '../StyledTableComponents/StyledInputs'
 
 import openEyeIcon from '../../../assets/img/ic_eye_on.svg'
 import closedEyeIcon from '../../../assets/img/ic_eye_off.svg'
@@ -22,19 +21,21 @@ export const useFieldStyles = makeStyles(theme => ({
 			color: '#79757D',
 			fontSize: '12px',
 			lineHeight: '18px',
+			minHeight: '18px',
 			marginBottom: '4px',
 		},
 		"&.field_with_icon input": {
 			paddingRight: '40px'
 		},
-		"&.dropdown": {
-			"& .MuiInputBase-root": {
-				padding: 0,
-				"& .MuiSelect-root": {
-					paddingLeft: '12px'
-				}
-
+		
+	},
+	dropdown: {
+		"& .MuiInputBase-root": {
+			padding: 0,
+			"& .MuiSelect-root": {
+				paddingLeft: '12px'
 			}
+
 		}
 	},
 	field_icon: {
@@ -146,7 +147,8 @@ export const CustomField: React.FC<FieldAttributes<CustomFieldProps>> = (
 
 	return (
 		<div className={fieldClass}>
-			<label>{label}</label>
+			{typeof label === "string" &&
+				<label>{label}</label> }
 			<Component
 				{...field}
 				multiline={multiline}
@@ -176,6 +178,7 @@ export const CustomCheckBox: React.FC<FieldAttributes<CustomFieldProps>> = ({ ..
 				fontSize: '14px',
 				lineHeight: '21px',
 				color: '#323033',
+				minHeight: '18px',
 			}
 		}
 	}))()
@@ -191,23 +194,35 @@ export const CustomCheckBox: React.FC<FieldAttributes<CustomFieldProps>> = ({ ..
 }
 
 type DropdownValues = {
-	label: string
-	name: string
+	label?: string
+	name?: string
 	values: Array<{
 		value: string
 		id: number
 	}>
 	onValueChange: (field: string, value: any, shouldValidate?: boolean | undefined) => void
-	helperText: string
-	error: boolean
+	helperText?: string
+	error?: boolean
+	style?: any
 }
-export const CustomDropdown: React.FC<DropdownValues> = ({ values, name, onValueChange, helperText, error = false, ...props }) => {
+export const CustomDropdown: React.FC<DropdownValues> = ({ values, name = "", onValueChange, helperText = "", error = false, style = {}, ...props }) => {
+	const classes = makeStyles(theme => ({
+		dropdown: {
+			"& .MuiInputBase-root": {
+				padding: 0,
+				"& .MuiSelect-root": {
+					paddingLeft: '12px'
+				}
+	
+			}
+		},
+	}))()
 	const handleChange = (event: React.ChangeEvent<{ value: unknown }>) => {
 		onValueChange(name, event.target.value)
 	};
 	return (
 		<div>
-			<FormControl style={{ width: '100%' }}>
+			<FormControl style={{ width: '100%', ...style }} className={classes.dropdown}>
 				<StyledFilledInputSmall
 					id={name}
 					select

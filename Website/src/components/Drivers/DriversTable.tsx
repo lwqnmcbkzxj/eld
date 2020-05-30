@@ -15,8 +15,9 @@ import { getComparator, stableSort } from '../../utils/tableFilters'
 
 import editIcon from '../../assets/img/ic_edit.svg'
 import refreshIcon from '../../assets/img/ic_refresh.svg'
-import { LabelType } from '../../types/types';
- 
+import { LabelType, AppStateType } from '../../types/types';
+import { useSelector } from 'react-redux';
+
 type PropsType = {
 	rows: Array<DriverType>
 }
@@ -41,9 +42,10 @@ type Order = 'asc' | 'desc';
 
 
 
-interface RouterProps extends RouteComponentProps<any> {}
+interface RouterProps extends RouteComponentProps<any> { }
 
 const DriversTable: FC<PropsType & RouterProps> = ({ rows, ...props }) => {
+
 	const [page, setPage] = React.useState(0)
 	const [rowsPerPage, setRowsPerPage] = React.useState(10)
 	const [searchText, setSearchText] = React.useState("")
@@ -57,7 +59,7 @@ const DriversTable: FC<PropsType & RouterProps> = ({ rows, ...props }) => {
 		setPage(0)
 	};
 
-	
+
 
 
 	let currentModalDataObj = {
@@ -114,14 +116,14 @@ const DriversTable: FC<PropsType & RouterProps> = ({ rows, ...props }) => {
 		setOrderBy(property);
 	};
 	const [hoverId, setHoverId] = useState(-1)
-	
+
 	const editButtonRef = React.createRef<HTMLDivElement>()
 	return (
 		<Paper style={{ boxShadow: 'none' }}>
 			<Toolbar style={{ width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'space-between', boxSizing: 'border-box' }}>
 				<StyledSearchInput searchText={searchText} setSearchText={setSearchText} />
 				<div>
-					<StyledDefaultButtonSmall variant="outlined" onClick={() => { setEditModalOpen(true) }}>Add driver</StyledDefaultButtonSmall>
+					<StyledDefaultButtonSmall variant="outlined" onClick={() => { setAddModalOpen(true) }}>Add driver</StyledDefaultButtonSmall>
 					<IconButton><img src={refreshIcon} alt="referesh-icon" /></IconButton>
 				</div>
 
@@ -141,26 +143,29 @@ const DriversTable: FC<PropsType & RouterProps> = ({ rows, ...props }) => {
 				</TableHead>
 				<TableBody>
 
-				{stableSort(rows as any, getComparator(order, orderBy))
-					.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map(row => (
-					
-					isContainsSearchText(searchText, row, ['userName', 'firstName', 'lastName', 'phone']) && 
-						<TableRow
-							key={row.id}
-							hover
-							onDoubleClick={(e: any) => {
-								setEditModalOpen(true)
-								// setCurrentModalData(row)
-								e.preventDefault()
-							}}
-							onMouseEnter={() => { setHoverId(+row.id) }}
-							onMouseLeave={() => { setHoverId(-1) }}
-							onClick={(e: any) => { 
-								if (editButtonRef.current && !editButtonRef.current.contains(e.target)) {
-									props.history.push(`/drivers/${row.id}`)
-								}
-							 }}
-						>
+					{stableSort(rows as any, getComparator(order, orderBy))
+						.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map(row => (
+
+							isContainsSearchText(searchText, row, [
+								'firstName',
+								'lastName',
+								'userName',
+								'phone',
+								'truckNumber',
+								'notes',
+								'appVersion',
+								'deviceVersion']) &&
+							<TableRow
+								key={row.id}
+								hover
+								onDoubleClick={(e: any) => {
+									if (editButtonRef.current && !editButtonRef.current.contains(e.target)) {
+										props.history.push(`/drivers/${row.id}`)
+									}
+								}}
+								onMouseEnter={() => { setHoverId(+row.id) }}
+								onMouseLeave={() => { setHoverId(-1) }}
+							>
 								<CustomTableCell>{row.firstName}</CustomTableCell>
 								<CustomTableCell>{row.lastName}</CustomTableCell>
 								<CustomTableCell>{row.userName}</CustomTableCell>
@@ -173,25 +178,25 @@ const DriversTable: FC<PropsType & RouterProps> = ({ rows, ...props }) => {
 								</CustomTableCell>
 								<CustomTableCell>{row.deviceVersion}</CustomTableCell>
 								<CustomTableCell>
-									<StatusLabel text={"Status"}/>
-							</CustomTableCell>
-							<StyledTableCell style={{ minWidth: '70px', boxSizing: 'border-box', paddingTop: '10px', paddingBottom: '10px' }}>
-								{hoverId === row.id &&
-									<div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }} ref={editButtonRef}>
-										<button style={{ height: '32px' }}
-											onClick={(e) => {
-												setEditModalOpen(true);
-												// setCurrentModalData(row)
-												e.preventDefault()
-											}} >
-											<img src={editIcon} alt="edit-icon" />
-										</button>
-									</div>
-								}
-							</StyledTableCell>
-						</TableRow>
+									<StatusLabel text={"Status"} />
+								</CustomTableCell>
+								<StyledTableCell style={{ minWidth: '70px', boxSizing: 'border-box', paddingTop: '10px', paddingBottom: '10px' }}>
+									{hoverId === row.id &&
+										<div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }} ref={editButtonRef}>
+											<button style={{ height: '32px' }}
+												onClick={(e) => {
+													setEditModalOpen(true);
+													// setCurrentModalData(row)
+													e.preventDefault()
+												}} >
+												<img src={editIcon} alt="edit-icon" />
+											</button>
+										</div>
+									}
+								</StyledTableCell>
+							</TableRow>
 
-					))}
+						))}
 				</TableBody>
 			</CustomTable>
 

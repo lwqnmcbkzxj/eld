@@ -1,11 +1,14 @@
 import React, { FC, useState, useEffect } from 'react'
+import { useSelector, useDispatch } from 'react-redux';
+import s from './Logs.module.scss'
+
 import { Paper, TableHead, TableRow, TableBody, withStyles, Toolbar, Button, Checkbox } from '@material-ui/core';
-import { StyledTableCell, CustomTable, CustomPaginator, CustomTableHeaderCells } from '../Common/StyledTableComponents/StyledTableComponents'
+import { StyledTableCell, CustomTable, CustomPaginator, CustomTableHeaderCells, StyledTableRow } from '../Common/StyledTableComponents/StyledTableComponents'
 import { withRouter, RouteComponentProps } from 'react-router'
 import { StyledSearchInput } from '../Common/StyledTableComponents/StyledInputs'
 import { StyledDefaultButtonSmall } from '../Common/StyledTableComponents/StyledButtons'
 import { LogsType } from '../../types/logs'
-import { LabelType } from '../../types/types'
+import { LabelType, AppStateType } from '../../types/types'
 
 import iconDone from '../../assets/img/mark_done.svg'
 import iconNone from '../../assets/img/mark_none.svg'
@@ -13,6 +16,11 @@ import iconAlert from '../../assets/img/mark_error.svg'
 
 import { isContainsSearchText } from '../../utils/isContainsSearchText'
 import { getComparator, stableSort } from '../../utils/tableFilters'
+
+import { setSearchText } from '../../redux/logs-reducer'
+import { CustomField, CustomDropdown } from '../Common/FormComponents/FormComponents';
+
+import { DatePicker } from '../Common/DatePicker/DatePicker'
 
 type PropsType = {
 	labels: Array<LabelType>
@@ -50,9 +58,17 @@ const checkField = (label: LabelType, rowItem: string) => {
 
 
 const LogsTable: FC<PropsType & RouteComponentProps> = ({ labels, rows, ...props }) => {
+	const dispatch = useDispatch()
+	let searchText = useSelector<AppStateType, string>(state => state.logs.searchText)
+
 	const [page, setPage] = React.useState(0)
 	const [rowsPerPage, setRowsPerPage] = React.useState(10)
-	const [searchText, setSearchText] = React.useState("")
+
+
+	const setSearchTextDispatch = (value: string) => {
+		dispatch(setSearchText(value))
+	}
+	// const [searchText, setSearchText] = React.useState("")
 
 	const handleChangePage = (event: unknown, newPage: number) => {
 		setPage(newPage)
@@ -107,7 +123,8 @@ const LogsTable: FC<PropsType & RouteComponentProps> = ({ labels, rows, ...props
 		setSelected(newSelected)
 	};
 
-
+	const [currentLogsFilter, setCurrentLogsFilter] = useState("All")
+	const [currentDvirsFilter, setCurrentDvirsFilter] = useState("All")
 
 
 
@@ -115,9 +132,35 @@ const LogsTable: FC<PropsType & RouteComponentProps> = ({ labels, rows, ...props
 		<div className="page logs-page">
 			<Paper style={{ boxShadow: 'none' }}>
 				<Toolbar style={{ width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'space-between', boxSizing: 'border-box' }}>
-					<StyledSearchInput searchText={searchText} setSearchText={setSearchText} />
-					FILTERS HERE
-					<StyledDefaultButtonSmall variant="outlined" onClick={() => { console.log("REPORT") }}>Report</StyledDefaultButtonSmall>
+					<div className={s.toolbarFilters}>
+						<StyledSearchInput searchText={searchText} setSearchText={setSearchTextDispatch} />
+
+						<DatePicker />
+
+						<CustomDropdown
+							values={[
+								{ value: 'All logs', id: 1 },
+								{ value: 'All logs1', id: 2 },
+								{ value: 'All logs2', id: 3 },
+								{ value: 'All logs3', id: 4 },
+							]}
+							onValueChange={setCurrentLogsFilter}
+							style={{ width: '128px' }}
+						/>
+						<CustomDropdown
+							values={[
+								{ value: 'All DVIRs', id: 1 },
+								{ value: 'All DVIRs1', id: 2 },
+								{ value: 'All DVIRs2', id: 3 },
+								{ value: 'All DVIRs3', id: 4 },
+							]}
+							onValueChange={setCurrentLogsFilter}
+							style={{ width: '128px' }}
+						/>
+
+					</div>
+
+					<StyledDefaultButtonSmall variant="outlined" onClick={() => { console.log("REPORT") }} disabled={selected.length === 0}>Report</StyledDefaultButtonSmall>
 				</Toolbar>
 
 				<CustomTable subtractHeight={52}>
@@ -156,11 +199,16 @@ const LogsTable: FC<PropsType & RouteComponentProps> = ({ labels, rows, ...props
 										'hours_of_service',
 										'form_and_manner']) &&
 
-									<TableRow key={row.id} hover onClick={(e) => {
-										if (checkBoxRef.current && !checkBoxRef.current.contains(e.target)) {
-											props.history.push(`/logs/${row.id}`)
-										}
-									}}>
+									<StyledTableRow
+										key={row.id}
+										hover
+										selected={isItemSelected}
+										onClick={(event) => handleClick(event, row.id.toString())}
+										onDoubleClick={(e) => {
+											if (checkBoxRef.current && !checkBoxRef.current.contains(e.target)) {
+												props.history.push(`/logs/${row.id}`)
+											}
+										}}>
 										<StyledTableCell ref={checkBoxRef}>
 											<Checkbox
 												checked={isItemSelected}
@@ -168,7 +216,7 @@ const LogsTable: FC<PropsType & RouteComponentProps> = ({ labels, rows, ...props
 												onClick={(event) => handleClick(event, row.id.toString())} />
 										</StyledTableCell>
 										{labels.map(label => checkField(label, row[label.name]))}
-									</TableRow>
+									</StyledTableRow>
 
 								)
 							})}

@@ -15,6 +15,6 @@ export type VehicleType = {
 	fuel_type?: string
 	state?: string
 	enter_vin_manually?: boolean
-	vin_number?: string
+	vehicle_vin?: string
 
 }

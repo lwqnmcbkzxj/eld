@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 
 import { Dialog, DialogContent, DialogTitle } from '@material-ui/core';
 import { Formik, Form } from 'formik';
@@ -14,7 +14,12 @@ import StyledLabel from '../../StatusLabel/StatusLabel'
 import { CustomDialogActions } from '../ModalsComponents'
 
 import * as yup from "yup";
-import { StatusEnum } from '../../../../types/types';
+import { StatusEnum, AppStateType } from '../../../../types/types';
+
+
+import { getVehicleFromServer } from '../../../../redux/vehicles-reducer'
+import { useSelector, useDispatch } from 'react-redux';
+
 
 type VehiclesModalType = {
 	initialValues: VehicleType
@@ -26,6 +31,21 @@ type VehiclesModalType = {
 
 const EditVehicleModal = ({ open, handleClose, initialValues, titleText, handleDelete, handleActivate, ...props }: ModalType & VehiclesModalType) => {
 	const classes = useStyles();
+	const dispatch = useDispatch()
+	const vehicle = useSelector<AppStateType, VehicleType>(state => state.vehicles.currentVehicle)
+
+
+	// const getVehicle = async (vehicleId: number) => {
+	// 	await dispatch(getVehicleFromServer(vehicleId))
+	// 	initialValues = vehicle 
+	// }
+
+	// useEffect( () => {
+	// 	if (initialValues.vehicle_id && open) {
+	// 		getVehicle(initialValues.vehicle_id)
+	// 	}
+	// }, [open]);
+	
 
 	const submitProfileEdit = (data: any, setSubmitting: any) => {
 		setSubmitting(true);
@@ -50,7 +70,7 @@ const EditVehicleModal = ({ open, handleClose, initialValues, titleText, handleD
 
 			state: '',
 			enter_vin_manually: false,
-			vin_number: '',
+			vehicle_vin: '',
 			
 			vehicle_notes: ''
 		}
@@ -66,7 +86,7 @@ const EditVehicleModal = ({ open, handleClose, initialValues, titleText, handleD
 		vehicle_licence_plate: yup.string(),
 		state: yup.string(),
 		enter_vin_manually: yup.string(),
-		vin_number: yup.string(),
+		vehicle_vin: yup.string(),
 	});
 
 	return (
@@ -82,16 +102,18 @@ const EditVehicleModal = ({ open, handleClose, initialValues, titleText, handleD
 				<DialogTitle id="edit-driver-dialog-title" className={classes.dialog__header}>
 					<div style={{ display: 'flex', alignItems: 'center', justifyContent: "flex-start" }}>
 						<div style={{ marginRight: '15px' }}>{titleText} <span>{initialValues.vehicle_truck_number} </span></div>
-						<StyledLabel text={initialValues.vehicle_status} />
+						{initialValues.vehicle_status && <StyledLabel text={initialValues.vehicle_status} /> }
 					</div>
 					{initialValues.vehicle_id &&
-					<div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gridGap: '20px' }}>
-						<StyledDefaultButtonSmall
+						<div
+						// style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gridGap: '20px' }}
+					>
+						{/* <StyledDefaultButtonSmall
 							onClick={() => {
 								if (initialValues.vehicle_id && handleDelete)
 									handleDelete(initialValues.vehicle_id)
 								handleClose()
-							}}>Delete</StyledDefaultButtonSmall>
+							}}>Delete</StyledDefaultButtonSmall> */}
 
 						<StyledDefaultButtonSmall
 							onClick={() => {
@@ -104,6 +126,8 @@ const EditVehicleModal = ({ open, handleClose, initialValues, titleText, handleD
 
 				<Formik
 					validateOnChange={true}
+
+					enableReinitialize={true}
 					initialValues={initialValues}
 					validationSchema={validationSchema}
 					validate={values => {
@@ -174,7 +198,7 @@ const EditVehicleModal = ({ open, handleClose, initialValues, titleText, handleD
 
 										<div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gridGap: '32px' }}>
 											<CustomCheckBox name="enter_vin_manually" label="Enter VIN manually" optional={true} />
-											<CustomField name={'vin_number'} label={'VIN'} disabled={!values.enter_vin_manually} optional={true} />
+											<CustomField name={'vehicle_vin'} label={'VIN'} disabled={!values.enter_vin_manually} optional={true} />
 										</div>
 
 									</div>

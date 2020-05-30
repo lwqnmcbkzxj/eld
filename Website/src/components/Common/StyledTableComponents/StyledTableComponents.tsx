@@ -4,6 +4,19 @@ import { colors } from '../../../assets/scss/Colors/Colors';
 import { LabelType } from '../../../types/types'
 import cn from 'classnames'
 
+import addIcon from '../../../assets/img/ic_add.svg'
+
+export const StyledTableRow = withStyles((theme) => ({
+	root: {
+		"&.Mui-selected": {
+			backgroundColor: colors.bg_component_color,
+			"&:hover": {
+				backgroundColor: 'rgba(0, 0, 0, 0.04)',
+			}
+		}
+	}
+}))(TableRow);
+
 export const StyledTableCell = withStyles((theme) => ({
 	head: {
 		color: '#97939A',
@@ -29,14 +42,15 @@ export const StyledTableCell = withStyles((theme) => ({
 }))(TableCell);
 
 
-export const CustomTable = ({ subtractHeight = 0, ...props }: any) => {
+export const CustomTable = ({ subtractHeight = 0, display = "", ...props }: any) => {
 	let subtractHeightDef = 122
 
 	return (
 		<TableContainer style={{
 			maxHeight: `calc(100vh - ${subtractHeightDef + subtractHeight}px)`,
 			width: 'calc(100% - 3px)',
-			marginLeft: '3px'
+			marginLeft: '3px',
+			display: display
 		}}>
 			<Table stickyHeader style={{ borderCollapse: 'collapse' }}>
 				{props.children}
@@ -228,12 +242,13 @@ type TableHeaderCellsProps = {
 	order?: Order;
 	orderBy?: string;
 	noSorting?: boolean
+	additionalButton?: () => void
 }
-export const CustomTableHeaderCells: React.FC<TableHeaderCellsProps> = ({ labels, Component, noSorting = false, ...props }) => {
+export const CustomTableHeaderCells: React.FC<TableHeaderCellsProps> = ({ labels, Component, noSorting = false, additionalButton, ...props }) => {
 	if (!Component)
 		Component = StyledTableCell
 
-	const { order, orderBy, onRequestSort = () => {} } = props;
+	const { order, orderBy, onRequestSort = () => { } } = props;
 	const createSortHandler = (property: string) => (event: React.MouseEvent<unknown>) => {
 		onRequestSort(event, property);
 	};
@@ -242,15 +257,15 @@ export const CustomTableHeaderCells: React.FC<TableHeaderCellsProps> = ({ labels
 
 	return (
 		<>
-			{ labels.map((label, counter) => (
-					<Component
-						key={counter}
-						align={(label.align === 'right') ? label.align : "left"}
-						sortDirection={orderBy === label.name ? order : false}>
+			{labels.map((label, counter) => (
+				<Component
+					key={counter}
+					align={(label.align === 'right') ? label.align : "left"}
+					sortDirection={orderBy === label.name ? order : false}>
 
-					
+
 					{noSorting || label.name === "" || label.notSortable ?
-						<div>{label.label}</div> :  
+						<div>{label.label}</div> :
 						<TableSortLabel
 							active={orderBy === label.name}
 							direction={orderBy === label.name ? order : 'asc'}
@@ -258,12 +273,10 @@ export const CustomTableHeaderCells: React.FC<TableHeaderCellsProps> = ({ labels
 						>
 							{label.label}
 						</TableSortLabel>
-						}
-
-						
-
-					</Component>
-				)) }
+					}
+				</Component>
+			))}
+			{additionalButton && <Component> <button onClick={additionalButton} style={{ height: '32px' }}><img src={addIcon} alt="add-icon" /></button> </Component>}
 		</>
 	)
 }

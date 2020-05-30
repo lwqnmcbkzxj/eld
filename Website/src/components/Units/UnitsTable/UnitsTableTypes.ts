@@ -8,6 +8,9 @@ export type EnhancedTableToolbarProps = {
 	searchText: string
 	setSearchText: (searchText: string) => void
 	getUnits: () => void
+
+	toggleTable?: () => void
+	tableVisible?: boolean
 }
 
 type Order = 'asc' | 'desc';
@@ -35,4 +38,7 @@ export type EnhancedTableProps = {
 		currentSPD: number
 	}>
 	getUnits: () => void
+
+	toggleTable?: () => void
+	tableVisible?: boolean
 }

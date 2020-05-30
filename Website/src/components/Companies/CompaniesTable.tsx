@@ -113,7 +113,7 @@ const CompaniesTable: FC<PropsType> = ({ rows, handleAdd, handleEdit, changePass
 							hover
 							onMouseEnter={() => { setHoverId(row.id) }}
 							onMouseLeave={() => { setHoverId(-1) }}
-							onClick={() => {
+							onDoubleClick={() => {
 								setEditModalOpen(true);
 								setCurrentModalData(row)
 							}}
@@ -128,7 +128,7 @@ const CompaniesTable: FC<PropsType> = ({ rows, handleAdd, handleEdit, changePass
 							<StyledTableCell>{row.subscribe_type}</StyledTableCell>
 							<StyledTableCell align={'right'}>{row.current_balance}</StyledTableCell>
 
-							{/* <StyledTableCell><StatusLabel text={row.status.text} theme={row.status.type} /></StyledTableCell> */}
+							<StyledTableCell><StatusLabel text={row.status}/></StyledTableCell>
 							<StyledTableCell style={{ minWidth: '100px', boxSizing: 'border-box', paddingTop: '10px', paddingBottom: '10px' }}>
 								{hoverId === row.id &&
 									<div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>

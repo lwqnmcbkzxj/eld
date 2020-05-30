@@ -2,7 +2,7 @@ import React, { FC, useState, useEffect } from 'react'
 import { useSelector } from 'react-redux'
 
 import { AppStateType } from '../../../types/types'
-import { UserType } from '../../../types/user'
+import { UserType, RolesEnum } from '../../../types/user'
 
 import PreviewPage from './LogPreview'
 
@@ -11,6 +11,7 @@ import GoogleMap from '../../Common/GoogleMap/GoogleMap'
 import { LabelType } from '../../../types/types'
 import InfoBlock from './LogInfoBlock'
 import LogsModal from '../../Common/Modals/PagesModals/LogsModal'
+import DriversModal from '../../Common/Modals/PagesModals/DriversModal'
 
 let logsValues = [
 	{
@@ -57,7 +58,7 @@ let dvirValues = [
 	{
 		date: '03.12.20  11:30 AM',
 		vehicle: '024',
-		status: 'no defects found',
+		status: 'defects found',
 		driver_signature: false,
 		mechanic_signature: true,
 		note: 'iasydgasijndqwigdjsab78gf',
@@ -100,21 +101,35 @@ const ViewPage: FC<PropsType> = ({ ...props }) => {
 	const handleEditModalClose = () => {
 		setEditModalOpen(false);
 	};
+	const [addModalOpen, setAddModalOpen] = useState(false)
+	const handleAddModalClose = () => {
+		setAddModalOpen(false);
+	};
 
 
+	const [driverModalData, setDriverModalData] = useState({})
+	const [editDriverModalOpen, setEditDriverModalOpen] = useState(false)
+	const handleEditDriverModalClose = () => {
+		setEditDriverModalOpen(false);
+	};
 
-
+	let additButtonFunc
+	if (loggedUser.role_id === RolesEnum.admin) {
+		additButtonFunc = () => { setAddModalOpen(true) }
+	}
 	return (
 		<div className={"page log-page"}>
 			<PreviewPage
 				loggedUserId={loggedUser.role_id}
-				setModalData={setModalData}
-				setEditModalOpen={setEditModalOpen}
+				setModalData={setDriverModalData}
+				setEditModalOpen={setEditDriverModalOpen}
 			/>
 
 			<SimpleTable
 				rows={logsValues}
 				labels={logsLabels}
+				additionalButton={ additButtonFunc }
+				doubleClickFunction={() => { setEditModalOpen(true) }}
 			/>
 			<InfoBlock />
 
@@ -124,14 +139,32 @@ const ViewPage: FC<PropsType> = ({ ...props }) => {
 				labels={dvirLabels}
 			/>
 
-				{/* Edit modal */}
-				{editModalOpen &&
+			{/* Edit modal */}
+			{editModalOpen &&
 				<LogsModal
 					open={editModalOpen}
 					handleClose={handleEditModalClose}
 					initialValues={currentModalData}
 					titleText={"Edit Event"}
 					submitFunction={() => { console.log('s') }}
+				/>}
+			{/* Add modal */}
+			{addModalOpen &&
+				<LogsModal
+					open={addModalOpen}
+					handleClose={handleAddModalClose}
+					initialValues={{}}
+					titleText={"Add Event"}
+					submitFunction={() => { console.log('s') }}
+				/>}
+
+			{/* Edit modal */}
+			{editDriverModalOpen &&
+				<DriversModal
+					open={editDriverModalOpen}
+					handleClose={handleEditDriverModalClose}
+					initialValues={driverModalData}
+					titleText={"Edit Driver"}
 				/>}
 		</div>
 	)

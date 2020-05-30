@@ -19,7 +19,7 @@ const inputStyle = {
 			padding: '0px',
 
 			"&.MuiInput-multiline": {
-				minHeight: '112px',
+				minHeight: '139px',
 				overflowY: 'auto',
 				"&:after": {
 					borderBottom: `none!important`,
@@ -28,7 +28,7 @@ const inputStyle = {
 				"& textarea": {
 					padding: '10px 12px',
 					boxSizing: 'border-box',
-					minHeight: '111px',
+					minHeight: '138px',
 				},
 			},
 
@@ -90,7 +90,8 @@ export const StyledSearchInput: FC<SearchInputTypes> = ({ searchText, setSearchT
 			"& .input__icon": {
 				filter: 'invert(16%) sepia(4%) saturate(602%) hue-rotate(236deg) brightness(93%) contrast(89%)'
 			},
-			width: '256px'
+			width: '256px',
+			margin: '0px',
 		}
 	}))()
 
@@ -112,20 +113,3 @@ export const StyledSearchInput: FC<SearchInputTypes> = ({ searchText, setSearchT
 	);
 };
 // ** SEARCH INPUT END**
-
-
-export const StyledInputBase = withStyles((theme) => ({
-	root: {
-		width: '100%',
-		borderBottom: `1px solid ${colors.bg_component_color}`,
-		backgroundColor: colors.bg_component_color,
-		borderRadius: '4px',
-		fontSize: '14px',
-		lineHeight: '21px',
-		color: colors.primary_text_color,
-		height: '32px',
-		padding: '12px',
-	},
-}))(InputBase);
-
-

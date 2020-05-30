@@ -4,7 +4,9 @@ import { Toolbar, IconButton, Tooltip } from '@material-ui/core'
 import DeleteIcon from '@material-ui/icons/Delete'
 
 import refreshIcon from '../../../assets/img/ic_refresh.svg'
-import toggleBlockIcon from '../../../assets/img/ic_arrow_bottom.svg'
+
+import toggleArrowBottom from '../../../assets/img/ic_arrow_bottom.svg'
+import toggleArrowUp from '../../../assets/img/ic_arrow_up.svg'
 
 
 import { StyledSearchInput } from '../../Common/StyledTableComponents/StyledInputs'
@@ -15,7 +17,7 @@ import { EnhancedTableToolbarProps } from './UnitsTableTypes'
 
 
 
-const EnhancedTableToolbar: FC<EnhancedTableToolbarProps> = ({ numSelected, selected, deleteItem, searchText, setSearchText, getUnits, ...props }) => {
+const EnhancedTableToolbar: FC<EnhancedTableToolbarProps> = ({ numSelected, selected, deleteItem, searchText, setSearchText, getUnits, toggleTable, tableVisible, ...props }) => {
 	const classes = useToolbarStyles()
 	const deleteItems = (selectedIds: string[]) => {
 		selectedIds.map(id => deleteItem(+id))
@@ -28,7 +30,9 @@ const EnhancedTableToolbar: FC<EnhancedTableToolbarProps> = ({ numSelected, sele
 
 			<div className="service-icons">
 				<IconButton onClick={getUnits}><img src={refreshIcon} alt="referesh-icon" /></IconButton>
-				<IconButton><img src={toggleBlockIcon} alt="arrow-icon" /></IconButton>
+				<IconButton>
+					<img src={ tableVisible ? toggleArrowUp : toggleArrowBottom } alt="arrow-icon" onClick={toggleTable} />
+				</IconButton>
 			</div>
 		</Toolbar>
 	);

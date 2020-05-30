@@ -9,6 +9,7 @@ import unitsReducer from "./units-reducer"
 import driversReducer from "./drivers-reducer"
 import vehiclesReducer from "./vehicles-reducer"
 import eldsReducer from "./elds-reducer"
+import logsReducer from "./logs-reducer"
 
 import companiesReducer from "./companies-reducer"
 
@@ -28,6 +29,7 @@ let rootReducer = combineReducers({
 	drivers: driversReducer,
 	vehicles: vehiclesReducer,
 	elds: eldsReducer,
+	logs: logsReducer,
 
 	// admin
 	companies: companiesReducer,

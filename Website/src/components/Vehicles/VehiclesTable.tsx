@@ -10,6 +10,12 @@ import { VehicleType } from '../../types/vehicles'
 import VehicleModal from '../Common/Modals/PagesModals/VehiclesModal'
 import { isContainsSearchText } from '../../utils/isContainsSearchText'
 
+
+import { getVehicleFromServer } from '../../redux/vehicles-reducer'
+import { useSelector, useDispatch } from 'react-redux';
+import { AppStateType } from '../../types/types';
+
+
 type PropsType = {
 	rows: Array<VehicleType>
 
@@ -18,6 +24,7 @@ type PropsType = {
 }
 type Order = 'asc' | 'desc';
 const DriversTable: FC<PropsType> = ({ rows, handleActivate, handleDelete, ...props }) => {
+	const dispatch = useDispatch()
 	const [page, setPage] = React.useState(0)
 	const [rowsPerPage, setRowsPerPage] = React.useState(10)
 	const [searchText, setSearchText] = React.useState("")
@@ -54,25 +61,29 @@ const DriversTable: FC<PropsType> = ({ rows, handleActivate, handleDelete, ...pr
 
 
 
-	const [vehicleEditModalOpen, setVehicleEditModalOpen] = useState(false)
-	const handleVehicleEditModalClose = () => {
-		setVehicleEditModalOpen(false);
+	const [editModalOpen, setEditModalOpen] = useState(false)
+	const handleEditModalClose = () => {
+		setEditModalOpen(false);
 	};
 
 
-	const [currentVehicleData, setCurrentVehicleData] = useState({});
+	const [currentModalData, setCurrentModalData] = useState({});
 
-	const [vehicleAddModalOpen, setVehicleAddModalOpen] = useState(false)
-	const handleVehicleAddModalClose = () => {
-		setVehicleAddModalOpen(false);
+	const [addModalOpen, setAddModalOpen] = useState(false)
+	const handleAddModalClose = () => {
+		setAddModalOpen(false);
 	};
+
+
+
+	const vehicle = useSelector<AppStateType, VehicleType>(state => state.vehicles.currentVehicle)
 
 
 	return (
 		<Paper style={{ boxShadow: 'none' }}>
 			<Toolbar style={{ width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'space-between', boxSizing: 'border-box' }}>
 				<StyledSearchInput searchText={searchText} setSearchText={setSearchText} />
-				<StyledDefaultButtonSmall variant="outlined" onClick={() => { setVehicleAddModalOpen(true) }}>Add vehicle</StyledDefaultButtonSmall>
+				<StyledDefaultButtonSmall variant="outlined" onClick={() => { setAddModalOpen(true) }}>Add vehicle</StyledDefaultButtonSmall>
 			</Toolbar>
 
 			<CustomTable subtractHeight={52}>
@@ -102,8 +113,10 @@ const DriversTable: FC<PropsType> = ({ rows, handleActivate, handleDelete, ...pr
 							key={row.vehicle_id}
 							hover
 							onDoubleClick={() => {
-								setVehicleEditModalOpen(true);
-								setCurrentVehicleData(row)
+								setEditModalOpen(true);
+								if (row.vehicle_id)
+									dispatch(getVehicleFromServer(+row.vehicle_id))
+								// setCurrentModalData({ vehicle_id: row.vehicle_id })
 							}}
 
 						>
@@ -130,21 +143,21 @@ const DriversTable: FC<PropsType> = ({ rows, handleActivate, handleDelete, ...pr
 
 
 			{/* Edit modal */}
-			{vehicleEditModalOpen &&
+			{editModalOpen &&
 				<VehicleModal
-					open={vehicleEditModalOpen}
-					handleClose={handleVehicleEditModalClose}
-					initialValues={currentVehicleData}
+					open={editModalOpen}
+					handleClose={handleEditModalClose}
+					initialValues={vehicle}
 					titleText={"Edit Vehicle"}
 					handleActivate={handleActivate}
 					handleDelete={handleDelete}
 				/>}
 
 			{/* Add modal */}
-			{vehicleAddModalOpen &&
+			{addModalOpen &&
 				<VehicleModal
-					open={vehicleAddModalOpen}
-					handleClose={handleVehicleAddModalClose}
+					open={addModalOpen}
+					handleClose={handleAddModalClose}
 					initialValues={{}}
 					titleText={"Add Vehicle"}
 				/>}

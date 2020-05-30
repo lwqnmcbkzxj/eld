@@ -114,6 +114,13 @@ export const vehiclesAPI = {
 			})
 			.catch((err) => { return err });
 	},
+	getVehicle(vehicle_id: number) {
+		return instance.get(`vehicle/info/${vehicle_id}`)
+		.then((response) => {
+			return response.data
+		})
+		.catch((err) => { return err });
+	},
 	deleteVehicle(id: number) {
 		return instance.delete(`vehicle/delete/${id}`)
 			.then(response => response.data)

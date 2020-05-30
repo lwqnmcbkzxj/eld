@@ -1,17 +1,14 @@
 import React, { useState } from 'react';
-
 import { Dialog, DialogActions, DialogContent, DialogTitle, Checkbox } from '@material-ui/core';
 import { Formik, Field, Form, FieldArray } from 'formik';
-
 import { useStyles } from '../ModalsStyle'
+import { useSelector } from 'react-redux';
 
 import { ModalType } from '../ModalsTypes'
-import { StatusEnum } from '../../../../types/types';
-
-import { colors } from '../../../../assets/scss/Colors/Colors';
+import { StatusEnum, AppStateType } from '../../../../types/types';
+import { UserType, RolesEnum } from '../../../../types/user';
 
 import { CustomField, CustomCheckBox, CustomDropdown } from '../../FormComponents/FormComponents';
-import { StyledFilledInputSmall } from '../../StyledTableComponents/StyledInputs'
 import { StyledDefaultButtonSmall, StyledConfirmButtonSmall } from '../../StyledTableComponents/StyledButtons';
 import StyledLabel from '../../StatusLabel/StatusLabel'
 import { CustomDialogActions } from '../ModalsComponents'
@@ -26,6 +23,7 @@ type DriversModal = {
 
 const EditProfileModal = ({ open, handleClose, initialValues, titleText, ...props }: ModalType & DriversModal) => {
 	const classes = useStyles();
+	const loggedUser = useSelector<AppStateType, UserType>(state => state.user.userInfo)
 
 	const submitProfileEdit = (data: any, setSubmitting: any) => {
 		setSubmitting(true);
@@ -51,6 +49,7 @@ const EditProfileModal = ({ open, handleClose, initialValues, titleText, ...prop
 		eld: yup.boolean().required(),
 		allow_manual_drive_time: yup.boolean().required(),
 		co_driver: yup.string(),
+		company: yup.string(),
 		home_terminal_address: yup.string(),
 		home_termial_timezone: yup.string(),
 		notes: yup.string(),
@@ -73,6 +72,7 @@ const EditProfileModal = ({ open, handleClose, initialValues, titleText, ...prop
 			eld: false,
 			allow_manual_drive_time: false,
 			co_driver: '',
+			company: '',
 			home_terminal_address: '',
 			home_termial_timezone: '',
 			notes: '',
@@ -92,7 +92,7 @@ const EditProfileModal = ({ open, handleClose, initialValues, titleText, ...prop
 				<DialogTitle id="edit-driver-dialog-title" className={classes.dialog__header}>
 					<div style={{ display: 'flex', alignItems: 'center', justifyContent: "flex-start" }}>
 						<div style={{ marginRight: '15px' }}>{titleText} <span>{initialValues.first_name + ' ' + initialValues.last_name} </span></div>
-						<StyledLabel text={StatusEnum.Active} />
+						{initialValues.id && <StyledLabel text={StatusEnum.Active} />}
 					</div>
 
 					{initialValues.id &&
@@ -151,11 +151,10 @@ const EditProfileModal = ({ open, handleClose, initialValues, titleText, ...prop
 											/>
 										</div>
 										<div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gridGap: '32px' }}>
-											<CustomField name={'truck_number'} label={'Truck No.'} optional={true} />
 
 											<CustomField
-												name={'trailer_number'}
-												label={'Trailer No.'}
+												name={'truck_number'}
+												label={'Truck No.'}
 												Component={CustomDropdown}
 												values={[
 													{ value: '043', id: 1 },
@@ -166,6 +165,9 @@ const EditProfileModal = ({ open, handleClose, initialValues, titleText, ...prop
 												onValueChange={setFieldValue}
 												optional={true}
 											/>
+
+											<CustomField name={'trailer_number'} label={'Trailer No.'} optional={true} />
+
 										</div>
 										<div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gridGap: '32px' }}>
 											<CustomCheckBox name="personal_conveyance" label="Personal Conveyance" />
@@ -191,6 +193,24 @@ const EditProfileModal = ({ open, handleClose, initialValues, titleText, ...prop
 											onValueChange={setFieldValue}
 											optional={true}
 										/>
+
+										{loggedUser.role_id === RolesEnum.admin &&
+											<CustomField
+												name={'company'}
+												label={'Company'}
+												Component={CustomDropdown}
+												values={[
+													{ value: 'FedEx', id: 1 },
+													{ value: 'FedEx', id: 2 },
+													{ value: 'FedEx', id: 3 },
+													{ value: 'FedEx', id: 4 },
+												]}
+												onValueChange={setFieldValue}
+												optional={true}
+											/>
+
+										}
+
 										<CustomField
 											name={'home_terminal_address'}
 											label={'Home Terminal Address'}

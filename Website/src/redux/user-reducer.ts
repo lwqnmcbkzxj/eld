@@ -86,28 +86,33 @@ export const login = (login: string, password: string): ThunksType => async (dis
 	if (response && response.status === ResultCodesEnum.Success) {
 
 
-		dispatch(setLogged(true))
-		dispatch(setAccessToken(response.result.token))
-		await dispatch(getUserInfo( response.result.user_id))
+		// dispatch(setLogged(true))
+		// dispatch(setAccessToken(response.result.token))
+		// await dispatch(getUserInfo( response.result.user_id))
 
-		// Cookies.set('token', response.result.token, { expires: 1 / 24 });
-		// Cookies.set('user_id', response.result.user_id.toString(), { expires: 1 / 24 });
+		Cookies.set('token', response.result.token, { expires: 1 / 24 });
+		Cookies.set('user_id', response.result.user_id.toString(), { expires: 1 / 24 });
 
-		// dispatch(authUser())
+		dispatch(authUser())
 	} else {
 		showAlert('error', 'Failed to login')
 	}
 }
 
 export const logout = (): ThunksType => async (dispatch) => {
-	let response = await userAPI.logout()
-
-	// if (response.status === 0) {
-		dispatch(setLogged(false))
+	dispatch(setLogged(false))
 		dispatch(setAccessToken(""))
 		dispatch(setUserInfo({}))
 		Cookies.remove('token')
 		Cookies.remove('user_id')
+	let response = await userAPI.logout()
+
+	// if (response.status === 0) {
+		// dispatch(setLogged(false))
+		// dispatch(setAccessToken(""))
+		// dispatch(setUserInfo({}))
+		// Cookies.remove('token')
+		// Cookies.remove('user_id')
 	// } else {
 
 	// }

@@ -13,12 +13,21 @@ type PropsType = {
 
 const Units:FC<PropsType> = ({units, getUnits, ...props}) => {
 	
+	const [tableVisible, setTableVisibility] = useState(false)
+	const toggleTableVisibility = () => {
+		setTableVisibility(!tableVisible)
+	}
+
+
 	return (
 		<div className="page units-page">
-			<GoogleMap />
+			<GoogleMap fullHeight={tableVisible}/>
 			<UnitsTable
 				rows={units}
 				getUnits={getUnits}
+
+				toggleTable={toggleTableVisibility}
+				tableVisible={tableVisible}
 			/>
 		</div>
 	)

@@ -1,14 +1,24 @@
 import React, { FC, useState, useEffect } from 'react'
+import { IconButton } from '@material-ui/core'
 import s from './Log.module.scss'
 import classNames from 'classnames'
 
 import ViewTable from '../../Common/ViewTable/ViewTable'
+		
+import iconArrowBottom from '../../../assets/img/ic_arrow_bottom.svg'
+import iconArrowUp from '../../../assets/img/ic_arrow_up.svg'
+
 
 type PropsType = {
 	// driver: DriverType
 }
 
 const InfoBlock: FC<PropsType> = ({ ...props }) => {
+	const [blockVisibility, setBlockVisibility] = useState(true)
+	const toggleBlockVisibility = () => {
+		setBlockVisibility(!blockVisibility)
+	}
+
 	let profileLabels = [
 		{ label: 'Driver', name: 'driver_name' },
 		{ label: 'Carrier', name: 'carrier' },
@@ -49,12 +59,16 @@ const InfoBlock: FC<PropsType> = ({ ...props }) => {
 				tableTitle={'Profile form'}
 				labels={profileLabels}
 				rows={profileDate}
+				tableVisible={blockVisibility}
 			/>
 			<ViewTable
+				rightComponent={<IconButton><img src={ blockVisibility ? iconArrowUp : iconArrowBottom} alt="arrow-icon" onClick={toggleBlockVisibility} /></IconButton>}
 				tableTitle={'Signature'}
 				labels={[]}
 				rows={[]}
+				tableVisible={blockVisibility}
 			/>
+
 		</div>
 	)
 }

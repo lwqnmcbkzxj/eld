@@ -102,7 +102,8 @@ const LogsModal = ({ open, handleClose, initialValues, titleText, submitFunction
 										/>
 
 									</div>
-									<div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gridGap: '32px' }}>
+								</div>
+								<div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gridGap: '32px' }}>
 										<CustomField name={'location_name'} label={'Location Name'} />
 										<CustomField name={'location_coordinate'} label={'Location Coordinate'} />
 									</div>
@@ -110,8 +111,6 @@ const LogsModal = ({ open, handleClose, initialValues, titleText, submitFunction
 										<CustomField name={'odometer'} label={'Odometer, mi'} />
 										<CustomField name={'eng_hours'} label={'Eng. Hour'} />
 									</div>
-								</div>
-
 								<CustomField name={'note'} label={'Notes'} type="textarea" placeholder="Notes" optional={true} />
 							</DialogContent>
 
