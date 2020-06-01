@@ -48,6 +48,10 @@ const EditProfileModal = ({ labels, open, handleClose, initialValues, titleText,
 	} else 
 		initialValues.trip = 'Relaxing'
 	
+	if (initialValues.duration) {
+		initialValues.duration = '47 min'
+	}
+	
 	return (
 		<React.Fragment>
 			<Dialog

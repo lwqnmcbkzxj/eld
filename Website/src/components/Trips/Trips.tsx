@@ -145,7 +145,16 @@ const DriversTable: FC<PropsType> = ({ rows, labels, ...props }) => {
 			{/* Edit modal */}
 			{editModalOpen &&
 				<TripsModal
-					labels={labels}
+				labels={[
+					{ label: 'Start time', name: 'start_time'  },
+					{ label: 'Driver', name: 'driver_name'  },
+					{ label: 'Status', name: 'status' },
+					{ label: 'Vehicle', name: 'truck_number'  },
+					{ label: 'Origin', name: 'origin'  },
+					{ label: 'Distance', name: 'distance'  },
+					{ label: 'Duration', name: 'duration'  },
+					{ label: 'Trip', name: 'trip', },
+					]}
 
 					open={editModalOpen}
 					handleClose={handlEditModalClose}

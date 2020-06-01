@@ -12,8 +12,32 @@ import { LabelType } from '../../../types/types'
 import InfoBlock from './LogInfoBlock'
 import LogsModal from '../../Common/Modals/PagesModals/LogsModal'
 import DriversModal from '../../Common/Modals/PagesModals/DriversModal'
+import LogsRecords from './LogRecords'
 
-let logsValues = [
+
+// [
+// 	{
+// 		"record_id": 1,
+// 		"record_type": "OFF_DUTY",
+// 		"record_sub_type": 0,
+// 		"record_location": "4.2 mi NW of Bryansk, 10",
+// 		"record_remark": "",
+// 		"record_start_dt": "2020-04-28T06:38:23.000Z",
+// 		"record_end_dt": null
+// 	},
+// 	{
+// 		"record_id": 2,
+// 		"record_type": "DRIVING",
+// 		"record_sub_type": 0,
+// 		"record_location": "4.2 mi NW of Bryansk, 10",
+// 		"record_remark": "",
+// 		"record_start_dt": "2020-04-28T06:43:08.000Z",
+// 		"record_end_dt": null
+// 	}
+// ]
+
+
+let recordsValues = [
 	{
 		number: '6',
 		status: 'on duty',
@@ -71,7 +95,7 @@ type PropsType = {
 }
 
 const ViewPage: FC<PropsType> = ({ ...props }) => {
-	let logsLabels = [
+	let recordsLabels = [
 		{ label: "No.", name: 'number' },
 		{ label: "Status", name: 'status' },
 		{ label: "Time (CST)", name: 'time' },
@@ -125,12 +149,14 @@ const ViewPage: FC<PropsType> = ({ ...props }) => {
 				setEditModalOpen={setEditDriverModalOpen}
 			/>
 
-			<SimpleTable
-				rows={logsValues}
-				labels={logsLabels}
+
+			<LogsRecords
+				recordsValues={recordsValues}
+				recordsLabels={recordsLabels}
 				additionalButton={ additButtonFunc }
 				doubleClickFunction={() => { setEditModalOpen(true) }}
 			/>
+			
 			<InfoBlock />
 
 			<SimpleTable

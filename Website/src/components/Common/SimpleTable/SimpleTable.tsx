@@ -85,7 +85,7 @@ const SimpleTable: FC<PropsType & RouteComponentProps> = ({ tableTitle, rows = [
 						{button &&
 							<StyledDefaultButtonSmall variant="outlined" onClick={button.func}>{button.text}</StyledDefaultButtonSmall>}
 
-						<IconButton><img src={ blockVisibility ? iconArrowUp : iconArrowBottom} alt="arrow-icon" onClick={toggleBlockVisibility} /></IconButton>
+						<IconButton onClick={toggleBlockVisibility}><img src={ blockVisibility ? iconArrowUp : iconArrowBottom} alt="arrow-icon" /></IconButton>
 					</div>
 				</Toolbar> : null}
 

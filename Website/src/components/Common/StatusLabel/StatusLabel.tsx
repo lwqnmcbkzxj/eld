@@ -23,7 +23,7 @@ const StyledTooltip = withStyles((theme) => ({
 
 const StatusLabel: FC<PropsType> = ({ text = "", description = "", ...props }) => {
 	let theme = "error"
-	if (text === StatusEnum.Active || text.toLowerCase() === 'driving' || text.toLowerCase() === 'no defects found') {
+	if (text === StatusEnum.ACTIVE || text.toLowerCase() === 'driving' || text.toLowerCase() === 'no defects found') {
 		theme = "success"
 	} else if (text === StatusEnum.Deactivated || text.toLowerCase() === 'defects found') {
 		theme = "error"

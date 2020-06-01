@@ -35,16 +35,16 @@ const EditVehicleModal = ({ open, handleClose, initialValues, titleText, handleD
 	const vehicle = useSelector<AppStateType, VehicleType>(state => state.vehicles.currentVehicle)
 
 
-	// const getVehicle = async (vehicleId: number) => {
-	// 	await dispatch(getVehicleFromServer(vehicleId))
-	// 	initialValues = vehicle 
-	// }
+	const getVehicle = async (vehicleId: number) => {
+		await dispatch(getVehicleFromServer(vehicleId))
+		initialValues = vehicle 
+	}
 
-	// useEffect( () => {
-	// 	if (initialValues.vehicle_id && open) {
-	// 		getVehicle(initialValues.vehicle_id)
-	// 	}
-	// }, [open]);
+	useEffect( () => {
+		if (initialValues.vehicle_id && open) {
+			getVehicle(initialValues.vehicle_id)
+		}
+	}, [open]);
 	
 
 	const submitProfileEdit = (data: any, setSubmitting: any) => {
@@ -59,17 +59,17 @@ const EditVehicleModal = ({ open, handleClose, initialValues, titleText, handleD
 	if (!initialValues.vehicle_id) {
 		initialValues = {
 			vehicle_truck_number: '',
-			eld_serial_number: '',
+			eld_id: '',
 			vehicle_make_name: '',
 			vehicle_model_name: '',
 
-			year: '',
-			fuel_type: '',
+			vehicle_issue_year: 0,
+			vehicle_fuel_type: '',
 
 			vehicle_licence_plate: '',
 
-			state: '',
-			enter_vin_manually: false,
+			issuing_state_id: 0,
+			vehicle_enter_vin_manually_flag: false,
 			vehicle_vin: '',
 			
 			vehicle_notes: ''
@@ -78,15 +78,16 @@ const EditVehicleModal = ({ open, handleClose, initialValues, titleText, handleD
 
 	const validationSchema = yup.object({
 		vehicle_truck_number: yup.string().required(),
-		eld_serial_number: yup.string(),
+		eld_id: yup.number(),
 		vehicle_make_name: yup.string(),
 		vehicle_model_name: yup.string(),
-		year: yup.string(),
-		fuel_type: yup.string(),
+		vehicle_issue_year: yup.string(),
+		vehicle_fuel_type: yup.string(),
 		vehicle_licence_plate: yup.string(),
-		state: yup.string(),
-		enter_vin_manually: yup.string(),
+		issuing_state_id: yup.number(),
+		vehicle_enter_vin_manually_flag: yup.boolean(),
 		vehicle_vin: yup.string(),
+		vehicle_notes: yup.string()
 	});
 
 	return (
@@ -119,7 +120,7 @@ const EditVehicleModal = ({ open, handleClose, initialValues, titleText, handleD
 							onClick={() => {
 								if (initialValues.vehicle_id && handleActivate)
 									handleActivate(initialValues.vehicle_id)
-							}}>{initialValues.vehicle_status === StatusEnum.Deactivated ? "Activate" : "Deactivate"}</StyledDefaultButtonSmall>
+							}}>{initialValues.vehicle_status === StatusEnum.ACTIVE ? "Deactivate" : "Activate" }</StyledDefaultButtonSmall>
 
 					</div>}
 				</DialogTitle>
@@ -146,7 +147,7 @@ const EditVehicleModal = ({ open, handleClose, initialValues, titleText, handleD
 									<div>
 										<div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gridGap: '32px' }}>
 											<CustomField name={'vehicle_truck_number'} label={'Truck No.'} />
-											<CustomField name={'eld_serial_number'} label={'ELD No.'} optional={true} />
+											<CustomField name={'eld_id'} label={'ELD No.'} optional={true} />
 										</div>
 										<div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gridGap: '32px' }}>
 											<CustomField name={'vehicle_make_name'} label={'Make'} optional={true} />
@@ -154,7 +155,7 @@ const EditVehicleModal = ({ open, handleClose, initialValues, titleText, handleD
 										</div>
 										<div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gridGap: '32px' }}>
 											<CustomField
-												name={'year'}
+												name={'vehicle_issue_year'}
 												label={'Year'}
 												Component={CustomDropdown}
 												values={[
@@ -167,7 +168,7 @@ const EditVehicleModal = ({ open, handleClose, initialValues, titleText, handleD
 												optional={true} 
 											/>
 											<CustomField
-												name={'fuel_type'}
+												name={'vehicle_fuel_type'}
 												label={'Fuel Type'}
 												Component={CustomDropdown}
 												values={[
@@ -181,9 +182,9 @@ const EditVehicleModal = ({ open, handleClose, initialValues, titleText, handleD
 											/>
 										</div>
 										<div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gridGap: '32px' }}>
-											<CustomField name={'licence_number'} label={'Licence Plate'} optional={true} />
+											<CustomField name={'vehicle_licence_plate'} label={'Licence Plate'} optional={true} />
 											<CustomField
-												name={'state'}
+												name={'issuing_state_id'}
 												label={'Issuing State/Province'}
 												Component={CustomDropdown}
 												values={[
@@ -197,14 +198,14 @@ const EditVehicleModal = ({ open, handleClose, initialValues, titleText, handleD
 										</div>
 
 										<div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gridGap: '32px' }}>
-											<CustomCheckBox name="enter_vin_manually" label="Enter VIN manually" optional={true} />
-											<CustomField name={'vehicle_vin'} label={'VIN'} disabled={!values.enter_vin_manually} optional={true} />
+											<CustomCheckBox name="vehicle_enter_vin_manually_flag" label="Enter VIN manually" optional={true} />
+											<CustomField name={'vehicle_vin'} label={'VIN'} disabled={!values.vehicle_enter_vin_manually_flag} optional={true} />
 										</div>
 
 									</div>
 
 									<div>
-										<CustomField name={'notes'} label={'Notes'} type="textarea" placeholder="Notes" optional={true} />
+										<CustomField name={'vehicle_notes'} label={'Notes'} type="textarea" placeholder="Notes" optional={true} />
 									</div>
 								</div>
 

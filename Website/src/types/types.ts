@@ -10,10 +10,26 @@ export type StatusType = {
 
 
 export enum StatusEnum {
-	Active = 'ACTIVE',
-	Deactivated = 'DEACTiVATED',
-	// Active = 'ACTIVE',
-	// Active = 'ACTIVE',
+
+	Deactivated = 'DELETED',
+
+	ACTIVE = 'ACTIVE',
+	BUSY = 'BUSY',
+	DELETED = 'DELETED',
+
+
+	OFF_DUTY = 'OFF_DUTY',
+	DRIVING = 'DRIVING',
+	ON_DUTY = 'ON_DUTY',
+	SLEEPER = 'SLEEPER',
+	ON_DUTY_YM = 'ON_DUTY_YM',
+	OFF_DUTY_PC = 'OFF_DUTY_PC',
+	BREAK = 'BREAK',
+
+	HAS_DEFECTS = 'HAS_DEFECTS',
+	NO_DEFECTS = 'NO_DEFECTS',
+
+
 }
 
 export enum AlertStatusEnum {
@@ -21,6 +37,8 @@ export enum AlertStatusEnum {
 	Error = 'error',
 	Warn = 'warn'
 }
+
+
 
 export type PasswordObjectType = {
 	old_password: string

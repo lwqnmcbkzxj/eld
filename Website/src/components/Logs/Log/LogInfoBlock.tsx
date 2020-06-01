@@ -62,7 +62,7 @@ const InfoBlock: FC<PropsType> = ({ ...props }) => {
 				tableVisible={blockVisibility}
 			/>
 			<ViewTable
-				rightComponent={<IconButton><img src={ blockVisibility ? iconArrowUp : iconArrowBottom} alt="arrow-icon" onClick={toggleBlockVisibility} /></IconButton>}
+				rightComponent={<IconButton onClick={toggleBlockVisibility} ><img src={ blockVisibility ? iconArrowUp : iconArrowBottom} alt="arrow-icon"/></IconButton>}
 				tableTitle={'Signature'}
 				labels={[]}
 				rows={[]}

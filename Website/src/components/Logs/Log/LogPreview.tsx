@@ -8,8 +8,6 @@ import vehicleIcon from '../../../assets/img/pctg_vehicle.svg'
 import phoneIcon from '../../../assets/img/pctg_phone.svg'
 import emailIcon from '../../../assets/img/pctg_email.svg'
 
-import { PreviewChart } from './PreviewChart'
-
 import { RolesEnum } from '../../../types/user'
 import { StyledDefaultButtonSmall, StyledConfirmButtonSmall } from '../../Common/StyledTableComponents/StyledButtons'
 

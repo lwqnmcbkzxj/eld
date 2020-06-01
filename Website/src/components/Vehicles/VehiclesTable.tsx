@@ -58,14 +58,10 @@ const DriversTable: FC<PropsType> = ({ rows, handleActivate, handleDelete, ...pr
 	};
 
 
-
-
-
 	const [editModalOpen, setEditModalOpen] = useState(false)
 	const handleEditModalClose = () => {
 		setEditModalOpen(false);
 	};
-
 
 	const [currentModalData, setCurrentModalData] = useState({});
 
@@ -116,7 +112,6 @@ const DriversTable: FC<PropsType> = ({ rows, handleActivate, handleDelete, ...pr
 								setEditModalOpen(true);
 								if (row.vehicle_id)
 									dispatch(getVehicleFromServer(+row.vehicle_id))
-								// setCurrentModalData({ vehicle_id: row.vehicle_id })
 							}}
 
 						>
