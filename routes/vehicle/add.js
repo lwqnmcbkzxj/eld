@@ -7,7 +7,7 @@ router.post('/', async (req, res) => {
     try {
         const schema = Joi.object({
             vehicle_truck_number: Joi.string().required(),
-            company_id: Joi.number().integer().min(1).required(),
+            company_id: Joi.number().integer().min(1),
             eld_id: Joi.number().integer().min(1),
             vehicle_make_name: Joi.string(),
             vehicle_model_name: Joi.string(),
@@ -15,7 +15,7 @@ router.post('/', async (req, res) => {
             fuel_type: Joi.string().valid('DIESEL', 'GASOLINE', 'PROPANE', 'LIQUID NATURAL GAS', 'COMPRESSED NATURAL GAS', 'ETHANOL'),
             vehicle_licence_plate: Joi.string(),
             state_id: Joi.number().integer().min(1),
-            vehicle_enter_vin_manually_flag: Joi.number().integer().min(0).max(1).required(),
+            vehicle_enter_vin_manually_flag: Joi.number().integer().min(0).max(1),
             vehicle_vin: Joi.string(),
             vehicle_notes: Joi.string()
         });
