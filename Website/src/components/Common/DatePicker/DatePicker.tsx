@@ -20,6 +20,9 @@ export const StyledKeyboardDatePicker = withStyles((theme) => ({
 			position: 'absolute',
 			bottom: '-20px'
 		},
+		"& .MuiIconButton-root": {
+			padding: '10px'
+		}
 	},
 }))(KeyboardDatePicker);
 

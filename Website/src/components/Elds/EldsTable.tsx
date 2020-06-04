@@ -1,16 +1,21 @@
 import React, { FC, useState } from 'react'
-import { Paper, TableHead, TableRow, TableBody, withStyles, Toolbar, Button } from '@material-ui/core';
-import StatusLabel from '../Common/StatusLabel/StatusLabel'
-import { StyledTableCell, CustomTable, CustomPaginator, CustomTableHeaderCells } from '../Common/StyledTableComponents/StyledTableComponents'
+import { useSelector } from 'react-redux';
 
+import { Paper, TableHead, TableRow, TableBody, withStyles, Toolbar, Button } from '@material-ui/core';
+
+import { StyledTableCell, CustomTable, CustomPaginator, CustomTableHeaderCells } from '../Common/StyledTableComponents/StyledTableComponents'
 import { StyledSearchInput } from '../Common/StyledTableComponents/StyledInputs'
 import { StyledDefaultButtonSmall } from '../Common/StyledTableComponents/StyledButtons'
 
+import { AppStateType } from '../../types/types';
 import { EldType } from '../../types/elds'
-import { isContainsSearchText } from '../../utils/isContainsSearchText'
-import EldsModal from '../Common/Modals/PagesModals/EldsModal'
 
+import { isContainsSearchText } from '../../utils/isContainsSearchText'
+import { isFetchingArrContains } from '../../utils/isFetchingArrayContains';
 import { getComparator, stableSort } from '../../utils/tableFilters'
+
+import EldsModal from '../Common/Modals/PagesModals/EldsModal'
+import Loader from '../Common/Loader/Loader';
 
 type PropsType = {
 	rows: Array<EldType>
@@ -53,6 +58,8 @@ const EldsTable: FC<PropsType> = ({ rows, handleAdd, handleEdit, handleDelete, .
 	};
 	// SORTING
 
+	const isFetchingArray = useSelector<AppStateType, Array<string>>(state => state.app.isFetchingArray)
+
 	return (
 		<Paper style={{ boxShadow: 'none' }}>
 			<Toolbar style={{ width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'space-between', boxSizing: 'border-box' }}>
@@ -72,7 +79,9 @@ const EldsTable: FC<PropsType> = ({ rows, handleAdd, handleEdit, handleDelete, .
 					</TableRow>
 				</TableHead>
 				<TableBody>
-					{stableSort(rows, getComparator(order, orderBy))
+					{!isFetchingArrContains(isFetchingArray, ['elds']) &&
+						
+						stableSort(rows, getComparator(order, orderBy))
 						.map(row => (
 						isContainsSearchText(searchText, row, ['eld_serial_number']) &&
 						<TableRow key={row.eld_id} onDoubleClick={() => {
@@ -85,6 +94,8 @@ const EldsTable: FC<PropsType> = ({ rows, handleAdd, handleEdit, handleDelete, .
 					))}
 				</TableBody>
 			</CustomTable>
+
+			{isFetchingArrContains(isFetchingArray, ['elds']) && <Loader />}
 
 			{/* Edit modal */}
 			{editModalOpen &&

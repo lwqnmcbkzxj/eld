@@ -3,6 +3,8 @@ import { createStore, combineReducers, applyMiddleware } from "redux"
 import thunkMiddleware from "redux-thunk"
 
 import appReducer from "./app-reducer"
+import commonReducer from "./commonData-reducer"
+
 import userReducer from "./user-reducer"
 
 import unitsReducer from "./units-reducer"
@@ -22,6 +24,7 @@ let rootReducer = combineReducers({
 	
 	// common
 	app: appReducer,
+	common: commonReducer,
 	user: userReducer,
 
 	// user

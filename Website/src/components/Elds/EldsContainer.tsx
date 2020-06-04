@@ -1,12 +1,11 @@
 import React, { FC, useEffect } from 'react';
 import { useDispatch, useSelector } from "react-redux";
 import { AppStateType } from '../../types/types'
-
-import Elds from './Elds'
-import EldsTable from './EldsTable'
-import { EldType } from '../../types/elds';
-import { getEldsFromServer, addEld, editEld, deleteEld } from '../../redux/elds-reducer';
 import { UserType } from '../../types/user';
+import { EldType } from '../../types/elds';
+
+import EldsTable from './EldsTable'
+import { getEldsFromServer, addEld, editEld, deleteEld } from '../../redux/elds-reducer';
 
 const EldsContainer: FC = ({ ...props }) => {
 	const dispatch = useDispatch()
@@ -25,6 +24,7 @@ const EldsContainer: FC = ({ ...props }) => {
 	const addEldDispatch = async (dataObj: EldType) => {
 		dataObj.company_id = loggedUser.company_id
 		await dispatch(addEld(dataObj))
+
 	}
 	const editEldDispatch = async (dataObj: EldType) => {
 		await dispatch(editEld(dataObj))
@@ -33,12 +33,16 @@ const EldsContainer: FC = ({ ...props }) => {
 		await dispatch(deleteEld(id, loggedUser.company_id))
 	}
 	return (
-		<EldsTable
-			rows={elds}
-			handleAdd={addEldDispatch}
-			handleEdit={editEldDispatch}
-			handleDelete={deleteEldDispatch}
-		/>
+
+		<div className="page elds-page">
+			<EldsTable
+				rows={elds}
+				handleAdd={addEldDispatch}
+				handleEdit={editEldDispatch}
+				handleDelete={deleteEldDispatch}
+			/>
+		</div>
+
 	)
 }
 

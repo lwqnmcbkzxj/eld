@@ -58,8 +58,8 @@ const Header: FC<PropsType> = ({ pageName, isRootPage, userInfo, ...props }) => 
 
 						<div className="user-block__info info" aria-controls="simple-menu" >
 							<div className="info_left">
-								<div className="info__nickname">Pac Man</div>
-								<div className="info__email">pacman@namco.jp</div>
+								<div className="info__nickname">{userInfo.user_first_name} {userInfo.user_last_name}</div>
+								<div className="info__email">{userInfo.user_email}</div>
 							</div>
 							<img src={userImg} alt="user-img" className="info__user-img" />
 						</div>

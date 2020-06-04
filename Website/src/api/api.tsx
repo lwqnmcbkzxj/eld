@@ -3,6 +3,9 @@ import qs from 'querystring'
 import * as ApiTypes from './types'
 import { EldType } from '../types/elds';
 import { PasswordObjectType } from '../types/types';
+import { VehicleType } from '../types/vehicles';
+import { keys } from 'ts-transformer-keys';
+import { UserType } from '../types/user';
 
 // https://cors-anywhere.herokuapp.com/
 const instance = Axios.create({
@@ -32,7 +35,20 @@ export const userAPI = {
 			})
 			.catch((err) => { return err })
 	},
-
+	// addUser() {
+	// 	return instance.post(`user/add`)
+	// 		.then((response) => {
+	// 			return response.data
+	// 		})
+	// 		.catch((err) => { return err })	
+	// },
+	editProfile(profileData: UserType) {
+		return instance.patch(`user/edit`, qs.stringify({ ...profileData }))
+			.then((response) => {
+				return response.data
+			})
+			.catch((err) => { return err })	
+	},
 	// register(username: string, email: string, password: string) {
 	// 	return instance.post(`register`, { username, email, password })
 	// 		.then((response) => {
@@ -71,6 +87,16 @@ export const userAPI = {
 			})
 			.catch((err) => { return err });
 	}
+}
+
+export const driversAPI = {
+	getDrivers(company_id: number, page?: number, limit?: number) {
+		return instance.get(`company/drivers/${company_id}`)
+			.then((response) => {
+				return response.data
+			})
+			.catch((err) => { return err });
+	},
 }
 
 export const eldsAPI = {
@@ -121,6 +147,24 @@ export const vehiclesAPI = {
 		})
 		.catch((err) => { return err });
 	},
+	
+	addVehicle(company_id: number, vehicle: VehicleType) {
+		let vehicleObj = {
+			company_id,
+			...vehicle,
+			vehicle_enter_vin_manually_flag: vehicle.vehicle_enter_vin_manually_flag && +vehicle.vehicle_enter_vin_manually_flag as any,
+		}
+		return instance.post(`vehicle/add`, qs.stringify({...vehicleObj}))
+			.then(response => response.data)
+			.catch((err) => { return err });
+	},
+	editVehicle(vehicle: VehicleType) {
+		
+		return instance.patch(`vehicle/edit`,  qs.stringify({ ...vehicle }))
+			.then(response => response.data)
+			.catch((err) => { return err });
+	},
+	
 	deleteVehicle(id: number) {
 		return instance.delete(`vehicle/delete/${id}`)
 			.then(response => response.data)
@@ -134,7 +178,45 @@ export const vehiclesAPI = {
 	}
 }
 
+export const logsAPI = {
+	getLogs() {
+		return instance.get(`logs/get`)
+			.then((response) => {
+				return response.data
+			})
+			.catch((err) => { return err });
+	},
+}
+
 
 export const appAPI = {
-
+	getFuelTypes() {
+		return instance.get(`vehicle/fuel-types`)
+			.then((response) => {
+				return response.data
+			})
+			.catch((err) => { return err });
+	},
+	getTimezones() {
+		return instance.get(`timezone/get`)
+			.then((response) => {
+				return response.data
+			})
+			.catch((err) => { return err });
+	},
+	getStates() {
+		return instance.get(`state/get`)
+			.then((response) => {
+				return response.data
+			})
+			.catch((err) => { return err });
+	},
+	getTerminals(company_id: number) {
+		return instance.get(`company/terminals/${company_id}`)
+			.then((response) => {
+				return response.data
+			})
+			.catch((err) => { return err });
+	},
 }
+

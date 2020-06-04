@@ -5,14 +5,21 @@ const SET_PAGE_NAME = 'app/SET_PAGE_NAME'
 const SET_IS_ROOT_PAGE = 'app/SET_IS_ROOT_PAGE'
 const SET_PAGE_URL = 'app/SET_PAGE_URL'
 
+const TOGGLE_IS_FETCHING = 'app/TOGGLE_IS_FETCHING'
+
 let initialState = {
 	pageUrl: "",
 	pageName: "",
 	isRootPage: false,
+	isFetchingArray: [] as Array<string>
 }
 
 type InitialStateType = typeof initialState;
-type ActionsTypes = SetPageNameType | SetIsRootPageType | SetPageURLType;
+type ActionsTypes =
+	SetPageNameType |
+	SetIsRootPageType |
+	SetPageURLType |
+	ToggleIsFetchingType;
 
 const appReducer = (state = initialState, action: ActionsTypes): InitialStateType => {
 	switch (action.type) {
@@ -34,6 +41,22 @@ const appReducer = (state = initialState, action: ActionsTypes): InitialStateTyp
 				isRootPage: action.isRootPage
 			}
 		}		
+		case TOGGLE_IS_FETCHING: {
+			let fetchingArray = initialState.isFetchingArray
+			let elemIndex = fetchingArray.indexOf(action.instanceName)
+
+			if (elemIndex === -1) {
+				fetchingArray.push(action.instanceName)
+			} else {
+				fetchingArray.splice(elemIndex, 1)
+			}
+			console.log(fetchingArray)
+			return {
+				...state,
+				isFetchingArray: [...fetchingArray]
+			}
+		}
+		
 		default:
 			return state;
 	}
@@ -50,6 +73,10 @@ type SetIsRootPageType = {
 type SetPageURLType = {
 	type: typeof SET_PAGE_URL,
 	pageUrl: string
+}
+export type ToggleIsFetchingType = {
+	type: typeof TOGGLE_IS_FETCHING,
+	instanceName: string
 }
 
 export const setPageURL = (pageUrl: string):SetPageURLType => {
@@ -99,7 +126,12 @@ export const getPageName = (pathname: string): ThunksType => async (dispatch) =>
 		
 }
 
-
+export const toggleIsFetching = (instanceName: string):ToggleIsFetchingType => {
+	return {
+		type: TOGGLE_IS_FETCHING,
+		instanceName
+	}
+}
 
 type ThunksType = ThunkAction<Promise<void>, AppStateType, unknown, ActionsTypes>
 

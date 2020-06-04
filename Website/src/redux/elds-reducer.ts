@@ -5,6 +5,7 @@ import { eldsAPI } from '../api/api'
 
 import { showAlert } from '../utils/showAlert'
 import { AlertStatusEnum } from '../types/types'
+import { toggleIsFetching, ToggleIsFetchingType } from './app-reducer'
 
 const SET_ELDS = 'elds/SET_ELDS'
 const SET_ELD = 'elds/SET_ELD'
@@ -14,7 +15,7 @@ let initialState = {
 }
 
 type InitialStateType = typeof initialState;
-type ActionsTypes = SetEldsType | SetEldType;
+type ActionsTypes = SetEldsType | SetEldType | ToggleIsFetchingType;
 
 const eldsReducer = (state = initialState, action: ActionsTypes): InitialStateType => {
 	switch (action.type) {
@@ -51,15 +52,19 @@ export const setEld = (eld: EldType): SetEldType => {
 	}
 }
 export const getEldsFromServer = (companyId: number, page?: number, limit?: number): ThunksType => async (dispatch) => {
+	dispatch(toggleIsFetching('elds'))
 	let response = await eldsAPI.getElds(companyId, page, limit)
 	if (response.status === 0) {
 		dispatch(setElds(response.result))
+		dispatch(toggleIsFetching('elds'))
 	}
 }
 export const getEldFromServer = (id: number): ThunksType => async (dispatch) => {
+	dispatch(toggleIsFetching('eld'))
 	let response = await eldsAPI.getEld(id)
 	if (response.status === 0) {
 		dispatch(setEld(response.result))
+		dispatch(toggleIsFetching('eld'))
 	}
 }
 export const addEld = (dataObject: EldType): ThunksType => async (dispatch) => {
@@ -71,6 +76,7 @@ export const addEld = (dataObject: EldType): ThunksType => async (dispatch) => {
 
 	let response = await eldsAPI.addEld(eldObject)
 	if (response.status === 0) {
+		showAlert(AlertStatusEnum.Success, 'ELD added successfully')
 		dispatch(getEldsFromServer(eldObject.company_id))
 	}else {
 		showAlert(AlertStatusEnum.Error, 'Failed to add ELD')
@@ -86,6 +92,7 @@ export const editEld = (dataObject: EldType): ThunksType => async (dispatch) => 
 
 	let response = await eldsAPI.editEld(eldObject)
 	if (response.status === 0) {
+		showAlert(AlertStatusEnum.Success, 'ELD edited successfully')
 		dispatch(getEldsFromServer(dataObject.company_id))
 	}else {
 		showAlert(AlertStatusEnum.Error, 'Failed to edit ELD')
@@ -96,6 +103,7 @@ export const deleteEld = (id: number, companyId: number): ThunksType => async (d
 	let response = await eldsAPI.deleteEld(id)
 
 	if (response.status === 0) {
+		showAlert(AlertStatusEnum.Success, 'ELD deleted successfully')
 		dispatch(getEldsFromServer(companyId))
 	} else {
 		showAlert(AlertStatusEnum.Error, 'Failed to delete ELD')

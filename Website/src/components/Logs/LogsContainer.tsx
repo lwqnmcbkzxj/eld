@@ -1,9 +1,12 @@
 import React, { FC, useEffect } from 'react';
 import { useDispatch, useSelector } from "react-redux";
 import { AppStateType, LabelType } from '../../types/types'
+import {  } from '../../types/logs'
 
 import LogsTable from './LogsTable'
 import { UserType, RolesEnum } from '../../types/user';
+
+import { getLogsFromServer } from '../../redux/logs-reducer';
 
 const LogsContainer: FC = ({ ...props }) => {
 	const dispatch = useDispatch()
@@ -22,6 +25,17 @@ const LogsContainer: FC = ({ ...props }) => {
 	if (loggedUser.role_id === RolesEnum.admin) {
 		labels.splice(1, 0, { label: 'Company', name: 'company' });
 	}
+
+
+	const getLogs = () => {
+		dispatch(getLogsFromServer())
+	}
+
+
+	useEffect(() => {
+		getLogs()
+	})
+
 
 	let logs = [
 		{

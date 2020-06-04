@@ -5,7 +5,7 @@ import { Tooltip, withStyles } from '@material-ui/core'
 import { StatusEnum } from '../../../types/types'
 
 type PropsType = {
-	text?: StatusEnum | string
+	text: StatusEnum | string
 	description?: string
 }
 
@@ -21,26 +21,32 @@ const StyledTooltip = withStyles((theme) => ({
 	},
   }))(Tooltip);
 
+const checkText = (text: string, values: Array<StatusEnum>) => {
+	for (let i = 0; i < values.length; i++) {
+		if (text === values[i]) {
+			return true
+		}
+	}
+	return false
+
+}
+
 const StatusLabel: FC<PropsType> = ({ text = "", description = "", ...props }) => {
 	let theme = "error"
-	if (text === StatusEnum.ACTIVE || text.toLowerCase() === 'driving' || text.toLowerCase() === 'no defects found') {
+	if (checkText(text, [StatusEnum.ACTIVE, StatusEnum.DRIVING, StatusEnum.NO_DEFECTS, ])) {
 		theme = "success"
-	} else if (text === StatusEnum.Deactivated || text.toLowerCase() === 'defects found') {
+	} else if (checkText(text, [StatusEnum.DELETED, StatusEnum.Deactivated, StatusEnum.HAS_DEFECTS, StatusEnum.OFF_DUTY])) {
 		theme = "error"
-	} else if (text.toLowerCase() === 'sleeper') {
+	} else if (checkText(text, [StatusEnum.ON_DUTY])) {
+		theme = "warning"
+	} else if (checkText(text, [StatusEnum.SLEEPER])) {
 		theme = "neutral"
 	}
-	else if (text.toLowerCase() === 'on duty') {
-		theme = "warning"
-	} else {
-		theme = "error"
-	}
+
+
 	return (
-
-
 		<StyledTooltip title={description} arrow>
 			<div className={`status-label` + ' ' + theme}>{text.toUpperCase()}</div>
-
 		</StyledTooltip>
 	)
 }

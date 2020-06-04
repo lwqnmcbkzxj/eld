@@ -10,6 +10,7 @@ import { StyledFilledInputSmall, StyledFilledInput } from '../../Common/StyledTa
 import openEyeIcon from '../../../assets/img/ic_eye_on.svg'
 import closedEyeIcon from '../../../assets/img/ic_eye_off.svg'
 import deleteIcon from '../../../assets/img/pctg_cancel.svg'
+import { SelectorType } from '../../../types/types';
 
 export const useFieldStyles = makeStyles(theme => ({
 	form__field: {
@@ -64,7 +65,7 @@ type CustomFieldProps = {
 	disabled?: boolean
 	Component?: any
 
-	values?: Array<{ value: string, id: number }>
+	values?: Array<SelectorType>
 	onValueChange?: (field: string, value: any, shouldValidate?: boolean | undefined) => void
 }
 
@@ -204,6 +205,7 @@ type DropdownValues = {
 	helperText?: string
 	error?: boolean
 	style?: any
+	field?: any
 }
 export const CustomDropdown: React.FC<DropdownValues> = ({ values, name = "", onValueChange, helperText = "", error = false, style = {}, ...props }) => {
 	const classes = makeStyles(theme => ({
@@ -220,6 +222,11 @@ export const CustomDropdown: React.FC<DropdownValues> = ({ values, name = "", on
 	const handleChange = (event: React.ChangeEvent<{ value: unknown }>) => {
 		onValueChange(name, event.target.value)
 	};
+
+	let value 
+	if (props.field) {
+		value = props.field
+	}
 	return (
 		<div>
 			<FormControl style={{ width: '100%', ...style }} className={classes.dropdown}>
@@ -230,10 +237,10 @@ export const CustomDropdown: React.FC<DropdownValues> = ({ values, name = "", on
 					onChange={handleChange}
 					helperText={helperText}
 					error={error}
-					value={values[0].id}
+					value={props.field ? props.field : values[0].id}
 				>
 
-					{values.map(value =>
+					{ values.map(value =>
 						<MenuItem value={value.id}>
 							{value.value}
 						</MenuItem>

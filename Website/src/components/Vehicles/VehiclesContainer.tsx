@@ -4,7 +4,7 @@ import { AppStateType } from '../../types/types'
 
 import VehiclesTable from './VehiclesTable'
 import { VehicleType } from '../../types/vehicles';
-import { getVehiclesFromServer } from '../../redux/vehicles-reducer';
+import { getVehiclesFromServer, addVehicle, editVehicle } from '../../redux/vehicles-reducer';
 import { UserType } from '../../types/user';
 
 import { deleteVehicle, activateVehicle } from '../../redux/vehicles-reducer'
@@ -34,10 +34,25 @@ const VehiclesContainer: FC = ({ ...props }) => {
 		getVehiclesDispatch()
 	}
 
+	const addVehicleDispatch = async (vehicleObject: VehicleType) => {
+		await dispatch(addVehicle(loggedUser.company_id, vehicleObject))
+
+		getVehiclesDispatch()
+	}
+
+	const editVehicleDispatch = async (vehicleObject: VehicleType) => {
+		await dispatch(editVehicle(vehicleObject))
+
+		getVehiclesDispatch()
+	}
+
 	return (
 		<div className="page units-page">
 			<VehiclesTable
 				rows={vehicles}
+				handleAdd={addVehicleDispatch}
+				handleEdit={editVehicleDispatch}
+
 				handleActivate={activateVehicleDispatch}
 				handleDelete={deleteVehicleDispatch}
 			/>

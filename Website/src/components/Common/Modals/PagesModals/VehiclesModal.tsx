@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 
-import { Dialog, DialogContent, DialogTitle } from '@material-ui/core';
+import { Dialog, DialogContent, DialogTitle, CircularProgress } from '@material-ui/core';
 import { Formik, Form } from 'formik';
 
 import { useStyles } from '../ModalsStyle'
@@ -14,82 +14,89 @@ import StyledLabel from '../../StatusLabel/StatusLabel'
 import { CustomDialogActions } from '../ModalsComponents'
 
 import * as yup from "yup";
-import { StatusEnum, AppStateType } from '../../../../types/types';
-
+import { StatusEnum, AppStateType, SelectorType } from '../../../../types/types';
 
 import { getVehicleFromServer } from '../../../../redux/vehicles-reducer'
 import { useSelector, useDispatch } from 'react-redux';
+import Loader from '../../Loader/Loader';
 
+import { isFetchingArrContains } from '../../../../utils/isFetchingArrayContains'
+import { getStates, getFuelTypes, getYears } from '../../../../redux/commonData-reducer';
 
 type VehiclesModalType = {
 	initialValues: VehicleType
 	titleText: string
 
+	confirmFunction: (vehicle: VehicleType) => void
+
 	handleActivate?: (id: number) => void
 	handleDelete?: (id: number) => void
 }
 
-const EditVehicleModal = ({ open, handleClose, initialValues, titleText, handleDelete, handleActivate, ...props }: ModalType & VehiclesModalType) => {
+const EditVehicleModal = ({ open, handleClose, initialValues, titleText, handleDelete, handleActivate, confirmFunction, ...props }: ModalType & VehiclesModalType) => {
 	const classes = useStyles();
 	const dispatch = useDispatch()
-	const vehicle = useSelector<AppStateType, VehicleType>(state => state.vehicles.currentVehicle)
+	const isFetchingArray = useSelector<AppStateType, Array<string>>(state => state.app.isFetchingArray)
 
+	const fuelTypes = useSelector<AppStateType, Array<SelectorType>>(state => state.common.fuelTypes)
+	const states = useSelector<AppStateType, Array<SelectorType>>(state => state.common.states)
+	const years = useSelector<AppStateType, Array<SelectorType>>(state => state.common.years)
+	
+	useEffect(() => {
+			(async function initModal() {	
+				dispatch(getYears())
+				dispatch(getFuelTypes())
+				dispatch(getStates())
+				
+				// await dispatch(getElds())
 
-	const getVehicle = async (vehicleId: number) => {
-		await dispatch(getVehicleFromServer(vehicleId))
-		initialValues = vehicle 
-	}
-
-	useEffect( () => {
-		if (initialValues.vehicle_id && open) {
-			getVehicle(initialValues.vehicle_id)
-		}
+			})()
 	}, [open]);
 	
 
-	const submitProfileEdit = (data: any, setSubmitting: any) => {
+	const submitProfileEdit = async (data: VehicleType, setSubmitting: any) => {
 		setSubmitting(true);
 
-		// make async call
-		console.log("submit: ", data);
+		let newDataObj = {} as any
+		if (initialValues.vehicle_id) {
+			// IF EDIT
+			let key = "" as keyof VehicleType 
+			for (key in data) {
+				if (data[key] !== initialValues[key] || key === 'vehicle_id' || key === 'vehicle_truck_number') {
+					newDataObj[key] = data[key] 
+				}
+			}
+		} else {
+			// IF ADD
+			let key = "" as keyof VehicleType 
+			for (key in data) {
+				if (data[key] !==  "") {
+					newDataObj[key] = data[key] 
+				}
+			}
+		}
+			
+		
+		await confirmFunction(newDataObj)
 		setSubmitting(false);
 		handleClose()
 	}
 
-	if (!initialValues.vehicle_id) {
-		initialValues = {
-			vehicle_truck_number: '',
-			eld_id: '',
-			vehicle_make_name: '',
-			vehicle_model_name: '',
-
-			vehicle_issue_year: 0,
-			vehicle_fuel_type: '',
-
-			vehicle_licence_plate: '',
-
-			issuing_state_id: 0,
-			vehicle_enter_vin_manually_flag: false,
-			vehicle_vin: '',
-			
-			vehicle_notes: ''
-		}
-	}
-
 	const validationSchema = yup.object({
-		vehicle_truck_number: yup.string().required(),
-		eld_id: yup.number(),
-		vehicle_make_name: yup.string(),
-		vehicle_model_name: yup.string(),
-		vehicle_issue_year: yup.string(),
-		vehicle_fuel_type: yup.string(),
-		vehicle_licence_plate: yup.string(),
-		issuing_state_id: yup.number(),
-		vehicle_enter_vin_manually_flag: yup.boolean(),
-		vehicle_vin: yup.string(),
-		vehicle_notes: yup.string()
+		vehicle_truck_number: yup.number().required(),
+		eld_id: yup.number().nullable(),
+		vehicle_make_name: yup.string().nullable(),
+		vehicle_model_name: yup.string().nullable(),
+		vehicle_issue_year: yup.number().nullable(),
+		vehicle_fuel_type: yup.string().nullable(),
+		vehicle_licence_plate: yup.string().nullable(),
+		issuing_state_id: yup.number().nullable(),
+		vehicle_enter_vin_manually_flag: yup.boolean().nullable(),
+		vehicle_vin: yup.string().nullable(),
+		vehicle_notes: yup.string().nullable()
 	});
 
+	
 	return (
 		<React.Fragment>
 			<Dialog
@@ -100,21 +107,23 @@ const EditVehicleModal = ({ open, handleClose, initialValues, titleText, handleD
 				aria-labelledby="edit-driver-dialog-title"
 				className={classes.root}
 			>
+			
+				{ isFetchingArrContains(isFetchingArray, ['vehicle', 'fuel-types', 'states'])? 
+				<Loader /> :					
+				<>
 				<DialogTitle id="edit-driver-dialog-title" className={classes.dialog__header}>
 					<div style={{ display: 'flex', alignItems: 'center', justifyContent: "flex-start" }}>
 						<div style={{ marginRight: '15px' }}>{titleText} <span>{initialValues.vehicle_truck_number} </span></div>
 						{initialValues.vehicle_status && <StyledLabel text={initialValues.vehicle_status} /> }
 					</div>
 					{initialValues.vehicle_id &&
-						<div
-						// style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gridGap: '20px' }}
-					>
-						{/* <StyledDefaultButtonSmall
+						<div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gridGap: '20px' }}>
+						<StyledDefaultButtonSmall
 							onClick={() => {
 								if (initialValues.vehicle_id && handleDelete)
 									handleDelete(initialValues.vehicle_id)
 								handleClose()
-							}}>Delete</StyledDefaultButtonSmall> */}
+							}}>Delete</StyledDefaultButtonSmall>
 
 						<StyledDefaultButtonSmall
 							onClick={() => {
@@ -158,12 +167,7 @@ const EditVehicleModal = ({ open, handleClose, initialValues, titleText, handleD
 												name={'vehicle_issue_year'}
 												label={'Year'}
 												Component={CustomDropdown}
-												values={[
-													{ value: '2012', id: 1 },
-													{ value: '2011', id: 2 },
-													{ value: '2010', id: 3 },
-													{ value: '2009', id: 4 },
-												]}
+												values={years}
 												onValueChange={setFieldValue}
 												optional={true} 
 											/>
@@ -171,12 +175,7 @@ const EditVehicleModal = ({ open, handleClose, initialValues, titleText, handleD
 												name={'vehicle_fuel_type'}
 												label={'Fuel Type'}
 												Component={CustomDropdown}
-												values={[
-													{ value: 'Diesel', id: 1 },
-													{ value: 'D2', id: 2 },
-													{ value: 'D3', id: 3 },
-													{ value: 'D4', id: 4 },
-												]}
+												values={fuelTypes}
 												onValueChange={setFieldValue}
 												optional={true}
 											/>
@@ -187,12 +186,7 @@ const EditVehicleModal = ({ open, handleClose, initialValues, titleText, handleD
 												name={'issuing_state_id'}
 												label={'Issuing State/Province'}
 												Component={CustomDropdown}
-												values={[
-													{ value: 'Illinois', id: 1 },
-													{ value: 'Washington', id: 2 },
-													{ value: 'Kentucky', id: 3 },
-													{ value: 'Louisiana', id: 4 },
-												]}
+												values={states}
 												onValueChange={setFieldValue}
 											/>
 										</div>
@@ -219,6 +213,7 @@ const EditVehicleModal = ({ open, handleClose, initialValues, titleText, handleD
 						</Form>
 					)}
 				</Formik>
+				</> }
 			</Dialog>
 		</React.Fragment>
 	);

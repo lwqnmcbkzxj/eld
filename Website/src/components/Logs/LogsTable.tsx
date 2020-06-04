@@ -21,6 +21,8 @@ import { setSearchText } from '../../redux/logs-reducer'
 import { CustomField, CustomDropdown } from '../Common/FormComponents/FormComponents';
 
 import { DatePicker } from '../Common/DatePicker/DatePicker'
+import { isFetchingArrContains } from '../../utils/isFetchingArrayContains';
+import Loader from '../Common/Loader/Loader';
 
 type PropsType = {
 	labels: Array<LabelType>
@@ -59,6 +61,7 @@ const checkField = (label: LabelType, rowItem: string) => {
 
 const LogsTable: FC<PropsType & RouteComponentProps> = ({ labels, rows, ...props }) => {
 	const dispatch = useDispatch()
+	const isFetchingArray = useSelector<AppStateType, Array<string>>(state => state.app.isFetchingArray)
 	let searchText = useSelector<AppStateType, string>(state => state.logs.searchText)
 
 	const [page, setPage] = React.useState(0)
@@ -183,7 +186,9 @@ const LogsTable: FC<PropsType & RouteComponentProps> = ({ labels, rows, ...props
 						</TableRow>
 					</TableHead>
 					<TableBody>
-						{stableSort(rows, getComparator(order, orderBy))
+						{!isFetchingArrContains(isFetchingArray, ['logs']) &&
+							
+							stableSort(rows, getComparator(order, orderBy))
 							.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
 							.map((row: any) => {
 
@@ -220,10 +225,10 @@ const LogsTable: FC<PropsType & RouteComponentProps> = ({ labels, rows, ...props
 
 								)
 							})}
-
-
 					</TableBody>
 				</CustomTable>
+				
+				{isFetchingArrContains(isFetchingArray, ['elds']) && <Loader />}
 
 				<CustomPaginator
 					length={rows.length}

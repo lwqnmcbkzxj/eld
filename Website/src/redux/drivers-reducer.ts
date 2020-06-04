@@ -2,6 +2,9 @@ import { AppStateType } from '../types/types'
 import { ThunkAction } from 'redux-thunk'
 
 import { DriverType } from '../types/drivers'
+import { toggleIsFetching, ToggleIsFetchingType } from './app-reducer'
+import { vehiclesAPI, driversAPI } from '../api/api'
+import { ResultCodesEnum } from '../api/types'
 
 const SET_DRIVERS = 'SET_DRIVERS'
 
@@ -43,7 +46,9 @@ let initialState = {
 }
 
 type InitialStateType = typeof initialState;
-type ActionsTypes = SetDriversType;
+type ActionsTypes =
+	SetDriversType |
+	ToggleIsFetchingType;
 
 const unitsReducer = (state = initialState, action: ActionsTypes): InitialStateType => {
 	switch (action.type) {
@@ -63,15 +68,22 @@ type SetDriversType = {
 	drivers: Array<DriverType>
 }
 
-export const setUnits = (drivers: Array<DriverType>): SetDriversType => {
+export const setDrivers = (drivers: Array<DriverType>): SetDriversType => {
 	return {
 		type: SET_DRIVERS,
 		drivers
 	}
 }
 
-export const getDriversFromServer = ():ThunksType => async (dispatch) => {
-	console.log('GETTING DRIVERS FROM SERVER')
+
+export const getDriversFromServer = (companyId: number): ThunksType => async (dispatch) => {
+	dispatch(toggleIsFetching('drivers'))
+	let response = await driversAPI.getDrivers(companyId)
+
+	if (response.status === ResultCodesEnum.Success) {
+		dispatch(toggleIsFetching('drivers'))
+		// dispatch(setDrivers(response.result))
+	}
 }
 
 type ThunksType = ThunkAction<Promise<void>, AppStateType, unknown, ActionsTypes>

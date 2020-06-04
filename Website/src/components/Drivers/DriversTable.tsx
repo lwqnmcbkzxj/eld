@@ -1,25 +1,30 @@
 import React, { FC, useState } from 'react'
-import { Paper, TableHead, TableRow, TableBody, withStyles, Toolbar, IconButton } from '@material-ui/core';
-import StatusLabel from '../Common/StatusLabel/StatusLabel'
-import androidIcon from '../../assets/img/ic_android.svg'
-import { StyledTableCell, CustomTable, CustomPaginator, CustomTableHeaderCells } from '../Common/StyledTableComponents/StyledTableComponents'
+import { useSelector } from 'react-redux'
 import { withRouter, RouteComponentProps } from 'react-router'
+
+import { LabelType, AppStateType } from '../../types/types'
+import { DriverType } from '../../types/drivers'
+
+import { Paper, TableHead, TableRow, TableBody, withStyles, Toolbar, IconButton } from '@material-ui/core';
+import { StyledTableCell, CustomTable, CustomPaginator, CustomTableHeaderCells } from '../Common/StyledTableComponents/StyledTableComponents'
 import { StyledSearchInput } from '../Common/StyledTableComponents/StyledInputs'
 import { StyledDefaultButtonSmall } from '../Common/StyledTableComponents/StyledButtons'
+import StatusLabel from '../Common/StatusLabel/StatusLabel'
 
-import { DriverType } from '../../types/drivers'
-import { Link } from 'react-router-dom'
 import DriversModal from '../Common/Modals/PagesModals/DriversModal'
-import { isContainsSearchText } from '../../utils/isContainsSearchText'
-import { getComparator, stableSort } from '../../utils/tableFilters'
+import Loader from '../Common/Loader/Loader';
 
+import androidIcon from '../../assets/img/ic_android.svg'
 import editIcon from '../../assets/img/ic_edit.svg'
 import refreshIcon from '../../assets/img/ic_refresh.svg'
-import { LabelType, AppStateType } from '../../types/types';
-import { useSelector } from 'react-redux';
+
+import { isContainsSearchText } from '../../utils/isContainsSearchText'
+import { getComparator, stableSort } from '../../utils/tableFilters'
+import { isFetchingArrContains } from '../../utils/isFetchingArrayContains';
 
 type PropsType = {
 	rows: Array<DriverType>
+	getDrivers: () => void
 }
 
 const CustomTableCell = withStyles((theme) => ({
@@ -45,6 +50,7 @@ type Order = 'asc' | 'desc';
 interface RouterProps extends RouteComponentProps<any> { }
 
 const DriversTable: FC<PropsType & RouterProps> = ({ rows, ...props }) => {
+	const isFetchingArray = useSelector<AppStateType, Array<string>>(state => state.app.isFetchingArray)
 
 	const [page, setPage] = React.useState(0)
 	const [rowsPerPage, setRowsPerPage] = React.useState(10)
@@ -143,7 +149,9 @@ const DriversTable: FC<PropsType & RouterProps> = ({ rows, ...props }) => {
 				</TableHead>
 				<TableBody>
 
-					{stableSort(rows as any, getComparator(order, orderBy))
+					{!isFetchingArrContains(isFetchingArray, ['drivers']) &&
+						
+						stableSort(rows as any, getComparator(order, orderBy))
 						.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map(row => (
 
 							isContainsSearchText(searchText, row, [
@@ -199,6 +207,8 @@ const DriversTable: FC<PropsType & RouterProps> = ({ rows, ...props }) => {
 						))}
 				</TableBody>
 			</CustomTable>
+			
+			{isFetchingArrContains(isFetchingArray, ['drivers']) && <Loader />}
 
 			<CustomPaginator
 				length={rows.length}

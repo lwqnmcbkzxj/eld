@@ -14,16 +14,21 @@ import { isContainsSearchText } from '../../utils/isContainsSearchText'
 import { getVehicleFromServer } from '../../redux/vehicles-reducer'
 import { useSelector, useDispatch } from 'react-redux';
 import { AppStateType } from '../../types/types';
-
+import Loader from '../Common/Loader/Loader';
+import { isFetchingArrContains } from '../../utils/isFetchingArrayContains';
+import { stableSort, getComparator } from '../../utils/tableFilters'
 
 type PropsType = {
 	rows: Array<VehicleType>
+
+	handleAdd: (vehicle: VehicleType) => void
+	handleEdit: (vehicle: VehicleType) => void
 
 	handleActivate: (id: number) => void
 	handleDelete: (id: number) => void
 }
 type Order = 'asc' | 'desc';
-const DriversTable: FC<PropsType> = ({ rows, handleActivate, handleDelete, ...props }) => {
+const DriversTable: FC<PropsType> = ({ rows, handleAdd, handleEdit, handleActivate, handleDelete, ...props }) => {
 	const dispatch = useDispatch()
 	const [page, setPage] = React.useState(0)
 	const [rowsPerPage, setRowsPerPage] = React.useState(10)
@@ -63,7 +68,7 @@ const DriversTable: FC<PropsType> = ({ rows, handleActivate, handleDelete, ...pr
 		setEditModalOpen(false);
 	};
 
-	const [currentModalData, setCurrentModalData] = useState({});
+	// const [currentModalData, setCurrentModalData] = useState({});
 
 	const [addModalOpen, setAddModalOpen] = useState(false)
 	const handleAddModalClose = () => {
@@ -73,7 +78,7 @@ const DriversTable: FC<PropsType> = ({ rows, handleActivate, handleDelete, ...pr
 
 
 	const vehicle = useSelector<AppStateType, VehicleType>(state => state.vehicles.currentVehicle)
-
+	const isFetchingArray = useSelector<AppStateType, Array<string>>(state => state.app.isFetchingArray)
 
 	return (
 		<Paper style={{ boxShadow: 'none' }}>
@@ -94,39 +99,42 @@ const DriversTable: FC<PropsType> = ({ rows, handleActivate, handleDelete, ...pr
 					</TableRow>
 				</TableHead>
 				<TableBody>
+					{!isFetchingArrContains(isFetchingArray, ['vehicles']) &&
 
+						stableSort(rows as any | Array<VehicleType>, getComparator(order, orderBy))
+							.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map(row => (
+								isContainsSearchText(searchText, row, [
+									'vehicle_truck_number',
+									'vehicle_make_name',
+									'vehicle_model_name',
+									'vehicle_licence_plate',
+									'eld_serial_number',
+									'vehicle_notes']) &&
 
-					{rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map(row => (
-						isContainsSearchText(searchText, row, [
-							'vehicle_truck_number',
-							'vehicle_make_name',
-							'vehicle_model_name',
-							'vehicle_licence_plate',
-							'eld_serial_number',
-							'vehicle_notes']) &&
+								<TableRow
+									key={row.vehicle_id}
+									hover
+									onDoubleClick={() => {
+										setEditModalOpen(true);
+										if (row.vehicle_id)
+											dispatch(getVehicleFromServer(+row.vehicle_id))
+									}}
 
-						<TableRow
-							key={row.vehicle_id}
-							hover
-							onDoubleClick={() => {
-								setEditModalOpen(true);
-								if (row.vehicle_id)
-									dispatch(getVehicleFromServer(+row.vehicle_id))
-							}}
+								>
+									<StyledTableCell>{row.vehicle_truck_number}</StyledTableCell>
+									<StyledTableCell>{row.vehicle_make_name}</StyledTableCell>
+									<StyledTableCell>{row.vehicle_model_name}</StyledTableCell>
+									<StyledTableCell>{row.vehicle_licence_plate}</StyledTableCell>
+									<StyledTableCell>{row.eld_serial_number}</StyledTableCell>
+									<StyledTableCell><div className="text-block" style={{ minWidth: '200px', maxWidth: '300px' }} >{row.vehicle_notes}</div></StyledTableCell>
+									<StyledTableCell><StatusLabel text={row.vehicle_status as any} /></StyledTableCell>
 
-						>
-							<StyledTableCell>{row.vehicle_truck_number}</StyledTableCell>
-							<StyledTableCell>{row.vehicle_make_name}</StyledTableCell>
-							<StyledTableCell>{row.vehicle_model_name}</StyledTableCell>
-							<StyledTableCell>{row.vehicle_licence_plate}</StyledTableCell>
-							<StyledTableCell>{row.eld_serial_number}</StyledTableCell>
-							<StyledTableCell><div className="text-block" style={{ minWidth: '200px', maxWidth: '300px' }} >{row.vehicle_notes}</div></StyledTableCell>
-							<StyledTableCell><StatusLabel text={row.vehicle_status} /></StyledTableCell>
-
-						</TableRow>
-					))}
+								</TableRow>
+							))}
 				</TableBody>
 			</CustomTable>
+			{isFetchingArrContains(isFetchingArray, ['vehicles']) && <Loader />}
+
 
 			<CustomPaginator
 				length={rows.length}
@@ -146,6 +154,7 @@ const DriversTable: FC<PropsType> = ({ rows, handleActivate, handleDelete, ...pr
 					titleText={"Edit Vehicle"}
 					handleActivate={handleActivate}
 					handleDelete={handleDelete}
+					confirmFunction={handleEdit}
 				/>}
 
 			{/* Add modal */}
@@ -155,6 +164,7 @@ const DriversTable: FC<PropsType> = ({ rows, handleActivate, handleDelete, ...pr
 					handleClose={handleAddModalClose}
 					initialValues={{}}
 					titleText={"Add Vehicle"}
+					confirmFunction={handleAdd}
 				/>}
 		</Paper>
 	)

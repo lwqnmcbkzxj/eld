@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 
 import { Dialog, DialogActions, DialogContent, DialogTitle } from '@material-ui/core';
 import { Formik, Field, Form, FieldArray } from 'formik';
@@ -7,17 +8,17 @@ import { useStyles } from '../ModalsStyle'
 
 import { ModalType } from '../ModalsTypes'
 import { UserType } from '../../../../types/user'
-import { PasswordObjectType } from '../../../../types/types'
+import { PasswordObjectType, AppStateType, SelectorType } from '../../../../types/types'
 
 import * as yup from "yup";
 
 import { CustomField, CustomDropdown } from '../../FormComponents/FormComponents';
-
 import { StyledFilledInputSmall } from '../../../Common/StyledTableComponents/StyledInputs'
-import ChangePasswordModal from './ChangePasswordModal'
 import { StyledDefaultButtonSmall, StyledConfirmButtonSmall } from '../../StyledTableComponents/StyledButtons';
 import { CustomDialogActions } from '../ModalsComponents'
 
+import ChangePasswordModal from './ChangePasswordModal'
+import { getTimezones, getCompanyTerminals } from '../../../../redux/commonData-reducer';
 
 
 type EditProfileType = {
@@ -27,36 +28,79 @@ type EditProfileType = {
 }
 
 const EditProfileModal = ({ open, handleClose, changePassword, editProfile, initialValues, ...props }: ModalType & EditProfileType) => {
-	const classes = useStyles();
-
 	const [changePasswordModalOpen, setChangePasswordModalOpen] = useState(false)
 	const handleChangePasswordModalClose = () => {
 		setChangePasswordModalOpen(false);
 	};
 
-	const submitProfileEdit = async (data: any, setSubmitting: any) => {
+	const classes = useStyles();
+	const dispatch = useDispatch()
+
+	const terminals = useSelector<AppStateType, Array<SelectorType>>(state => state.common.terminals)
+	const timezones = useSelector<AppStateType, Array<SelectorType>>(state => state.common.timezones)
+
+
+	useEffect(() => {
+		(async function initModal() {
+			dispatch(getCompanyTerminals(initialValues.company_id))
+			dispatch(getTimezones())
+
+		})()
+	}, [open]);
+
+	const submitProfileEdit = async (data: UserType, setSubmitting: any) => {
 		setSubmitting(true);
 
-		// await editProfile(data)
+		let newDataObj = {} as any
 
-		console.log("submit: ", data);
+		let key = "" as keyof UserType
+
+		for (key in data) {
+			if (data[key] !== initialValues[key] || key === 'user_id') {
+				newDataObj[key] = data[key]
+			}
+		}
+
+		await editProfile(newDataObj)
+
 		setSubmitting(false);
 		handleClose()
 	}
 
 	const validationSchema = yup.object({
-		first_name: yup.string().required(),
-		last_name: yup.string().required(),
-		email: yup.string().required().email('Email must be valid'),
-		phone: yup.string().required(),
-		contact_name: yup.string().required(),
-		contact_phone: yup.string().required(),
-		usdot: yup.string().required(),
-		company_timezone: yup.string().required(),
-		company_name: yup.string().required(),
-		company_adress: yup.string().required(),
-		terminal_adresses: yup.array().of(yup.string().required('Terminal adress is required'))
+		user_first_name: yup.string().nullable().required(),
+		user_last_name: yup.string().nullable().required(),
+		user_email: yup.string().nullable().required().email('Email must be valid'),
+		user_phone: yup.string().nullable().required(),
 
+		contact_name: yup.string().nullable().required(), //
+		contact_phone: yup.string().nullable().required(), //
+		usdot: yup.string().nullable().required(), //
+
+		timezone_id: yup.string().nullable().required(),
+
+		company_name: yup.string().nullable().required(), //
+		company_address_text: yup.string().nullable().required(), //
+
+		company_terminal_names: yup.array().of(yup.string().required('Terminal adress is required'))
+	});
+
+	const editValidationScema = yup.object({
+		user_first_name: yup.string().nullable(),
+		user_last_name: yup.string().nullable(),
+		user_email: yup.string().nullable().email('Email must be valid'),
+		user_phone: yup.string().nullable(),
+
+		contact_name: yup.string().nullable(), //
+		contact_phone: yup.string().nullable(), //
+		usdot: yup.string().nullable(), //
+
+		timezone_id: yup.string().nullable(),
+
+		company_name: yup.string().nullable(), //
+		company_address_text: yup.string().nullable(), //
+
+		company_terminal_names: yup.array().of(yup.string().required('Terminal adress is required'))
 	});
 
 	return (
@@ -69,26 +113,15 @@ const EditProfileModal = ({ open, handleClose, changePassword, editProfile, init
 				aria-labelledby="edit-profile-dialog-title"
 				className={classes.root}
 			>
-				<DialogTitle id="edit-profile-dialog-title" className={classes.dialog__header}>Edit Profile <span>Pac man</span></DialogTitle>
+				<DialogTitle id="edit-profile-dialog-title" className={classes.dialog__header}>Edit Profile <span>{initialValues.user_first_name} {initialValues.user_last_name}</span></DialogTitle>
 
 				<Formik
 					validateOnChange={true}
 					initialValues={{
-
-						first_name: "Pac",
-						last_name: "Man",
-						user_login: '',
-						email: 'malkovich@mail.ru',
-						phone: '+1 (302) 894-6596',
-						contact_name: 'Marry',
-						contact_phone: '+1 (302) 894-6596',
-						usdot: '15864647',
-						company_timezone: 'Pacific',
-						company_name: 'CARACAS TRANSPORTATION INC',
-						company_adress: '2400 Hassel Road, #400 Hoffman Estates, IL 60169',
-						terminal_adresses: ['2400 Hassel Road, #400 Hoffman Estates, IL 60169', '2400 Hassel Road, #400 Hoffman Estates, IL 60169']
+						...initialValues,
+						terminal_adresses: [...terminals]
 					}}
-					validationSchema={validationSchema}
+					validationSchema={initialValues.user_id ? editValidationScema : validationSchema}
 					validate={values => {
 						const errors: Record<string, string> = {};
 						return errors;
@@ -104,12 +137,12 @@ const EditProfileModal = ({ open, handleClose, changePassword, editProfile, init
 								<div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gridGap: '64px' }}>
 									<div>
 										<div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gridGap: '32px' }}>
-											<CustomField name={'first_name'} label={'First Name'} />
-											<CustomField name={'last_name'} label={'Last Name'} />
+											<CustomField name={'user_first_name'} label={'First Name'} />
+											<CustomField name={'user_last_name'} label={'Last Name'} />
 										</div>
 										<div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gridGap: '32px' }}>
-											<CustomField name={'email'} label={'E-mail'} />
-											<CustomField name={'phone'} label={'Phone No.'} />
+											<CustomField name={'user_email'} label={'E-mail'} />
+											<CustomField name={'user_phone'} label={'Phone No.'} />
 										</div>
 										<div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gridGap: '32px' }}>
 											<CustomField name={'contact_name'} label={'Contact Name'} />
@@ -120,13 +153,10 @@ const EditProfileModal = ({ open, handleClose, changePassword, editProfile, init
 
 
 											<CustomField
-												name={'company_timezone'}
+												name={'timezone_id'}
 												label={'Company Timezone'}
 												Component={CustomDropdown}
-												values={[
-													{ value: 'Central Standart Time', id: 1 },
-													{ value: 'Central Standart Time', id: 2 },
-												]}
+												values={timezones}
 												onValueChange={setFieldValue}
 											/>
 										</div>

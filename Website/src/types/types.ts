@@ -10,13 +10,11 @@ export type StatusType = {
 
 
 export enum StatusEnum {
-
 	Deactivated = 'DELETED',
 
 	ACTIVE = 'ACTIVE',
 	BUSY = 'BUSY',
 	DELETED = 'DELETED',
-
 
 	OFF_DUTY = 'OFF_DUTY',
 	DRIVING = 'DRIVING',
@@ -51,4 +49,19 @@ export type LabelType = {
 	label: string
 	align?: "inherit" | "left" | "center" | "right" | "justify" | undefined
 	notSortable?: boolean
+}
+
+export enum FuelTypeEnum {
+	'DIESEL',
+	'GASOLINE',
+	'PROPANE',
+	'LIQUID NATURAL GAS',
+	'COMPRESSED NATURAL GAS',
+	'ETHANOL'
+}
+
+
+export type SelectorType = {
+	value: string
+	id: number | string
 }

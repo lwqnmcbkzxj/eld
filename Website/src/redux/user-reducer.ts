@@ -138,20 +138,21 @@ export const authUser = (): ThunksType => async (dispatch) => {
 export const changePassword = (passwordObj: PasswordObjectType): ThunksType => async (dispatch) => {
 	let response = await userAPI.changePassword(passwordObj)
 
-	if (response.status === 0) {
+	if (response.status === ResultCodesEnum.Success) {
 		showAlert(AlertStatusEnum.Success, 'Password changed successfully')
 	} else {
 		showAlert(AlertStatusEnum.Error, 'Failed to change password')
 	}
 }
-export const editProfile = (editProfile: UserType): ThunksType => async (dispatch) => {
-	// let response = userAPI.changePassword()
+export const editProfile = (profileData: UserType): ThunksType => async (dispatch) => {
+	let response = await userAPI.editProfile(profileData)
 
-	// if (response.status === 0) {
-
-	// } else {
-	// 	showAlert(AlertStatusEnum.Error, 'Failed to change profile')
-	// }
+	if (response.status === ResultCodesEnum.Success) {
+		showAlert(AlertStatusEnum.Success, 'Profile changed successfully')
+		dispatch(getUserInfo(profileData.user_id))
+	} else {
+		showAlert(AlertStatusEnum.Error, 'Failed to change profile')
+	}
 }
 
 
