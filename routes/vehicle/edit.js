@@ -12,7 +12,7 @@ router.patch('/', async (req, res) => {
             vehicle_make_name: Joi.string(),
             vehicle_model_name: Joi.string(),
             vehicle_issue_year: Joi.number().integer().min(1900).max(3000),
-            fuel_type: Joi.string().valid('DIESEL', 'GASOLINE', 'PROPANE', 'LIQUID NATURAL GAS', 'COMPRESSED NATURAL GAS', 'ETHANOL'),
+            vehicle_fuel_type: Joi.string().valid('DIESEL', 'GASOLINE', 'PROPANE', 'LIQUID NATURAL GAS', 'COMPRESSED NATURAL GAS', 'ETHANOL'),
             vehicle_licence_plate: Joi.string(),
             state_id: Joi.number().integer().min(1),
             vehicle_enter_vin_manually_flag: Joi.number().integer().min(0).max(1),
@@ -38,7 +38,7 @@ router.patch('/', async (req, res) => {
         'vehicle_external_id', 'vehicle_fuel_type', 'vehicle_licence_plate', 'issuing_state_id', 'vehicle_notes',
         'vehicle_enter_vin_manually_flag', 'eld_id'
     ];
-    const pars = [ make_id, model_id, vehicle_serial_number, vars.vehicle_issue_year, vars.vehicle_vin, vars.vehicle_truck_number, vars.fuel_type,
+    const pars = [ make_id, model_id, vehicle_serial_number, vars.vehicle_issue_year, vars.vehicle_vin, vars.vehicle_truck_number, vars.vehicle_fuel_type,
         vars.vehicle_licence_plate, vars.state_id, vars.vehicle_notes, vars.vehicle_enter_vin_manually_flag, vars.eld_id
     ];
     const { params, update } = makeUpdateString(fields, pars);
