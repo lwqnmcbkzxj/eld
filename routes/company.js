@@ -17,6 +17,7 @@ const vehiclesRouter = require('./company/vehicles');
 const activateRouter = require('./company/activate');
 const deactivateRouter = require('./company/deactivate');
 const eldsRouter = require('./company/elds');
+const listRouter = require('./company/list');
 
 router.use('/info', infoRouter);
 router.use('/add', addRouter);
@@ -27,6 +28,7 @@ router.use('/vehicles', vehiclesRouter);
 router.use('/activate', activateRouter);
 router.use('/deactivate', deactivateRouter);
 router.use('/elds', eldsRouter);
+router.use('/list', listRouter);
 
 
 module.exports = router;
