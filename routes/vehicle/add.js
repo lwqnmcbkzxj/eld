@@ -14,7 +14,7 @@ router.post('/', async (req, res) => {
             vehicle_issue_year: Joi.number().integer().min(1900).max(3000),
             vehicle_fuel_type: Joi.string().valid('DIESEL', 'GASOLINE', 'PROPANE', 'LIQUID NATURAL GAS', 'COMPRESSED NATURAL GAS', 'ETHANOL'),
             vehicle_licence_plate: Joi.string(),
-            state_id: Joi.number().integer().min(1),
+            issuing_state_id: Joi.number().integer().min(1),
             vehicle_enter_vin_manually_flag: Joi.number().integer().min(0).max(1),
             vehicle_vin: Joi.string(),
             vehicle_notes: Joi.string()
@@ -37,7 +37,7 @@ router.post('/', async (req, res) => {
     const vehicle_serial_number = '';
     try {
         const params = [ vars.company_id, make_id, model_id, vehicle_serial_number, vars.vehicle_issue_year, vars.vehicle_vin, vars.vehicle_truck_number,
-            vars.vehicle_fuel_type, vars.vehicle_licence_plate, vars.state_id, vars.vehicle_notes, vars.vehicle_enter_vin_manually_flag, vars.eld_id
+            vars.vehicle_fuel_type, vars.vehicle_licence_plate, vars.issuing_state_id, vars.vehicle_notes, vars.vehicle_enter_vin_manually_flag, vars.eld_id
         ];
         const question_marks = params.map(() => { return '?'; }).join(", ");
         db = await mQuery(`insert into vehicle (company_id, vehicle_make_id, vehicle_model_id, vehicle_sn, 
