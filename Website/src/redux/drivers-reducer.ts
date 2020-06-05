@@ -1,56 +1,28 @@
-import { AppStateType } from '../types/types'
+import { AppStateType, AlertStatusEnum } from '../types/types'
 import { ThunkAction } from 'redux-thunk'
 
 import { DriverType } from '../types/drivers'
 import { toggleIsFetching, ToggleIsFetchingType } from './app-reducer'
-import { vehiclesAPI, driversAPI } from '../api/api'
+import { vehiclesAPI, driversAPI, userAPI } from '../api/api'
 import { ResultCodesEnum } from '../api/types'
+import { showAlert } from '../utils/showAlert'
+import { UserType } from '../types/user'
 
-const SET_DRIVERS = 'SET_DRIVERS'
+const SET_DRIVERS = 'drivers/SET_DRIVERS'
+const SET_DRIVER = 'drivers/SET_DRIVER'
 
 let initialState = {
-	drivers: [
-		{
-			id: 1,
-			firstName: 'A1ndrew',
-			lastName: 'Weas',
-			userName: 'andrew',
-			phone: '+12345 5623',
-			truckNumber: '032',
-			notes: 'ABAHS KGDHQJWGJHBs hzjgduiasgduq wgchjz asd as as das',
-			appVersion: '2.3.5',
-			appVersionStatus: 'success',
-			deviceVersion: 'Wireless Link/BL.02.48',
-			status: {
-				text: 'Active',
-				type: 'success'
-			}
-		},
-		{
-			id: 2,
-			firstName: 'A1ndrew',
-			lastName: 'asdasdWeas',
-			userName: 'ccccandrew',
-			phone: '123+12345 5623',
-			truckNumber: 'c032',
-			notes: 'hjjABAHS KGDHQJWGJHBs hzjgduiasgduq wgchjz asd as as das',
-			appVersion: 'qwds2.3.5',
-			appVersionStatus: 'error',
-			deviceVersion: 'Wireless Link/BL.02.48',
-			status: {
-				text: 'Deactivated',
-				type: 'error'
-			}
-		},
-	] as Array<DriverType>
+	drivers: [] as Array<DriverType>,
+	currentDriver: {} as UserType
 }
 
 type InitialStateType = typeof initialState;
 type ActionsTypes =
 	SetDriversType |
+	SetDriverType |
 	ToggleIsFetchingType;
 
-const unitsReducer = (state = initialState, action: ActionsTypes): InitialStateType => {
+const driversReducer = (state = initialState, action: ActionsTypes): InitialStateType => {
 	switch (action.type) {
 		case SET_DRIVERS: {
 			return {
@@ -58,6 +30,12 @@ const unitsReducer = (state = initialState, action: ActionsTypes): InitialStateT
 				drivers: [...action.drivers]
 			}
 		}
+		case SET_DRIVER: {
+			return {
+				...state,
+				currentDriver: {...action.driver}
+			}
+			}
 		default:
 			return state;
 	}
@@ -67,6 +45,10 @@ type SetDriversType = {
 	type: typeof SET_DRIVERS,
 	drivers: Array<DriverType>
 }
+type SetDriverType = {
+	type: typeof SET_DRIVER,
+	driver: UserType
+}
 
 export const setDrivers = (drivers: Array<DriverType>): SetDriversType => {
 	return {
@@ -74,18 +56,52 @@ export const setDrivers = (drivers: Array<DriverType>): SetDriversType => {
 		drivers
 	}
 }
-
-
-export const getDriversFromServer = (companyId: number): ThunksType => async (dispatch) => {
-	dispatch(toggleIsFetching('drivers'))
-	let response = await driversAPI.getDrivers(companyId)
-
-	if (response.status === ResultCodesEnum.Success) {
-		dispatch(toggleIsFetching('drivers'))
-		// dispatch(setDrivers(response.result))
+export const setDriver = (driver: UserType): SetDriverType => {
+	return {
+		type: SET_DRIVER,
+		driver
 	}
 }
 
+export const getDriversFromServer = (companyId: number, fetchingName = 'drivers'): ThunksType => async (dispatch) => {
+	dispatch(toggleIsFetching(fetchingName))
+	let response = await driversAPI.getDrivers(companyId)
+
+	if (response.status === ResultCodesEnum.Success) {
+		dispatch(toggleIsFetching(fetchingName))
+		dispatch(setDrivers(response.result))
+	}
+}
+export const getDriverFromServer = (driverId: number): ThunksType => async (dispatch) => {
+	dispatch(toggleIsFetching('driver'))
+	let response = await userAPI.getUserInfo(driverId)
+
+	if (response.status === ResultCodesEnum.Success) {
+		dispatch(toggleIsFetching('driver'))
+		dispatch(setDriver(response.result))
+	}
+}
+export const addDriver = (companyId: number, driverObject: UserType): ThunksType => async (dispatch) => {
+	let response = await userAPI.addUser(driverObject)
+
+	if (response.status === ResultCodesEnum.Success) {
+		showAlert(AlertStatusEnum.Success, 'Driver added successfully')
+	} else {
+		showAlert(AlertStatusEnum.Error, 'Failed to add driver')
+	}
+}
+export const editDriver = (driverObject: UserType): ThunksType => async (dispatch) => {
+	let response = await userAPI.editUser(driverObject)
+
+	if (response.status === ResultCodesEnum.Success) {
+		showAlert(AlertStatusEnum.Success, 'Driver edited successfully')
+	} else {
+		showAlert(AlertStatusEnum.Error, 'Failed to edit driver')
+	}
+}
+
+
+
 type ThunksType = ThunkAction<Promise<void>, AppStateType, unknown, ActionsTypes>
 
-export default unitsReducer;
+export default driversReducer;

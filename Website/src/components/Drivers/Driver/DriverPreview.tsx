@@ -2,7 +2,7 @@ import React, { FC, useState, useEffect } from 'react'
 import s from './Driver.module.scss'
 import classNames from 'classnames'
 
-import { RolesEnum } from '../../../types/user'
+import { RolesEnum, UserType } from '../../../types/user'
 
 import licenseIcon from '../../../assets/img/pctg_license.svg'
 import vehicleIcon from '../../../assets/img/pctg_vehicle.svg'
@@ -14,13 +14,13 @@ import StatusLabel from '../../Common/StatusLabel/StatusLabel'
 import { StyledDefaultButtonSmall } from '../../Common/StyledTableComponents/StyledButtons'
 
 type PropsType = {
-	// driver: DriverType
+	driver: UserType
 
 	setModalData: (obj: any) => void
 	setEditModalOpen: (value: boolean) => void
 }
 
-const DriverPreview: FC<PropsType> = ({ setModalData, setEditModalOpen, ...props }) => {
+const DriverPreview: FC<PropsType> = ({ driver, setModalData, setEditModalOpen, ...props }) => {
 	let values = [
 		{ label: 'break', value: 10 },
 		{ label: 'driving', value: 20 },
@@ -33,31 +33,31 @@ const DriverPreview: FC<PropsType> = ({ setModalData, setEditModalOpen, ...props
 		<div className={s.driverPreview}>
 			<div className={s.preview__header}>
 				<div className={s.header__title}>
-					<h1 className={s.header__name}>Bartholomew Henry Allen</h1>
-					<StatusLabel text="on duty" />
+					<h1 className={s.header__name}>{driver.user_first_name} {driver.user_last_name}</h1>
+					<StatusLabel text={driver.user_status} />
 				</div>
 
 				<div className={s.header__buttons}>
-					<StyledDefaultButtonSmall variant="outlined" onClick={() => { setEditModalOpen(true) }}>Edit</StyledDefaultButtonSmall>
+					<StyledDefaultButtonSmall variant="outlined" onClick={() => { setModalData(driver); setEditModalOpen(true); }}>Edit</StyledDefaultButtonSmall>
 				</div>
 
 			</div>
 			<div className={s.preview__info}>
 				<div className={s.info__element}>
 					<img src={licenseIcon} alt="license-icon" />
-					<p>Y8177257</p>
+					<p>{driver.user_driver_licence}</p>
 				</div>
 				<div className={s.info__element}>
 					<img src={vehicleIcon} alt="vehicle-icon" />
-					<p>012</p>
+					<p>{driver.user_trailer_number}</p>
 				</div>
 				<div className={s.info__element}>
 					<img src={phoneIcon} alt="phone-icon" />
-					<p>+1 (302) 894-6596</p>
+					<p>{driver.user_phone}</p>
 				</div>
 				<div className={s.info__element}>
 					<img src={emailIcon} alt="email-icon" />
-					<p>flash@dc.com</p>
+					<p>{driver.user_email}</p>
 				</div>
 			</div>
 			<div className={s.preview__stats}>

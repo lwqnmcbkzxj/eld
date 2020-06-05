@@ -10,6 +10,7 @@ export type UserType = {
 	user_id: number,
 	user_remark: string,
 	user_status: string,
+	user_password: string,
 	user_first_name: string,
 	user_last_name: string,
 	user_login: string,
@@ -33,5 +34,7 @@ export type UserType = {
 	user_manual_drive_flag: boolean,
 	default_vehicle_id: number,
 	vehicle_id: number
+	company_contact_phone: string
+	company_contact_name: string
 }
 

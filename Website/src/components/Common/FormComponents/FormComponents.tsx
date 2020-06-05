@@ -145,7 +145,7 @@ export const CustomField: React.FC<FieldAttributes<CustomFieldProps>> = (
 	}
 
 
-
+	debugger
 	return (
 		<div className={fieldClass}>
 			{typeof label === "string" &&
@@ -161,7 +161,7 @@ export const CustomField: React.FC<FieldAttributes<CustomFieldProps>> = (
 				disabled={disabled}
 				values={values}
 				onValueChange={onValueChange}
-
+				field={field}
 			/>
 
 			{deleteButton}
@@ -216,17 +216,14 @@ export const CustomDropdown: React.FC<DropdownValues> = ({ values, name = "", on
 					paddingLeft: '12px'
 				}
 	
-			}
+			},
 		},
 	}))()
 	const handleChange = (event: React.ChangeEvent<{ value: unknown }>) => {
 		onValueChange(name, event.target.value)
 	};
 
-	let value 
-	if (props.field) {
-		value = props.field
-	}
+	
 	return (
 		<div>
 			<FormControl style={{ width: '100%', ...style }} className={classes.dropdown}>
@@ -237,7 +234,8 @@ export const CustomDropdown: React.FC<DropdownValues> = ({ values, name = "", on
 					onChange={handleChange}
 					helperText={helperText}
 					error={error}
-					value={props.field ? props.field : values[0].id}
+					value={props.field.value !== null ? props.field.value :
+						values.length > 0 ? values[0].id : ""}
 				>
 
 					{ values.map(value =>

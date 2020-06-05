@@ -13,6 +13,7 @@ import InfoBlock from './LogInfoBlock'
 import LogsModal from '../../Common/Modals/PagesModals/LogsModal'
 import DriversModal from '../../Common/Modals/PagesModals/DriversModal'
 import LogsRecords from './LogRecords'
+import { DriverType } from '../../../types/drivers'
 
 
 // [
@@ -189,8 +190,9 @@ const ViewPage: FC<PropsType> = ({ ...props }) => {
 				<DriversModal
 					open={editDriverModalOpen}
 					handleClose={handleEditDriverModalClose}
-					initialValues={driverModalData}
+					initialValues={{} as UserType}
 					titleText={"Edit Driver"}
+					submitFunction={() => { }}
 				/>}
 		</div>
 	)

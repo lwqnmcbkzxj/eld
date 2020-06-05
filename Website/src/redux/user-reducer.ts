@@ -5,6 +5,7 @@ import Cookies from "js-cookie";
 import { setTokenForAPI, userAPI } from '../api/api';
 import { ResultCodesEnum, GetUserInfoResponseType } from '../api/types'
 import { showAlert } from '../utils/showAlert';
+import { toggleIsFetching, ToggleIsFetchingType } from './app-reducer';
 
 const SET_LOGGED = 'user/SET_LOGGED'
 const SET_USER_INFO = 'user/SET_USER_INFO'
@@ -17,7 +18,7 @@ let initialState = {
 }
 
 type InitialStateType = typeof initialState;
-type ActionsTypes = SetLoggedType | SetUserInfoType | SetTokenType;
+type ActionsTypes = SetLoggedType | SetUserInfoType | SetTokenType | ToggleIsFetchingType;
 
 const userReducer = (state = initialState, action: ActionsTypes): InitialStateType => {
 	switch (action.type) {
@@ -119,9 +120,11 @@ export const logout = (): ThunksType => async (dispatch) => {
 }
 
 export const getUserInfo = (userId: number): ThunksType => async (dispatch) => {
+	dispatch(toggleIsFetching('app'))
 	let response = await userAPI.getUserInfo(userId)
 	if (response.status === ResultCodesEnum.Success) {
 		dispatch(setUserInfo(response.result))
+		dispatch(toggleIsFetching('app'))
 	}
 }
 export const authUser = (): ThunksType => async (dispatch) => {
@@ -145,7 +148,7 @@ export const changePassword = (passwordObj: PasswordObjectType): ThunksType => a
 	}
 }
 export const editProfile = (profileData: UserType): ThunksType => async (dispatch) => {
-	let response = await userAPI.editProfile(profileData)
+	let response = await userAPI.editUser(profileData)
 
 	if (response.status === ResultCodesEnum.Success) {
 		showAlert(AlertStatusEnum.Success, 'Profile changed successfully')

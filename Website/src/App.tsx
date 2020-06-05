@@ -30,6 +30,7 @@ import NotFound from './components/NotFound/NotFound'
 
 import CustomHelmet from './components/Common/CustomHelmet/CustomHelmet'
 import Login from './components/Login/Login'
+import Loader from './components/Common/Loader/Loader'
 
 
 const DriversContainer = React.lazy(() => import('./components/Drivers/DriversContainer'))
@@ -59,6 +60,8 @@ const App = (props: any) => {
 	const dispatch = useDispatch()
 	const logged = useSelector<AppStateType, boolean>(state => state.user.logged)
 	const userInfo = useSelector<AppStateType, UserType>(state => state.user.userInfo)
+	const isFetchingArray = useSelector<AppStateType, Array<string>>(state => state.app.isFetchingArray)
+
 	let pathName = props.location.pathname
 
 	useEffect(() => {
@@ -96,6 +99,10 @@ const App = (props: any) => {
 	
 
 	return (
+		isFetchingArray.includes('app') ? 
+			<Loader style={{ height: '100vh', width: '100vw' }}/> :
+
+
 		<div className="app-wrapper">
 			<CustomHelmet />
 			<HeaderContainer />

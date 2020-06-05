@@ -116,7 +116,7 @@ const Login = () => {
 								<CustomField name={'login'} placeholder={'Login'} Component={StyledFilledInput} />
 								<CustomField name={'password'} placeholder={'Password'} canSeeInputValue={true} Component={StyledFilledInput} />
 							</div>
-							<StyledConfirmButton style={{ width: '100%' }} type="submit">Log in</StyledConfirmButton>
+							<StyledConfirmButton disabled={isSubmitting} style={{ width: '100%' }} type="submit">Log in</StyledConfirmButton>
 						</Form>
 					)}
 				</Formik>

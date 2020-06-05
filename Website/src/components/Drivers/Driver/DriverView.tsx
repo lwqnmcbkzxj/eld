@@ -12,6 +12,7 @@ import SimpeTable from '../../Common/SimpleTable/SimpleTable'
 import GoogleMap from '../../Common/GoogleMap/GoogleMap'
 import DriversModal from '../../Common/Modals/PagesModals/DriversModal'
 import { setSearchText } from '../../../redux/logs-reducer'
+import { DriverType } from '../../../types/drivers'
 
 let driverRecentItemValues = [
 	{
@@ -64,10 +65,10 @@ let driverTripsValues = [
 
 
 type PropsType = {
-	// driver: DriverType
+	driver: UserType
 }
 
-const DriverView: FC<PropsType & RouteComponentProps> = ({ ...props }) => {
+const DriverView: FC<PropsType & RouteComponentProps> = ({ driver, ...props }) => {
 	const dispatch = useDispatch()
 	let recentItemLabels = [
 		{ label: "Date", name: 'date' },
@@ -99,6 +100,7 @@ const DriverView: FC<PropsType & RouteComponentProps> = ({ ...props }) => {
 	return (
 		<div className={"page driver-page"}>
 			<DriverPreview
+				driver={driver}
 				setEditModalOpen={setEditModalOpen}
 				setModalData={setModalData}
 			/>
@@ -125,10 +127,11 @@ const DriverView: FC<PropsType & RouteComponentProps> = ({ ...props }) => {
 			{/* Edit modal */}
 			{editModalOpen &&
 				<DriversModal
-					open={editModalOpen}
-					handleClose={handleEditModalClose}
-					initialValues={currentModalData}
-					titleText={"Edit Driver"}
+				open={editModalOpen}
+				handleClose={handleEditModalClose}
+				initialValues={{} as UserType}
+				titleText={"Edit Driver"}
+				submitFunction={() => { }}
 				/>}
 		</div>
 	)

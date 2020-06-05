@@ -13,7 +13,10 @@ import CompanyModal from '../Common/Modals/PagesModals/CompanyModal'
 
 import historyIcon from '../../assets/img/ic_history.svg'
 import editIcon from '../../assets/img/ic_edit.svg'
-import { PasswordObjectType } from '../../types/types';
+import { PasswordObjectType, AppStateType } from '../../types/types';
+import { isFetchingArrContains } from '../../utils/isFetchingArrayContains';
+import Loader from '../Common/Loader/Loader';
+import { useSelector } from 'react-redux';
 
 type PropsType = {
 	rows: Array<CompanyType>
@@ -25,6 +28,8 @@ type PropsType = {
 type Order = 'asc' | 'desc';
 
 const CompaniesTable: FC<PropsType> = ({ rows, handleAdd, handleEdit, changePassword, handleToggleActive, ...props }) => {
+	const isFetchingArray = useSelector<AppStateType, Array<string>>(state => state.app.isFetchingArray)
+
 	const [page, setPage] = React.useState(0)
 	const [rowsPerPage, setRowsPerPage] = React.useState(10)
 	const [searchText, setSearchText] = React.useState("")
@@ -40,13 +45,13 @@ const CompaniesTable: FC<PropsType> = ({ rows, handleAdd, handleEdit, changePass
 
 	let labels = [
 		{ label: "No.", name: '' },
-		{ label: "Company name", name: '' },
-		{ label: "Contact Name", name: '' },
-		{ label: "Contact Phone", name: '' },
+		{ label: "Company name", name: 'company_short_name' },
+		{ label: "Contact Name", name: 'company_contact_name' },
+		{ label: "Contact Phone", name: 'company_contact_phone' },
 		{ label: "Active units", name: '' },
-		{ label: "Subscribe Type", name: '' },
-		{ label: "Current Balance", align: 'right', name: '' },
-		{ label: "Status", name: '' },
+		{ label: "Subscribe Type", name: 'company_subscribe_type' },
+		{ label: "Current Balance", align: 'right', name: 'company_usdot' },
+		{ label: "Status", name: 'company_status' },
 		{ label: "Actions", name: '' },
 	]
 	const [order, setOrder] = React.useState<Order>('asc');
@@ -59,18 +64,18 @@ const CompaniesTable: FC<PropsType> = ({ rows, handleAdd, handleEdit, changePass
 	};
 
 
-	let currentModalDataObj = {
-		company_name: '',
-		company_address: '',
-		subscribe_type: '',
-		company_timezone: '',
-		contact_name: '',
-		contact_phone: '',
-		email: '',
-		usdot: '',
+	// let currentModalDataObj = {
+	// 	company_name: '',
+	// 	company_address: '',
+	// 	subscribe_type: '',
+	// 	company_timezone: '',
+	// 	contact_name: '',
+	// 	contact_phone: '',
+	// 	email: '',
+	// 	usdot: '',
 
-		terminal_adresses: ['']
-	}
+	// 	terminal_adresses: ['']
+	// }
 
 	const [currentModalData, setCurrentModalData] = useState({});
 
@@ -105,50 +110,59 @@ const CompaniesTable: FC<PropsType> = ({ rows, handleAdd, handleEdit, changePass
 
 
 				<TableBody>
-					{rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map(row => (
-						isContainsSearchText(searchText, row, ['number', 'company_name', 'contact_name', 'contact_phone', 'active_units', 'subscribe_type', 'current_balance']) &&
+					{!isFetchingArrContains(isFetchingArray, ['companies']) &&
+						rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row, counter) => (
+							isContainsSearchText(searchText, row, [
+								'counter',
+								'company_short_name',
+								'company_contact_name',
+								'company_contact_phone',
+								'company_sort',
+								'company_subscribe_type',
+								'company_usdot',
+								'company_status',
+							]) &&
 
-						<TableRow
-							key={row.id}
-							hover
-							onMouseEnter={() => { setHoverId(row.id) }}
-							onMouseLeave={() => { setHoverId(-1) }}
-							onDoubleClick={() => {
-								setEditModalOpen(true);
-								setCurrentModalData(row)
-							}}
+							<TableRow
+								key={row.company_id}
+								hover
+								onMouseEnter={() => { setHoverId(row.company_id) }}
+								onMouseLeave={() => { setHoverId(-1) }}
+								onDoubleClick={() => {
+									setEditModalOpen(true);
+									setCurrentModalData(row)
+								}}
 
-						>
+							>
+								<StyledTableCell>{counter + 1}</StyledTableCell>
+								<StyledTableCell>{row.company_short_name}</StyledTableCell>
+								<StyledTableCell>{row.company_contact_name}</StyledTableCell>
+								<StyledTableCell>{row.company_contact_phone}</StyledTableCell>
+								<StyledTableCell>{row.company_sort}</StyledTableCell>
+								<StyledTableCell>{row.company_subscribe_type}</StyledTableCell>
+								<StyledTableCell align={'right'}>{row.company_usdot}</StyledTableCell>
 
-							<StyledTableCell>{row.number}</StyledTableCell>
-							<StyledTableCell>{row.company_name}</StyledTableCell>
-							<StyledTableCell>{row.contact_name}</StyledTableCell>
-							<StyledTableCell>{row.contact_phone}</StyledTableCell>
-							<StyledTableCell>{row.active_units}</StyledTableCell>
-							<StyledTableCell>{row.subscribe_type}</StyledTableCell>
-							<StyledTableCell align={'right'}>{row.current_balance}</StyledTableCell>
-
-							<StyledTableCell><StatusLabel text={row.status}/></StyledTableCell>
-							<StyledTableCell style={{ minWidth: '100px', boxSizing: 'border-box', paddingTop: '10px', paddingBottom: '10px' }}>
-								{hoverId === row.id &&
-									<div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-										<button style={{ height: '32px' }}><img src={historyIcon} alt="hisotry-icon" /></button>
-										<button style={{ height: '32px' }}
-											onClick={() => {
-												setEditModalOpen(true);
-												setCurrentModalData(row)
-											}} >
-											<img src={editIcon} alt="hisotry-icon" />
-										</button>
-									</div>
-								}
-							</StyledTableCell>
-
-
-						</TableRow>
-					))}
+								<StyledTableCell><StatusLabel text={row.company_status} /></StyledTableCell>
+								<StyledTableCell style={{ minWidth: '100px', boxSizing: 'border-box', paddingTop: '10px', paddingBottom: '10px' }}>
+									{hoverId === row.company_id &&
+										<div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+											<button style={{ height: '32px' }}><img src={historyIcon} alt="hisotry-icon" /></button>
+											<button style={{ height: '32px' }}
+												onClick={() => {
+													setEditModalOpen(true);
+													setCurrentModalData(row)
+												}} >
+												<img src={editIcon} alt="hisotry-icon" />
+											</button>
+										</div>
+									}
+								</StyledTableCell>
+							</TableRow>
+						))}
 				</TableBody>
 			</CustomTable>
+
+			{isFetchingArrContains(isFetchingArray, ['companies']) && <Loader />}
 
 			<CustomPaginator
 				length={rows.length}

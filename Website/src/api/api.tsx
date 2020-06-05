@@ -35,15 +35,15 @@ export const userAPI = {
 			})
 			.catch((err) => { return err })
 	},
-	// addUser() {
-	// 	return instance.post(`user/add`)
-	// 		.then((response) => {
-	// 			return response.data
-	// 		})
-	// 		.catch((err) => { return err })	
-	// },
-	editProfile(profileData: UserType) {
-		return instance.patch(`user/edit`, qs.stringify({ ...profileData }))
+	addUser(userData: UserType) {
+		return instance.post(`user/add`, qs.stringify({ ...userData }))
+			.then((response) => {
+				return response.data
+			})
+			.catch((err) => { return err })	
+	},
+	editUser(userData: UserType) {
+		return instance.patch(`user/edit`, qs.stringify({ ...userData }))
 			.then((response) => {
 				return response.data
 			})
@@ -151,8 +151,7 @@ export const vehiclesAPI = {
 	addVehicle(company_id: number, vehicle: VehicleType) {
 		let vehicleObj = {
 			company_id,
-			...vehicle,
-			vehicle_enter_vin_manually_flag: vehicle.vehicle_enter_vin_manually_flag && +vehicle.vehicle_enter_vin_manually_flag as any,
+			...vehicle,			
 		}
 		return instance.post(`vehicle/add`, qs.stringify({...vehicleObj}))
 			.then(response => response.data)
@@ -188,6 +187,15 @@ export const logsAPI = {
 	},
 }
 
+export const companiesAPI = {
+	getCompanies() {
+		return instance.get(`company/list`)
+			.then((response) => {
+				return response.data
+			})
+			.catch((err) => { return err });
+	},
+}
 
 export const appAPI = {
 	getFuelTypes() {

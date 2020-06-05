@@ -26,6 +26,8 @@ const VehiclesContainer: FC = ({ ...props }) => {
 
 	const activateVehicleDispatch = async (vehicleId: number) => {
 		await dispatch(activateVehicle(vehicleId))
+
+		getVehiclesDispatch()
 	}
 
 	const deleteVehicleDispatch = async (vehicleId: number) => {

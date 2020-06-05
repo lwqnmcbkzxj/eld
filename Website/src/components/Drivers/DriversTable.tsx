@@ -1,9 +1,10 @@
 import React, { FC, useState } from 'react'
-import { useSelector } from 'react-redux'
+import { useSelector, useDispatch } from 'react-redux'
 import { withRouter, RouteComponentProps } from 'react-router'
 
-import { LabelType, AppStateType } from '../../types/types'
+import { LabelType, AppStateType, StatusEnum } from '../../types/types'
 import { DriverType } from '../../types/drivers'
+import { UserType } from '../../types/user'
 
 import { Paper, TableHead, TableRow, TableBody, withStyles, Toolbar, IconButton } from '@material-ui/core';
 import { StyledTableCell, CustomTable, CustomPaginator, CustomTableHeaderCells } from '../Common/StyledTableComponents/StyledTableComponents'
@@ -21,10 +22,14 @@ import refreshIcon from '../../assets/img/ic_refresh.svg'
 import { isContainsSearchText } from '../../utils/isContainsSearchText'
 import { getComparator, stableSort } from '../../utils/tableFilters'
 import { isFetchingArrContains } from '../../utils/isFetchingArrayContains';
+import { getDriverFromServer } from '../../redux/drivers-reducer'
 
 type PropsType = {
 	rows: Array<DriverType>
 	getDrivers: () => void
+
+	handleAdd: (driverObj: UserType) => void
+	handleEdit: (driverObj: UserType) => void
 }
 
 const CustomTableCell = withStyles((theme) => ({
@@ -32,25 +37,28 @@ const CustomTableCell = withStyles((theme) => ({
 		"&.app-version": {
 			display: 'flex',
 			alignItems: 'center',
-			justifyContent: 'space-around',
+			// justifyContent: 'space-around',
 			"& .anroidSvgIcon.success": {
-				filter: 'invert(56%) sepia(65%) saturate(1474%) hue-rotate(40deg) brightness(97%) contrast(98%)',
+				marginRight: '8px',
+				"&.success": {
+					filter: 'invert(56%) sepia(65%) saturate(1474%) hue-rotate(40deg) brightness(97%) contrast(98%)',
+				},
+				"&.error": {
+					filter: 'invert(27%) sepia(85%) saturate(2237%) hue-rotate(350deg) brightness(93%) contrast(92%)',
+				},
 			},
-			"& .anroidSvgIcon.error": {
-				filter: 'invert(27%) sepia(85%) saturate(2237%) hue-rotate(350deg) brightness(93%) contrast(92%)',
-			},
+			
 		},
 	},
 }))(StyledTableCell);
 
 type Order = 'asc' | 'desc';
-
-
-
 interface RouterProps extends RouteComponentProps<any> { }
 
-const DriversTable: FC<PropsType & RouterProps> = ({ rows, ...props }) => {
+const DriversTable: FC<PropsType & RouterProps> = ({ rows, getDrivers, handleAdd, handleEdit, ...props }) => {
+	const dispatch = useDispatch()
 	const isFetchingArray = useSelector<AppStateType, Array<string>>(state => state.app.isFetchingArray)
+	const driver = useSelector<AppStateType, UserType>(state => state.drivers.currentDriver)
 
 	const [page, setPage] = React.useState(0)
 	const [rowsPerPage, setRowsPerPage] = React.useState(10)
@@ -65,32 +73,6 @@ const DriversTable: FC<PropsType & RouterProps> = ({ rows, ...props }) => {
 		setPage(0)
 	};
 
-
-
-
-	let currentModalDataObj = {
-		id: 1,
-		first_name: "John",
-		last_name: "Malkovich",
-		user_name: 'malkovich',
-		password: '12345678',
-		email: 'malkovich@mail.ru',
-		phone: '+1 (302) 894-6596',
-		licence_number: '1586-986-78-562-3',
-		state: 'Illinois',
-		truck_number: '046',
-		trailer_number: '569412',
-		personal_conveyance: false,
-		yard_move: false,
-		eld: false,
-		allow_manual_drive_time: false,
-		co_driver: 'Donald Duck',
-		home_terminal_address: '2400 Hassel Road, #400 Hoffman Estates, IL 60169',
-		home_termial_timezone: 'Central Standart Time',
-		notes: ''
-	}
-
-	const [currentModalData, setCurrentModalData] = useState(currentModalDataObj);
 	const [editModalOpen, setEditModalOpen] = useState(false)
 	const handleEditModalClose = () => {
 		setEditModalOpen(false);
@@ -101,15 +83,15 @@ const DriversTable: FC<PropsType & RouterProps> = ({ rows, ...props }) => {
 	};
 
 	let labels = [
-		{ label: "First Name", name: 'firstName' },
-		{ label: "Last Name", name: 'lastName' },
-		{ label: "Username", name: 'userName' },
-		{ label: "Phone No.", name: 'phone' },
-		{ label: "Truck No.", name: 'truckNumber' },
-		{ label: "Notes", name: 'notes' },
-		{ label: "App Version", name: 'appVersionStatus' },
-		{ label: "Device Version", name: 'deviceVersion' },
-		{ label: "Status", name: 'status', notSortable: true },
+		{ label: "First Name", name: 'user_first_name' },
+		{ label: "Last Name", name: 'user_last_name' },
+		{ label: "Username", name: 'user_login' },
+		{ label: "Phone No.", name: 'user_phone' },
+		{ label: "Truck No.", name: 'vehicle_truck_number' },
+		{ label: "Notes", name: 'user_notes' },
+		{ label: "App Version", name: 'app_version' },
+		{ label: "Device Version", name: 'device_version' },
+		{ label: "Status", name: 'user_status', notSortable: true },
 		{ label: "", name: '', notSortable: true },
 	] as Array<LabelType>
 
@@ -130,7 +112,7 @@ const DriversTable: FC<PropsType & RouterProps> = ({ rows, ...props }) => {
 				<StyledSearchInput searchText={searchText} setSearchText={setSearchText} />
 				<div>
 					<StyledDefaultButtonSmall variant="outlined" onClick={() => { setAddModalOpen(true) }}>Add driver</StyledDefaultButtonSmall>
-					<IconButton><img src={refreshIcon} alt="referesh-icon" /></IconButton>
+					<IconButton onClick={() => { getDrivers() }}><img src={refreshIcon} alt="referesh-icon" /></IconButton>
 				</div>
 
 			</Toolbar>
@@ -153,48 +135,47 @@ const DriversTable: FC<PropsType & RouterProps> = ({ rows, ...props }) => {
 						
 						stableSort(rows as any, getComparator(order, orderBy))
 						.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map(row => (
-
+							
 							isContainsSearchText(searchText, row, [
-								'firstName',
-								'lastName',
-								'userName',
-								'phone',
-								'truckNumber',
-								'notes',
-								'appVersion',
-								'deviceVersion']) &&
+								'user_first_name',
+							'user_last_name',
+							'user_login',
+							'user_phone',
+							'vehicle_truck_number',
+							'user_notes',
+							'app_version',
+							'device_version',
+							'user_status',]) &&
 							<TableRow
-								key={row.id}
+								key={row.user_id}
 								hover
 								onDoubleClick={(e: any) => {
 									if (editButtonRef.current && !editButtonRef.current.contains(e.target)) {
-										props.history.push(`/drivers/${row.id}`)
+										props.history.push(`/drivers/${row.user_id}`)
 									}
 								}}
-								onMouseEnter={() => { setHoverId(+row.id) }}
+								onMouseEnter={() => { setHoverId(+row.user_id) }}
 								onMouseLeave={() => { setHoverId(-1) }}
 							>
-								<CustomTableCell>{row.firstName}</CustomTableCell>
-								<CustomTableCell>{row.lastName}</CustomTableCell>
-								<CustomTableCell>{row.userName}</CustomTableCell>
-								<CustomTableCell>{row.phone}</CustomTableCell>
-								<CustomTableCell>{row.truckNumber}</CustomTableCell>
-								<CustomTableCell><div className="text-block">{row.notes}</div></CustomTableCell>
+								<CustomTableCell>{row.user_first_name}</CustomTableCell>
+								<CustomTableCell>{row.user_last_name}</CustomTableCell>
+								<CustomTableCell>{row.user_login}</CustomTableCell>
+								<CustomTableCell>{row.user_phone}</CustomTableCell>
+								<CustomTableCell>{row.vehicle_truck_number}</CustomTableCell>
+								<CustomTableCell><div className="text-block">{row.user_notes}</div></CustomTableCell>
 								<CustomTableCell className="app-version">
-									<img src={androidIcon} alt="" className={`anroidSvgIcon ${row.appVersionStatus}`} />
-									<p>{row.appVersion}</p>
+									<img src={androidIcon} alt="" className={`anroidSvgIcon success`} />
+									<p>{row.app_version}</p>
 								</CustomTableCell>
-								<CustomTableCell>{row.deviceVersion}</CustomTableCell>
-								<CustomTableCell>
-									<StatusLabel text={"Status"} />
-								</CustomTableCell>
+								<CustomTableCell>{row.device_version}</CustomTableCell>
+								<CustomTableCell><StatusLabel text={row.user_status as StatusEnum} /></CustomTableCell>
 								<StyledTableCell style={{ minWidth: '70px', boxSizing: 'border-box', paddingTop: '10px', paddingBottom: '10px' }}>
-									{hoverId === row.id &&
+									{hoverId === row.user_id &&
 										<div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }} ref={editButtonRef}>
 											<button style={{ height: '32px' }}
 												onClick={(e) => {
 													setEditModalOpen(true);
-													// setCurrentModalData(row)
+													dispatch(getDriverFromServer(+row.user_id))
 													e.preventDefault()
 												}} >
 												<img src={editIcon} alt="edit-icon" />
@@ -221,10 +202,11 @@ const DriversTable: FC<PropsType & RouterProps> = ({ rows, ...props }) => {
 			{/* Edit modal */}
 			{editModalOpen &&
 				<DriversModal
-					open={editModalOpen}
-					handleClose={handleEditModalClose}
-					initialValues={currentModalData}
-					titleText={"Edit Driver"}
+				open={editModalOpen}
+				handleClose={handleEditModalClose}
+				initialValues={driver}
+				titleText={"Edit Driver"}
+				submitFunction={handleEdit}
 				/>}
 
 			{/* Add modal */}
@@ -232,8 +214,10 @@ const DriversTable: FC<PropsType & RouterProps> = ({ rows, ...props }) => {
 				<DriversModal
 					open={addModalOpen}
 					handleClose={handleAddModalClose}
-					initialValues={{}}
+					initialValues={{} as UserType}
 					titleText={"Add Driver"}
+					submitFunction={handleAdd}
+				
 				/>}
 
 

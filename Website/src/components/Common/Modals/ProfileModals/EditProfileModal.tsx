@@ -42,9 +42,10 @@ const EditProfileModal = ({ open, handleClose, changePassword, editProfile, init
 
 	useEffect(() => {
 		(async function initModal() {
-			dispatch(getCompanyTerminals(initialValues.company_id))
-			dispatch(getTimezones())
-
+			if (open) {
+				dispatch(getCompanyTerminals(initialValues.company_id))
+				dispatch(getTimezones())
+			}
 		})()
 	}, [open]);
 
@@ -73,8 +74,8 @@ const EditProfileModal = ({ open, handleClose, changePassword, editProfile, init
 		user_email: yup.string().nullable().required().email('Email must be valid'),
 		user_phone: yup.string().nullable().required(),
 
-		contact_name: yup.string().nullable().required(), //
-		contact_phone: yup.string().nullable().required(), //
+		company_contact_name: yup.string().nullable().required(), //
+		company_contact_phone: yup.string().nullable().required(), //
 		usdot: yup.string().nullable().required(), //
 
 		timezone_id: yup.string().nullable().required(),
@@ -91,8 +92,8 @@ const EditProfileModal = ({ open, handleClose, changePassword, editProfile, init
 		user_email: yup.string().nullable().email('Email must be valid'),
 		user_phone: yup.string().nullable(),
 
-		contact_name: yup.string().nullable(), //
-		contact_phone: yup.string().nullable(), //
+		company_contact_name: yup.string().nullable(), //
+		company_contact_phone: yup.string().nullable(), //
 		usdot: yup.string().nullable(), //
 
 		timezone_id: yup.string().nullable(),
@@ -145,8 +146,8 @@ const EditProfileModal = ({ open, handleClose, changePassword, editProfile, init
 											<CustomField name={'user_phone'} label={'Phone No.'} />
 										</div>
 										<div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gridGap: '32px' }}>
-											<CustomField name={'contact_name'} label={'Contact Name'} />
-											<CustomField name={'contact_phone'} label={'Contact Phone No.'} />
+											<CustomField name={'company_contact_name'} label={'Contact Name'} />
+											<CustomField name={'company_contact_phone'} label={'Contact Phone No.'} />
 										</div>
 										<div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gridGap: '32px' }}>
 											<CustomField name={'usdot'} label={'USDOT'} />
@@ -202,7 +203,7 @@ const EditProfileModal = ({ open, handleClose, changePassword, editProfile, init
 									handleClose={handleClose}
 									submitText={"Save"}
 
-									style={{ padding: 0 }}
+									style={{ padding: 0, borderTop: 'none' }}
 								/>
 							</DialogActions>
 						</Form>

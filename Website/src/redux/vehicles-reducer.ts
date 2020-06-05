@@ -15,7 +15,6 @@ const SET_VEHICLE = 'vehicles/SET_VEHICLE'
 let initialState = {
 	vehicles: [] as Array<VehicleType>,
 	currentVehicle: {} as VehicleType,
-	isFetching: false
 }
 
 type InitialStateType = typeof initialState;

@@ -1,15 +1,15 @@
-import { StatusType } from './types'
+import { StatusType, StatusEnum } from './types'
 
 export type DriverType = {
-	id: number
-		firstName: string
-		lastName: string
-		userName: string
-		phone: string
-		truckNumber: string
-		notes: string
-		appVersion: string
-		appVersionStatus: string
-		deviceVersion: string
-		status: StatusType
+	user_id: number,
+	user_first_name: string,
+	user_last_name: string,
+	user_full_name: string,
+	user_login: string,
+	user_phone: string,
+	vehicle_truck_number: string | number,
+	user_notes: string,
+	user_status: StatusEnum,
+	app_version: string,
+	device_version: string
 }
