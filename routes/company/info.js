@@ -7,9 +7,10 @@ router.get('/:company_id', async (req, res) => {
 
     let db;
     try {
-        db = await mQuery(`select c.*, t.timezone_name
+        db = await mQuery(`select c.*, t.timezone_name, u.user_id, u.role_id as user_role_id
         from company c left join timezone t on c.timezone_id = t.timezone_id
-        where company_id = ?`, [company_id]);
+        left join user u on c.company_id = u.company_id
+        where c.company_id = ? and u.role_id = 3`, [company_id]);
     } catch (err) {
         return res.status(500).send(makeResponse(2, err));
     }
@@ -20,12 +21,15 @@ router.get('/:company_id', async (req, res) => {
     let rs = db[0];
     db = null;
     try {
-        db = await mQuery(`select company_address_text from company_address where company_id = ?`, [ company_id ]);
+        db = await mQuery(`select * from company_address where company_id = ?`, [ company_id ]);
     } catch (err) {
         return res.status(500).send(makeResponse(3, err));
     }
 
-    rs['company_terminal_names'] = db.map(rec => { return rec.company_terminal_name; });
+    rs['terminal_addresses'] = db.map(rec => { return {
+        company_address_type: rec.company_address_type,
+        company_address_text: rec.company_address_text,
+    };});
 
     return res.status(200).send(makeResponse(0, rs));
 });
