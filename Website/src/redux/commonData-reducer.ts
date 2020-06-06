@@ -19,6 +19,11 @@ let initialState = {
 	states: [] as Array<SelectorType>,
 	years: [] as Array<SelectorType>,
 	terminals: [] as Array<SelectorType>, 
+	subscriptionTypes: [
+		{ id: 'BASIC', value: 'Basic' },
+		{ id: 'ADVANCED', value: 'Advanced' },
+		{ id: 'PREMIUM', value: 'Premium' },
+	] as Array<SelectorType>
 
 }
 

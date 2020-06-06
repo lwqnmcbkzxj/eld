@@ -127,6 +127,15 @@ const EditProfileModal = ({ open, handleClose, initialValues, titleText, submitF
 			}
 		}
 
+		if (!newDataObj.user_id) {
+			newDataObj.role_id = 1
+			if (!initialValues.company_id) 
+				newDataObj.company_id = loggedUser.company_id
+			else 
+				newDataObj.company_id = initialValues.company_id
+				
+				
+		}
 		await submitFunction(newDataObj)
 
 		setSubmitting(false);
@@ -137,9 +146,11 @@ const EditProfileModal = ({ open, handleClose, initialValues, titleText, submitF
 		user_first_name: '',
 		user_last_name: '',
 		user_login: '',
+		user_password: '',
 		user_phone: '',
 		user_driver_licence: '',
 		issuing_state_id: '',
+		company_id: '',
 
 		user_personal_conveyance_flag: false,
 		user_yard_move_flag: false,
@@ -151,25 +162,25 @@ const EditProfileModal = ({ open, handleClose, initialValues, titleText, submitF
 		user_first_name: yup.string().nullable().required(),
 		user_last_name: yup.string().nullable().required(),
 		user_login: yup.string().nullable().required(),
-		user_password: yup.string().nullable().required().min(8).max(24),
+		user_password: initialValues.user_id ? yup.string().nullable().required().min(8).max(24) : yup.string().nullable().min(8).max(24),
 		user_email: yup.string().nullable().email('Email must be valid'),
 		user_phone: yup.string().nullable().required(),
 		user_driver_licence: yup.string().nullable().required(),
 		issuing_state_id: yup.number().nullable().required(),
 
-		vehicle_id: yup.number().nullable(),
-		user_trailer_number: yup.string().nullable(),
-		user_personal_conveyance_flag: yup.boolean().nullable(),
-		user_yard_move_flag: yup.boolean().nullable(),
-		user_eld_flag: yup.boolean().nullable(),
-		user_manual_drive_flag: yup.boolean().nullable(),
-		co_driver_id: yup.number().nullable(),
+		// vehicle_id: yup.number().nullable(),
+		// user_trailer_number: yup.string().nullable(),
+		// user_personal_conveyance_flag: yup.boolean().nullable(),
+		// user_yard_move_flag: yup.boolean().nullable(),
+		// user_eld_flag: yup.boolean().nullable(),
+		// user_manual_drive_flag: yup.boolean().nullable(),
+		// co_driver_id: yup.number().nullable(),
 
-		company_id: yup.number().nullable(),
-		company_address_id: yup.number().nullable(),
-		timezone_id: yup.number().nullable(),
+		company_id: loggedUser.role_id === RolesEnum.admin ? yup.number().nullable().required() : yup.number().nullable(),
+		// company_address_id: yup.number().nullable(),
+		// timezone_id: yup.number().nullable(),
 
-		user_notes: yup.string().nullable(),
+		// user_notes: yup.string().nullable(),
 	});
 
 	return (
@@ -284,7 +295,6 @@ const EditProfileModal = ({ open, handleClose, initialValues, titleText, submitF
 														Component={CustomDropdown}
 														values={companiesSelectors}
 														onValueChange={setFieldValue}
-														optional={true}
 													/>
 
 												}

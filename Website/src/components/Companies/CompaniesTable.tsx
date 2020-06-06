@@ -23,11 +23,13 @@ type PropsType = {
 	changePassword: (passwordObj: PasswordObjectType) => void
 	handleAdd: (company: CompanyType) => void
 	handleEdit: (company: CompanyType) => void
-	handleToggleActive: (companyId: number) => void
+
+	handleActivate: (companyId: number) => void
+	handleDeactivate: (companyId: number) => void
 }
 type Order = 'asc' | 'desc';
 
-const CompaniesTable: FC<PropsType> = ({ rows, handleAdd, handleEdit, changePassword, handleToggleActive, ...props }) => {
+const CompaniesTable: FC<PropsType> = ({ rows, handleAdd, handleEdit, changePassword, handleActivate, handleDeactivate, ...props }) => {
 	const isFetchingArray = useSelector<AppStateType, Array<string>>(state => state.app.isFetchingArray)
 
 	const [page, setPage] = React.useState(0)
@@ -179,7 +181,10 @@ const CompaniesTable: FC<PropsType> = ({ rows, handleAdd, handleEdit, changePass
 					open={editModalOpen}
 					handleClose={handleEditModalClose}
 					submitFunction={handleEdit}
-					handleToggleActive={handleToggleActive}
+				
+					handleActivate={handleActivate}
+					handleDeactivate={handleDeactivate}
+
 					changePassword={changePassword}
 					initialValues={currentModalData}
 					titleText={"Edit Company"}

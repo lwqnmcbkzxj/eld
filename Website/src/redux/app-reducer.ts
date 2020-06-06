@@ -50,7 +50,7 @@ const appReducer = (state = initialState, action: ActionsTypes): InitialStateTyp
 			} else {
 				fetchingArray.splice(elemIndex, 1)
 			}
-			console.log(fetchingArray)
+			
 			return {
 				...state,
 				isFetchingArray: [...fetchingArray]

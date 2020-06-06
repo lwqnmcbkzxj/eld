@@ -6,6 +6,7 @@ import { PasswordObjectType } from '../types/types';
 import { VehicleType } from '../types/vehicles';
 import { keys } from 'ts-transformer-keys';
 import { UserType } from '../types/user';
+import { CompanyType } from '../types/companies';
 
 // https://cors-anywhere.herokuapp.com/
 const instance = Axios.create({
@@ -195,6 +196,31 @@ export const companiesAPI = {
 			})
 			.catch((err) => { return err });
 	},
+	
+	addCompany(companyObj: CompanyType) {		
+		return instance.post(`company/add`, qs.stringify({...companyObj}))
+			.then(response => response.data)
+			.catch((err) => { return err });
+	},
+	editCompany(companyObj: CompanyType) {		
+		return instance.post(`company/add`, qs.stringify({...companyObj}))
+			.then(response => response.data)
+			.catch((err) => { return err });
+	},
+	activateCompany(company_id: number) {
+		return instance.patch(`company/activate/${company_id}`)
+		.then((response) => {
+			return response.data
+		})
+		.catch((err) => { return err });
+	},
+	deactivateCompany(company_id: number) {
+		return instance.patch(`company/deactivate/${company_id}`)
+		.then((response) => {
+			return response.data
+		})
+		.catch((err) => { return err });
+	}
 }
 
 export const appAPI = {

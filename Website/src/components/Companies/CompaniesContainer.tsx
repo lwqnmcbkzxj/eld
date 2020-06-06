@@ -1,12 +1,14 @@
 import React, { FC, useEffect } from 'react';
 import { useDispatch, useSelector } from "react-redux";
-import { AppStateType } from '../../types/types'
+import { AppStateType, StatusEnum } from '../../types/types'
 
 import CompaniesTable from './CompaniesTable'
 import { CompanyType } from '../../types/companies';
 import { getCompaniesFromServer } from '../../redux/companies-reducer';
 
 import { PasswordObjectType } from '../../types/types'
+
+import { toggleCompanyActivation, changeCompanyPassword, addCompany, editCompany } from '../../redux/companies-reducer'
 
 const CompaniesContainer: FC = ({ ...props }) => {
 	const dispatch = useDispatch()
@@ -23,29 +25,35 @@ const CompaniesContainer: FC = ({ ...props }) => {
 
 
 	const changeCompanyPasswordDispatch = (passwordObj: PasswordObjectType) => {
-		// dispatch(changeCompanyPassword)
+		// dispatch(changeCompanyPassword(companyId, passwordObj))
 	}
 
-	const addCompanyDispatch = () => {
-		// dispatch(editCompany)
+	const addCompanyDispatch = async (company: CompanyType) => {
+		await dispatch(addCompany(company))
 	}
-	const editCompanyDispatch = () => {
-		// dispatch(editCompany)
+	const editCompanyDispatch = async (company: CompanyType) => {
+		await dispatch(editCompany)
 	}
 
-	const toggleActiveStatusDispatch = (companyId: number) => {
-		// dispatch(toggleActiveStatus)
+	const activateCompanyDispatch = async (companyId: number) => {
+		await dispatch(toggleCompanyActivation(companyId, 'activate'))
+	}	
+	const deactivateCompanyDispatch = async (companyId: number) => {
+		await dispatch(toggleCompanyActivation(companyId, 'deactivate'))
 	}
+
 
 	return (
 		<div className="page companies-page">
 			<CompaniesTable
 				rows={companies}
 				changePassword={changeCompanyPasswordDispatch}
+
 				handleAdd={addCompanyDispatch}
 				handleEdit={editCompanyDispatch}
-				handleToggleActive={toggleActiveStatusDispatch}
 			
+				handleActivate={activateCompanyDispatch}
+				handleDeactivate={deactivateCompanyDispatch}
 			/>
 		</div>
 	)

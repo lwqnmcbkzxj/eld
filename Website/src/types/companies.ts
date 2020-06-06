@@ -25,10 +25,10 @@ export type CompanyType = {
 	company_main_office_address: string
 	company_home_terminal_address: string
 	company_subscribe_type: string,
-	timezone_id: number,
+	timezone_id: number | number,
 	company_contact_name: string,
 	company_contact_phone: string,
-	company_email: null,
+	company_email: string,
 	company_usdot: number,
 	company_sort: number,
 	company_status: StatusEnum

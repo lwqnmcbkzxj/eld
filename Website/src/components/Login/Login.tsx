@@ -92,7 +92,7 @@ const Login = () => {
 			<div className={classes.login_form}>
 				<Formik
 					validateOnChange={true}
-					initialValues={{ login: 'sidorov', password: 'Sidorov123' }}
+					initialValues={{ login: 'sergeev', password: 'Sergeev123' }}
 
 					validationSchema={validationSchema}
 					validate={values => {

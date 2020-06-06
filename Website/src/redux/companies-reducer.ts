@@ -1,10 +1,11 @@
-import { AppStateType } from '../types/types'
+import { AppStateType, AlertStatusEnum } from '../types/types'
 import { ThunkAction } from 'redux-thunk'
 
 import { CompanyType } from '../types/companies'
 import { toggleIsFetching, ToggleIsFetchingType } from './app-reducer'
 import { ResultCodesEnum } from '../api/types'
 import { companiesAPI } from '../api/api'
+import { showAlert } from '../utils/showAlert'
 
 const SET_COMPANIES = 'SET_COMPANIES'
 			
@@ -49,6 +50,46 @@ export const getCompaniesFromServer = ():ThunksType => async (dispatch) => {
 		dispatch(setComapnies(response.result))
 	}
 }
+export const toggleCompanyActivation = (companyId: number, status: string): ThunksType => async (dispatch) => {
+	let response
+	if (status === 'activate') {
+		response = await companiesAPI.activateCompany(companyId)
+	} else {
+		response = await companiesAPI.deactivateCompany(companyId)
+	}
+
+	if (response.status === ResultCodesEnum.Success) {
+		showAlert(AlertStatusEnum.Success, `Company ${status}d successfully`)
+		dispatch(getCompaniesFromServer())
+	} else {
+		showAlert(AlertStatusEnum.Error, `Failed to ${status} company`)
+	}
+}
+ 
+export const changeCompanyPassword = (): ThunksType => async (dispatch) => { }
+
+
+export const addCompany = (company: CompanyType): ThunksType => async (dispatch) => {
+	let response = await companiesAPI.addCompany(company)
+
+	if (response.status === ResultCodesEnum.Success) {
+		showAlert(AlertStatusEnum.Success, 'Company added successfully')
+		dispatch(getCompaniesFromServer())
+	} else {
+		showAlert(AlertStatusEnum.Error, 'Failed to add company')
+	}
+}
+export const editCompany = (company: CompanyType): ThunksType => async (dispatch) => {
+	debugger
+	let response = await companiesAPI.editCompany(company)
+
+	if (response.status === ResultCodesEnum.Success) {
+		showAlert(AlertStatusEnum.Success, 'Company edited successfully')
+		dispatch(getCompaniesFromServer())
+	} else {
+		showAlert(AlertStatusEnum.Error, 'Failed to edit company')
+	}
+} 
 
 type ThunksType = ThunkAction<Promise<void>, AppStateType, unknown, ActionsTypes>
 
