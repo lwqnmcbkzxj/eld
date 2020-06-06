@@ -11,8 +11,8 @@ router.patch('/', require('express').json(), async (req, res) => {
             company_address: Joi.string(),
             subscribe_type: Joi.string().valid('BASIC', 'ADVANCED', 'PREMIUM'),
             company_timezone: Joi.number().integer().min(1),
-            contact_name: Joi.string(),
-            contact_phone: Joi.string(),
+            company_contact_name: Joi.string(),
+            company_contact_phone: Joi.string(),
             email: Joi.string().email(),
             usdot: Joi.number().integer(),
             terminal_addresses: Joi.array().items({
@@ -30,7 +30,7 @@ router.patch('/', require('express').json(), async (req, res) => {
         'timezone_id', 'company_contact_name', 'company_contact_phone', 'company_email', 'company_usdot'
     ];
     const values = [ vars.company_name, vars.subscribe_type, vars.company_address, vars.company_timezone,
-        vars.contact_name, vars.contact_phone, vars.email, vars.usdot
+        vars.company_contact_name, vars.company_contact_phone, vars.email, vars.usdot
     ];
     const { params, update } = makeUpdateString(fields, values);
     params.push(company_id);

@@ -18,8 +18,8 @@ router.post('/', multer().none(), async (req, res) => {
             company_address: Joi.string().required(),
             subscribe_type: Joi.string().valid('BASIC', 'ADVANCED', 'PREMIUM'),
             company_timezone: Joi.number().valid('ALASKAN', 'CENTRAL', 'EASTERN', 'HAWAIIAN', 'PACIFIC'),
-            contact_name: Joi.string(),
-            contact_phone: Joi.string(),
+            company_contact_name: Joi.string(),
+            company_contact_phone: Joi.string(),
             email: Joi.string().email(),
             usdot: Joi.number(),
             terminal_addresses: Joi.array().items(Joi.string()).required()
@@ -39,8 +39,8 @@ router.post('/', multer().none(), async (req, res) => {
         return res.status(400).send(makeResponse(3, `Could not identify timezone_id by string constant \'${vars.company_timezone}\'`));
     }
     try {
-        const params = [ vars.company_name, null, vars.company_address, null, vars.subscribe_type, timezone_id, vars.contact_name,
-            vars.contact_phone, vars.email, vars.usdot, 'ACTIVE'
+        const params = [ vars.company_name, null, vars.company_address, null, vars.subscribe_type, timezone_id, vars.company_contact_name,
+            vars.company_contact_phone, vars.email, vars.usdot, 'ACTIVE'
         ];
         db = await mQuery(`insert into company
         (company_short_name, company_long_name, company_main_office_address, company_home_terminal_address, 
