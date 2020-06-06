@@ -32,16 +32,18 @@ router.patch('/', body_parser, async (req, res) => {
     if (db.length <= 0) return res.status(500).send(makeResponse(4, 'User with user_id = ' + req_user_id + ' does not exist'));
     db = null;
 
-    try {
-        db = await mQuery(`select user_password from user where user_id = ?`, [ req_user_id ]);
-    } catch (err) {
-        return res.status(500).send(makeResponse(2, err));
-    }
+    if (!vars.user_id) {    // if change password for this user (identified by token)
+        try {
+            db = await mQuery(`select user_password from user where user_id = ?`, [ req_user_id ]);
+        } catch (err) {
+            return res.status(500).send(makeResponse(2, err));
+        }
 
-    if (db[0].user_password.localeCompare(md5(vars.old_password))) {
-        return res.status(403).send(makeResponse(3, { text: 'Wrong old password received'}));
+        if (db[0].user_password.localeCompare(md5(vars.old_password))) {
+            return res.status(403).send(makeResponse(3, { text: 'Wrong old password received'}));
+        }
+        db = null;
     }
-    db = null;
 
     try {
         const new_password_hash = md5(vars.new_password);
