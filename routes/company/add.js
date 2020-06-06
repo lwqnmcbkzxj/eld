@@ -2,6 +2,13 @@ const router = require('express').Router();
 const Joi = require('@hapi/joi');
 const { mQuery, makeResponse } = require('../../utils');
 const multer = require('multer');
+const md5 = require('md5');
+
+getRandomInt = function (min, max) {
+    min = Math.ceil(min);
+    max = Math.floor(max);
+    return Math.floor(Math.random() * (max - min)) + min;
+};
 
 router.post('/', multer().none(), async (req, res) => {
     let vars = {}, db = null;
@@ -45,6 +52,18 @@ router.post('/', multer().none(), async (req, res) => {
     const company_id = db.insertId;
     db = null;
 
+    try {
+        const user_login = `u` + getRandomInt(1000000, 9999999).toString();
+        const role_id = 3;
+        const user_password = md5('Qq123456');
+        const params = [ role_id, company_id, user_login, user_password ];
+        db = await mQuery(`insert into user (role_id, company_id, user_login, user_password) 
+            values (?, ?, ?, ?)`, params);
+    } catch (err) {
+        return res.status(500).send(makeResponse(3, err));
+    }
+    const new_user_id = db.insertId;
+
     Promise.all(vars.terminal_addresses.map(async terminal_address => {
         try {
             const params = [ company_id, terminal_address ];
@@ -58,6 +77,7 @@ router.post('/', multer().none(), async (req, res) => {
         .then(terminal_addresses => {
         return res.status(201).send(makeResponse(0, {
             company_id: company_id,
+            user_id: new_user_id,
             terminal_addresses: terminal_addresses
         }))
         .catch(err => {
