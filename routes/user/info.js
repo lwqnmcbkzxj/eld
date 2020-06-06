@@ -30,18 +30,22 @@ router.get('/:user_id', async (req, res) => {
         return res.status(400).send(makeResponse(1, err));
     }
 
-
     try {
         db = await mQuery(`select u.user_id, u.user_remark, u.user_status, u.user_first_name, u.user_last_name,
         u.user_login, u.user_email, u.user_phone, u.user_driver_licence, u.issuing_state_id, ist.issuing_state_name, u.company_id,
         u.user_trailer_number, u.co_driver_id, u.role_id, cd.user_first_name, cd.user_last_name, ct.company_address_id, ct.company_address_text,
-        u.timezone_id, tz.timezone_name, u.user_notes, u.user_personal_conveyance_flag, u.user_eld_flag, u.user_yard_move_flag,
-        u.user_manual_drive_flag, u.default_vehicle_id, v.vehicle_id
+        u.timezone_id, tz.timezone_name, u.user_notes, 
+       CAST(u.user_personal_conveyance_flag as UNSIGNED) as user_personal_conveyance_flag,
+       CAST(u.user_eld_flag as UNSIGNED) as user_eld_flag,
+       CAST(u.user_yard_move_flag as UNSIGNED) as user_yard_move_flag,
+       CAST(u.user_manual_drive_flag as UNSIGNED) as user_manual_drive_flag,
+       u.default_vehicle_id, v.vehicle_id, c.company_contact_name, c.company_contact_phone
         from user u left join issuing_state ist on u.issuing_state_id = ist.issuing_state_id
         left join user cd on u.user_id = cd.user_id
         left join company_address ct on u.company_terminal_id = ct.company_address_id
         left join timezone tz on u.timezone_id = tz.timezone_id
         left join vehicle v on u.default_vehicle_id = v.vehicle_id
+        left join company c on u.company_id = c.company_id
         where u.user_id = ?`, [ user_id ]);
     } catch (err) {
         return res.status(500).send(makeResponse(2, err));
