@@ -35,10 +35,12 @@ router.patch('/', require('express').json(), async (req, res) => {
     const { params, update } = makeUpdateString(fields, values);
     params.push(company_id);
 
-    try {
-        db = await mQuery(`update company set ${update} where company_id = ?`, params);
-    } catch (err) {
-        return res.status(500).send(makeResponse(2, err));
+    if (update.length >= 3) {
+        try {
+            db = await mQuery(`update company set ${update} where company_id = ?`, params);
+        } catch (err) {
+            return res.status(500).send(makeResponse(2, err));
+        }
     }
 
     try {
