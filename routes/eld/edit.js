@@ -18,6 +18,10 @@ router.patch('/', async (req, res) => {
     const { params, update } = makeUpdateString([ 'eld_serial_number', 'eld_note' ], [ vars.eld_serial_number, vars.eld_note ]);
     params.push(vars.eld_id);
 
+    if (update.length <= 3) {
+        return res.status(200).send(makeResponse(0, { changedRows: 0 }));
+    }
+
     try {
         db = await mQuery(`update eld set ${update} where eld_id = ?`, params);
     } catch (err) {

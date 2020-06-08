@@ -43,8 +43,11 @@ router.patch('/', async (req, res) => {
     ];
     const { params, update } = makeUpdateString(fields, pars);
     params.push(vars.vehicle_id);
-
+    if (update.length <= 3) {
+        return res.status(200).send(makeResponse(0, { changedRows: 0 }));
+    }
     try {
+
         db = await mQuery(`update vehicle set ${update} where vehicle_id = ?`, params);
     } catch (err) {
         return res.status(500).send(makeResponse(4, err));
