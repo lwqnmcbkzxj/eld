@@ -7,14 +7,14 @@ router.patch('/', require('express').json(), async (req, res) => {
     try {
         const schema = Joi.object({
             company_id: Joi.number().integer().min(1).required(),
-            company_name: Joi.string(),
-            company_address: Joi.string(),
-            subscribe_type: Joi.string().valid('BASIC', 'ADVANCED', 'PREMIUM'),
-            company_timezone: Joi.number().integer().min(1),
+            company_short_name: Joi.string(),
+            company_main_office_address: Joi.string(),
+            company_subscribe_type: Joi.string().valid('BASIC', 'ADVANCED', 'PREMIUM'),
+            timezone_id: Joi.number().integer().min(1),
             company_contact_name: Joi.string(),
             company_contact_phone: Joi.string(),
-            email: Joi.string().email(),
-            usdot: Joi.number().integer(),
+            company_email: Joi.string().email(),
+            company_usdot: Joi.number().integer(),
             terminal_addresses: Joi.array().items({
                 company_address_id: Joi.number().integer().min(1),
                 company_address_text: Joi.string(),
@@ -29,8 +29,8 @@ router.patch('/', require('express').json(), async (req, res) => {
     const fields = [ 'company_short_name', 'company_subscribe_type', 'company_main_office_address',
         'timezone_id', 'company_contact_name', 'company_contact_phone', 'company_email', 'company_usdot'
     ];
-    const values = [ vars.company_name, vars.subscribe_type, vars.company_address, vars.company_timezone,
-        vars.company_contact_name, vars.company_contact_phone, vars.email, vars.usdot
+    const values = [ vars.company_short_name, vars.company_subscribe_type, vars.company_main_office_address, vars.timezone_id,
+        vars.company_contact_name, vars.company_contact_phone, vars.company_email, vars.company_usdot
     ];
     const { params, update } = makeUpdateString(fields, values);
     params.push(company_id);

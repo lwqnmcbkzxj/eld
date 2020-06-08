@@ -27,6 +27,7 @@ router.get('/:company_id', async (req, res) => {
     }
 
     rs['terminal_addresses'] = db.map(rec => { return {
+        company_address_id: rec.company_address_id,
         company_address_type: rec.company_address_type,
         company_address_text: rec.company_address_text,
     };});
