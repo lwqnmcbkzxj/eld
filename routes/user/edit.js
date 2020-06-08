@@ -22,7 +22,7 @@ router.patch('/', body_parser, async (req, res) => {
             vehicle_id: Joi.number().integer().min(1),
             user_trailer_number: Joi.number().integer().min(1),
             co_driver_id: Joi.number().integer().min(1),
-            home_terminal_address_id: Joi.number().integer().min(1),
+            company_address_id: Joi.number().integer().min(1),
             timezone_id: Joi.number().integer().min(1),
             user_notes: Joi.string().allow(''),
             user_remark: Joi.string(),
@@ -46,7 +46,7 @@ router.patch('/', body_parser, async (req, res) => {
         const values = [ vars.role_id, vars.company_id, vars.user_login, password_hash, vars.user_remark,
             vars.user_first_name, vars.user_last_name, vars.user_personal_conveyance_flag, vars.user_eld_flag,
             vars.user_yard_move_flag, vars.user_manual_drive_flag, vars.user_email, vars.user_phone,
-            vars.user_trailer_number, vars.co_driver_id, vars.timezone_id, vars.home_terminal_address_id,
+            vars.user_trailer_number, vars.co_driver_id, vars.timezone_id, vars.company_address_id,
             vars.user_notes, vars.user_driver_licence, vars.issuing_state_id, vars.vehicle_id
         ];
         const { params, update } = makeUpdateString(fields, values);
