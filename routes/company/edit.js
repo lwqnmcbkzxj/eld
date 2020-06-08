@@ -18,7 +18,7 @@ router.patch('/', require('express').json(), async (req, res) => {
             terminal_addresses: Joi.array().items({
                 company_address_id: Joi.number().integer().min(1),
                 company_address_text: Joi.string(),
-            }).required()
+            })
         });
         vars = await schema.validateAsync(req.body);
     } catch (err) {
