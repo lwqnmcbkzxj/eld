@@ -1,5 +1,6 @@
 const path = require('path');
 const setTZ = require('set-tz');
+const cors = require('cors');
 setTZ('UTC');
 global.app_root = path.resolve(__dirname);
 
@@ -26,6 +27,7 @@ const stateRouter = require('./routes/state');
 const eldRouter = require('./routes/eld');
 // const sessionRouter = require('./routes/session');
 
+eldApp.use(cors());
 eldApp.use('/vehicle', vehiclesRoute);
 eldApp.use('/dvir', dvirRouter);
 eldApp.use('/auth', authRouter);

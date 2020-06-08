@@ -35,6 +35,18 @@ router.patch('/', body_parser, async (req, res) => {
     } catch (err) {
         return res.status(400).send(makeResponse(1, err));
     }
+
+    if (vars.user_login) {
+        try {
+            db = await mQuery(`select user_id from user where user_login = ?`, [ vars.user_login ]);
+        } catch (err) {
+            return res.status(500).send(makeResponse(3, err));
+        }
+        if ((db.length > 0) && (db[0].user_id !== vars.user_id)) {
+            return res.status(403).send(makeResponse(4, 'User with login ' + vars.user_login + ' already exists'));
+        }
+    }
+    console.log(vars);
     // console.log(vars);
     try {
         const password_hash = vars.user_password ? md5(vars.user_password) : null;

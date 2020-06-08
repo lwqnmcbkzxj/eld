@@ -64,16 +64,15 @@ router.post('/', multer().none(), async (req, res) => {
         } catch (err) {
             return { company_terminal_address: terminal_address, message: err};
         }
-    }))
-        .then(terminal_addresses => {
-        return res.status(201).send(makeResponse(0, {
+    })).then(terminal_addresses => {
+        const ret_obj = {
             company_id: company_id,
             user_id: new_user_id,
             terminal_addresses: terminal_addresses
-        }))
-        .catch(err => {
-            return res.status(500).send(makeResponse(4, err));
-        });
+        };
+        return res.status(201).send(makeResponse(0, ret_obj));
+    }).catch(err => {
+        return res.status(500).send(makeResponse(4, err));
     });
 });
 
