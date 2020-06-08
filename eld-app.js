@@ -6,7 +6,7 @@ global.app_root = path.resolve(__dirname);
 const { initMysqlConnection } = require('./utils');
 
 let express = require('express');
-let app = express();
+let eldApp = express();
 
 initMysqlConnection(function() {}, function() {});
 
@@ -26,23 +26,23 @@ const stateRouter = require('./routes/state');
 const eldRouter = require('./routes/eld');
 // const sessionRouter = require('./routes/session');
 
-app.use('/vehicle', vehiclesRoute);
-app.use('/dvir', dvirRouter);
-app.use('/auth', authRouter);
-app.use('/trailer', trailerRouter);
-app.use('/company', companyRouter);
-app.use('/user', userRouter);
-app.use('/record', recordRouter);
-app.use('/sdocument', sdocumentRouter);
-app.use('/logs', logsRouter);
-app.use('/signature', signatureRouter);
-app.use('/timezone', timezoneRouter);
-app.use('/state', stateRouter);
-app.use('/eld', eldRouter);
+eldApp.use('/vehicle', vehiclesRoute);
+eldApp.use('/dvir', dvirRouter);
+eldApp.use('/auth', authRouter);
+eldApp.use('/trailer', trailerRouter);
+eldApp.use('/company', companyRouter);
+eldApp.use('/user', userRouter);
+eldApp.use('/record', recordRouter);
+eldApp.use('/sdocument', sdocumentRouter);
+eldApp.use('/logs', logsRouter);
+eldApp.use('/signature', signatureRouter);
+eldApp.use('/timezone', timezoneRouter);
+eldApp.use('/state', stateRouter);
+eldApp.use('/eld', eldRouter);
 // app.use('/session', sessionRouter);
 
 const port = 3021;
-app.listen(port, function() {
+eldApp.listen(port, function() {
   console.log('Listening to port ' + port + ' ....');
   // console.log(getCurDt());
 });
