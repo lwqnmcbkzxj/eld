@@ -25,10 +25,10 @@ router.post('/', body_parser, async (req, res) => {
             timezone_id: Joi.number().integer().min(1),
             user_notes: Joi.string().allow(''),
             user_remark: Joi.string(),
-            personal_conveyance_flag: Joi.number().integer().min(0).max(1).required(),
+            user_personal_conveyance_flag: Joi.number().integer().min(0).max(1).required(),
             user_eld_flag: Joi.number().integer().min(0).max(1).required(),
             user_yard_move_flag: Joi.number().integer().min(0).max(1).required(),
-            user_allow_manual_drive_time: Joi.number().integer().min(0).max(1).required()
+            user_manual_drive_flag: Joi.number().integer().min(0).max(1).required()
         });
         vars = await schema.validateAsync(req.body);
     } catch (err) {
@@ -38,8 +38,8 @@ router.post('/', body_parser, async (req, res) => {
     try {
         const password_hash = md5(vars.user_password);
         const params = [ vars.role_id, vars.company_id, vars.user_login, password_hash, vars.user_remark,
-            null, vars.user_first_name, vars.user_last_name, vars.personal_conveyance_flag, vars.user_eld_flag,
-            vars.user_yard_move_flag, vars.user_allow_manual_drive_time, vars.user_email, vars.user_phone,
+            null, vars.user_first_name, vars.user_last_name, vars.user_personal_conveyance_flag, vars.user_eld_flag,
+            vars.user_yard_move_flag, vars.user_manual_drive_flag, vars.user_email, vars.user_phone,
             vars.trailer_number, vars.co_driver_id, vars.timezone_id, vars.home_terminal_address_id,
             vars.user_notes, vars.user_driver_licence, vars.issuing_state_id, vars.vehicle_id
         ];
