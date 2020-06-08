@@ -64,7 +64,7 @@ router.patch('/', body_parser, async (req, res) => {
         const { params, update } = makeUpdateString(fields, values);
         params.push(vars.user_id);
         if (update.length <= 3) {
-            return res.status(200).send(makeResponse(2, { changedRows: 0 }));
+            return res.status(200).send(makeResponse(0, { changedRows: 0 }));
         }
         db = await mQuery(`update user set ${update} where user_id = ?`, params);
     } catch (err) {
