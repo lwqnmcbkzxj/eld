@@ -21,7 +21,8 @@ router.get('/:company_id', async (req, res) => {
     let rs = db[0];
     db = null;
     try {
-        db = await mQuery(`select * from company_address where company_id = ?`, [ company_id ]);
+        db = await mQuery(`select * from company_address where company_id = ? 
+                                and company_address_status <> 'DELETED'`, [ company_id ]);
     } catch (err) {
         return res.status(500).send(makeResponse(3, err));
     }
