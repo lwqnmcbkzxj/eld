@@ -25,10 +25,10 @@ router.post('/', body_parser, async (req, res) => {
             timezone_id: Joi.number().integer().min(1),
             user_notes: Joi.string().allow(''),
             user_remark: Joi.string(),
-            user_personal_conveyance_flag: Joi.number().integer().min(0).max(1).required(),
-            user_eld_flag: Joi.number().integer().min(0).max(1).required(),
-            user_yard_move_flag: Joi.number().integer().min(0).max(1).required(),
-            user_manual_drive_flag: Joi.number().integer().min(0).max(1).required()
+            user_personal_conveyance_flag: Joi.number().integer().min(0).max(1),
+            user_eld_flag: Joi.number().integer().min(0).max(1),
+            user_yard_move_flag: Joi.number().integer().min(0).max(1),
+            user_manual_drive_flag: Joi.number().integer().min(0).max(1)
         });
         vars = await schema.validateAsync(req.body);
     } catch (err) {
