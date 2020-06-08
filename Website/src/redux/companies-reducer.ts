@@ -1,20 +1,22 @@
-import { AppStateType, AlertStatusEnum } from '../types/types'
+import { AppStateType, AlertStatusEnum, PasswordObjectType } from '../types/types'
 import { ThunkAction } from 'redux-thunk'
 
 import { CompanyType } from '../types/companies'
 import { toggleIsFetching, ToggleIsFetchingType } from './app-reducer'
 import { ResultCodesEnum } from '../api/types'
-import { companiesAPI } from '../api/api'
+import { companiesAPI, userAPI } from '../api/api'
 import { showAlert } from '../utils/showAlert'
 
-const SET_COMPANIES = 'SET_COMPANIES'
+const SET_COMPANIES = 'companies/SET_COMPANIES'
+const SET_COMPANY = 'companies/SET_COMPANY'
 			
 let initialState = {
-	companies: [] as Array<CompanyType>
+	companies: [] as Array<CompanyType>,
+	currentCompany: {} as CompanyType
 }
 
 type InitialStateType = typeof initialState;
-type ActionsTypes = SetCompaniesType | ToggleIsFetchingType;
+type ActionsTypes = SetCompaniesType | SetCompanyType | ToggleIsFetchingType;
 
 const companiesReducer = (state = initialState, action: ActionsTypes): InitialStateType => {
 	switch (action.type) {
@@ -22,6 +24,12 @@ const companiesReducer = (state = initialState, action: ActionsTypes): InitialSt
 			return {
 				...state,
 				companies: [...action.companies]
+			}
+		}
+		case SET_COMPANY: {
+			return {
+				...state, 
+				currentCompany: {...action.company}
 			}
 		}
 		default:
@@ -33,6 +41,10 @@ type SetCompaniesType = {
 	type: typeof SET_COMPANIES,
 	companies: Array<CompanyType>
 }
+type SetCompanyType = {
+	type: typeof SET_COMPANY,
+	company: CompanyType
+}
 
 export const setComapnies = (companies: Array<CompanyType>): SetCompaniesType => {
 	return {
@@ -40,7 +52,12 @@ export const setComapnies = (companies: Array<CompanyType>): SetCompaniesType =>
 		companies
 	}
 }
-
+export const setCompany = (company: CompanyType): SetCompanyType => {
+	return {
+		type: SET_COMPANY,
+		company
+	}
+}
 export const getCompaniesFromServer = ():ThunksType => async (dispatch) => {
 	dispatch(toggleIsFetching('companies'))
 	let response = await companiesAPI.getCompanies()
@@ -48,6 +65,16 @@ export const getCompaniesFromServer = ():ThunksType => async (dispatch) => {
 	if (response.status === ResultCodesEnum.Success) {
 		dispatch(toggleIsFetching('companies'))
 		dispatch(setComapnies(response.result))
+	}
+}
+
+export const getCompanyFromServer = (id: number):ThunksType => async (dispatch) => {
+	dispatch(toggleIsFetching('company'))
+	let response = await companiesAPI.getCompany(id)
+
+	if (response.status === ResultCodesEnum.Success) {
+		dispatch(setCompany(response.result))
+		dispatch(toggleIsFetching('company'))
 	}
 }
 export const toggleCompanyActivation = (companyId: number, status: string): ThunksType => async (dispatch) => {
@@ -66,10 +93,20 @@ export const toggleCompanyActivation = (companyId: number, status: string): Thun
 	}
 }
  
-export const changeCompanyPassword = (): ThunksType => async (dispatch) => { }
+export const changeCompanyPassword = (userId: number, passwordObject: PasswordObjectType): ThunksType => async (dispatch) => {
+	let response = await userAPI.changePassword(passwordObject, userId)
+
+	if (response.status === ResultCodesEnum.Success) {
+		showAlert(AlertStatusEnum.Success, 'Password changed successfully')
+		dispatch(getCompaniesFromServer())
+	} else {
+		showAlert(AlertStatusEnum.Error, 'Failed to change password')
+	}
+}
 
 
 export const addCompany = (company: CompanyType): ThunksType => async (dispatch) => {
+	debugger
 	let response = await companiesAPI.addCompany(company)
 
 	if (response.status === ResultCodesEnum.Success) {
@@ -80,7 +117,6 @@ export const addCompany = (company: CompanyType): ThunksType => async (dispatch)
 	}
 }
 export const editCompany = (company: CompanyType): ThunksType => async (dispatch) => {
-	debugger
 	let response = await companiesAPI.editCompany(company)
 
 	if (response.status === ResultCodesEnum.Success) {

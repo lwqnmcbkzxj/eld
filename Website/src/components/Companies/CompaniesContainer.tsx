@@ -24,15 +24,15 @@ const CompaniesContainer: FC = ({ ...props }) => {
 	}, []);
 
 
-	const changeCompanyPasswordDispatch = (passwordObj: PasswordObjectType) => {
-		// dispatch(changeCompanyPassword(companyId, passwordObj))
+	const changeCompanyPasswordDispatch = async (userId: number, passwordObj: PasswordObjectType) => {
+		await dispatch(changeCompanyPassword(userId, passwordObj))
 	}
 
 	const addCompanyDispatch = async (company: CompanyType) => {
 		await dispatch(addCompany(company))
 	}
 	const editCompanyDispatch = async (company: CompanyType) => {
-		await dispatch(editCompany)
+		await dispatch(editCompany(company))
 	}
 
 	const activateCompanyDispatch = async (companyId: number) => {

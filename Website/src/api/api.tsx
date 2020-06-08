@@ -41,14 +41,14 @@ export const userAPI = {
 			.then((response) => {
 				return response.data
 			})
-			.catch((err) => { return err })	
+			.catch((err) => { return err })
 	},
 	editUser(userData: UserType) {
 		return instance.patch(`user/edit`, qs.stringify({ ...userData }))
 			.then((response) => {
 				return response.data
 			})
-			.catch((err) => { return err })	
+			.catch((err) => { return err })
 	},
 	// register(username: string, email: string, password: string) {
 	// 	return instance.post(`register`, { username, email, password })
@@ -72,9 +72,9 @@ export const userAPI = {
 	// 	}
 	// );
 	// },
-	changePassword(passwordObj: PasswordObjectType) {
-		
-		return instance.patch(`user/change-password`, qs.stringify({ ...passwordObj }))
+	changePassword(passwordObj: PasswordObjectType, user_id?: number) {
+
+		return instance.patch(`user/change-password`, qs.stringify({ ...passwordObj, user_id }))
 			.then((response) => {
 				return response.data
 			})
@@ -143,34 +143,34 @@ export const vehiclesAPI = {
 	},
 	getVehicle(vehicle_id: number) {
 		return instance.get(`vehicle/info/${vehicle_id}`)
-		.then((response) => {
-			return response.data
-		})
-		.catch((err) => { return err });
+			.then((response) => {
+				return response.data
+			})
+			.catch((err) => { return err });
 	},
-	
+
 	addVehicle(company_id: number, vehicle: VehicleType) {
 		let vehicleObj = {
 			company_id,
-			...vehicle,			
+			...vehicle,
 		}
-		return instance.post(`vehicle/add`, qs.stringify({...vehicleObj}))
+		return instance.post(`vehicle/add`, qs.stringify({ ...vehicleObj }))
 			.then(response => response.data)
 			.catch((err) => { return err });
 	},
 	editVehicle(vehicle: VehicleType) {
-		
-		return instance.patch(`vehicle/edit`,  qs.stringify({ ...vehicle }))
+
+		return instance.patch(`vehicle/edit`, qs.stringify({ ...vehicle }))
 			.then(response => response.data)
 			.catch((err) => { return err });
 	},
-	
+
 	deleteVehicle(id: number) {
 		return instance.delete(`vehicle/delete/${id}`)
 			.then(response => response.data)
 			.catch((err) => { return err });
 	},
-	
+
 	activateVehicle(id: number) {
 		return instance.post(`vehicle/activate/${id}`)
 			.then(response => response.data)
@@ -196,30 +196,40 @@ export const companiesAPI = {
 			})
 			.catch((err) => { return err });
 	},
-	
-	addCompany(companyObj: CompanyType) {		
-		return instance.post(`company/add`, qs.stringify({...companyObj}))
+	getCompany(id: number) {
+		return instance.get(`company/info/${id}`)
+			.then((response) => {
+				return response.data
+			})
+			.catch((err) => { return err });
+	},
+
+	addCompany(companyObj: CompanyType) {
+		return instance.post(`company/add`, {...companyObj}, { headers:{ 'Content-type': 'application/json' }})
 			.then(response => response.data)
 			.catch((err) => { return err });
 	},
-	editCompany(companyObj: CompanyType) {		
-		return instance.post(`company/add`, qs.stringify({...companyObj}))
+
+
+	editCompany(companyObj: any) {
+		return instance.patch(`company/edit`, JSON.stringify({...companyObj}), { headers:{ 'Content-type': 'application/json' }})
+
 			.then(response => response.data)
 			.catch((err) => { return err });
 	},
 	activateCompany(company_id: number) {
 		return instance.patch(`company/activate/${company_id}`)
-		.then((response) => {
-			return response.data
-		})
-		.catch((err) => { return err });
+			.then((response) => {
+				return response.data
+			})
+			.catch((err) => { return err });
 	},
 	deactivateCompany(company_id: number) {
 		return instance.patch(`company/deactivate/${company_id}`)
-		.then((response) => {
-			return response.data
-		})
-		.catch((err) => { return err });
+			.then((response) => {
+				return response.data
+			})
+			.catch((err) => { return err });
 	}
 }
 

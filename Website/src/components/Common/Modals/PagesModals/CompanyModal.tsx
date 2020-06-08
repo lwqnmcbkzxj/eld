@@ -25,7 +25,7 @@ type CompanyModalType = {
 	titleText: string
 
 	submitFunction: (company: CompanyType) => void
-	changePassword?: (passwordObj: PasswordObjectType) => void
+	changePassword?: (userId: number, passwordObj: PasswordObjectType) => void
 
 	handleActivate?: (comapnyId: number) => void
 	handleDeactivate?: (comapnyId: number) => void
@@ -59,6 +59,37 @@ const EditCompanyModal = ({
 		})()
 	}, [open]);
 
+	
+
+	let [initialAddressesObj, setInitialAddressesObjects] = useState([])
+
+	useEffect(() => {
+		//  Getting array [{name: ..., id: ..}], but need array with only strings. Setting initial values string array and using useState for addresses objects
+		let initialAddressesObj = initialValues.terminal_addresses
+		initialValues.terminal_addresses = []
+
+		initialAddressesObj && initialAddressesObj.map((address: any) => {
+		if (address.company_address_text)
+			initialValues.terminal_addresses.push(address.company_address_text)
+			
+		setInitialAddressesObjects(initialAddressesObj)
+	})
+	}, [initialValues]);
+
+	let initialValuesObj = {
+		company_short_name: '',
+
+		company_main_office_address: '',
+		company_subscribe_type: '',
+		timezone_id: -1,
+		company_contact_name: '',
+		company_contact_phone: '',
+		company_email: '',
+		company_usdot: '',
+		terminal_addresses: [''],
+		...initialValues
+	}
+
 
 
 
@@ -66,7 +97,43 @@ const EditCompanyModal = ({
 	const handleSubmit = async (data: CompanyType, setSubmitting: any) => {
 		setSubmitting(true);
 
-		await submitFunction(data)
+		let dataObj = {} as any
+		let key = "" as keyof CompanyType
+		if (data.company_id) {
+			for (key in data) {
+				if (data[key] !== initialValues[key] || key === 'company_id') {
+					dataObj[key] = data[key]
+				}
+			}
+			dataObj.company_id = dataObj.company_id.toString()
+		} else {
+			for (key in data) {
+				if (data[key] !== initialValues[key]) {
+					dataObj[key] = data[key]
+				}
+			}
+		}
+
+
+
+		dataObj.terminal_addresses = []
+
+		data.terminal_addresses.map(address => {
+			let id = 0
+			let filteredObject = initialAddressesObj.filter((addressObj: any) => addressObj.company_address_text === address)[0] as any
+			if (filteredObject && filteredObject.company_address_id) {
+				dataObj.terminal_addresses.push({
+					company_address_id: filteredObject.company_address_id,
+					company_address_text: address
+				})
+			} else {
+				dataObj.terminal_addresses.push({ company_address_text: address })
+			}
+			
+		})
+
+
+		await submitFunction(dataObj)
 
 		setSubmitting(false);
 		handleClose()
@@ -83,35 +150,10 @@ const EditCompanyModal = ({
 		company_email: yup.string().required().email('E-mail must be valid'),
 		company_usdot: yup.string().required(),
 
-		// terminal_adresses: yup.array().of(yup.string().required('Terminal adress is required'))
+		terminal_adresses: yup.array().of(yup.string().required('Terminal adress is required'))
 	});
 
-	if (!initialValues.company_id) {
-		initialValues = {
-			company_short_name: '',
 
-			company_main_office_address: '',
-			company_subscribe_type: '',
-			timezone_id: -1,
-			company_contact_name: '',
-			company_contact_phone: '',
-			company_email: '',
-			company_usdot: '',
-
-			// terminal_adresses: ['']
-		}
-	}
-	let initialValuesObj = {
-		company_short_name: '',
-
-			company_main_office_address: '',
-			company_subscribe_type: '',
-			timezone_id: -1,
-			company_contact_name: '',
-			company_contact_phone: '',
-			company_email: '',
-			company_usdot: '',
-	}
 
 	return (
 		<React.Fragment>
@@ -147,7 +189,7 @@ const EditCompanyModal = ({
 
 						<Formik
 							validateOnChange={true}
-							initialValues={{ ...initialValuesObj, ...initialValues }}
+							initialValues={{ ...initialValuesObj }}
 							validationSchema={validationSchema}
 							validate={values => {
 								const errors: Record<string, string> = {};
@@ -192,25 +234,25 @@ const EditCompanyModal = ({
 												</div>
 											</div>
 
-											{/* <div>
-										<FieldArray name="terminal_adresses" render={arrayHelpers => (
 											<div>
-												{values.terminal_adresses.map((address: any, counter: any) => (
-													<CustomField
-														key={counter}
-														name={`terminal_adresses.${counter}`}
-														label={`${counter + 1} Terminal’s Address`}
-														deleteFunc={() => {
-															arrayHelpers.remove(counter)
-														}}
-													/>
-												))}
+												<FieldArray name="terminal_addresses" render={arrayHelpers => (
+													<div>
+														{values.terminal_addresses.map((address: any, counter: any) => (
+															<CustomField
+																key={counter}
+																name={`terminal_addresses.${counter}`}
+																label={`${counter + 1} Terminal’s Address`}
+																deleteFunc={() => {
+																	arrayHelpers.remove(counter)
+																}}
+															/>
+														))}
 
-												<StyledDefaultButtonSmall onClick={() => arrayHelpers.push('')}>Add terminal</StyledDefaultButtonSmall>
+														<StyledDefaultButtonSmall onClick={() => arrayHelpers.push('')}>Add terminal</StyledDefaultButtonSmall>
+													</div>
+												)}
+												/>
 											</div>
-										)}
-										/>
-									</div> */}
 										</div>
 
 									</DialogContent>
@@ -241,7 +283,8 @@ const EditCompanyModal = ({
 				<ChangePasswordModal
 					open={changePasswordModalOpen}
 					handleClose={handleChangePasswordModalClose}
-					submitFunction={changePassword}
+					submitFunction={(passwordObj: PasswordObjectType) => { changePassword(initialValues.user_id, passwordObj) }}
+					isUser={true}
 				/>}
 
 		</React.Fragment>

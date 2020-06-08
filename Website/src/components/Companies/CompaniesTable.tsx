@@ -16,11 +16,13 @@ import editIcon from '../../assets/img/ic_edit.svg'
 import { PasswordObjectType, AppStateType } from '../../types/types';
 import { isFetchingArrContains } from '../../utils/isFetchingArrayContains';
 import Loader from '../Common/Loader/Loader';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
+
+import { getCompanyFromServer } from '../../redux/companies-reducer'
 
 type PropsType = {
 	rows: Array<CompanyType>
-	changePassword: (passwordObj: PasswordObjectType) => void
+	changePassword: (companyId: number, passwordObj: PasswordObjectType) => void
 	handleAdd: (company: CompanyType) => void
 	handleEdit: (company: CompanyType) => void
 
@@ -30,7 +32,10 @@ type PropsType = {
 type Order = 'asc' | 'desc';
 
 const CompaniesTable: FC<PropsType> = ({ rows, handleAdd, handleEdit, changePassword, handleActivate, handleDeactivate, ...props }) => {
+	const dispatch = useDispatch()
 	const isFetchingArray = useSelector<AppStateType, Array<string>>(state => state.app.isFetchingArray)
+	const company = useSelector<AppStateType, CompanyType>(state => state.companies.currentCompany)
+
 
 	const [page, setPage] = React.useState(0)
 	const [rowsPerPage, setRowsPerPage] = React.useState(10)
@@ -65,21 +70,6 @@ const CompaniesTable: FC<PropsType> = ({ rows, handleAdd, handleEdit, changePass
 		setOrderBy(property);
 	};
 
-
-	// let currentModalDataObj = {
-	// 	company_name: '',
-	// 	company_address: '',
-	// 	subscribe_type: '',
-	// 	company_timezone: '',
-	// 	contact_name: '',
-	// 	contact_phone: '',
-	// 	email: '',
-	// 	usdot: '',
-
-	// 	terminal_adresses: ['']
-	// }
-
-	const [currentModalData, setCurrentModalData] = useState({});
 
 	const [addModalOpen, setAddModalOpen] = useState(false)
 	const handleAddModalClose = () => {
@@ -132,7 +122,7 @@ const CompaniesTable: FC<PropsType> = ({ rows, handleAdd, handleEdit, changePass
 								onMouseLeave={() => { setHoverId(-1) }}
 								onDoubleClick={() => {
 									setEditModalOpen(true);
-									setCurrentModalData(row)
+									dispatch(getCompanyFromServer(row.company_id))
 								}}
 
 							>
@@ -152,7 +142,7 @@ const CompaniesTable: FC<PropsType> = ({ rows, handleAdd, handleEdit, changePass
 											<button style={{ height: '32px' }}
 												onClick={() => {
 													setEditModalOpen(true);
-													setCurrentModalData(row)
+													dispatch(getCompanyFromServer(row.company_id))
 												}} >
 												<img src={editIcon} alt="hisotry-icon" />
 											</button>
@@ -186,7 +176,7 @@ const CompaniesTable: FC<PropsType> = ({ rows, handleAdd, handleEdit, changePass
 					handleDeactivate={handleDeactivate}
 
 					changePassword={changePassword}
-					initialValues={currentModalData}
+					initialValues={company}
 					titleText={"Edit Company"}
 				/>}
 

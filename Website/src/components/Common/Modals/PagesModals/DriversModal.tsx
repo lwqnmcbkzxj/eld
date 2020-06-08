@@ -162,7 +162,7 @@ const EditProfileModal = ({ open, handleClose, initialValues, titleText, submitF
 		user_first_name: yup.string().nullable().required(),
 		user_last_name: yup.string().nullable().required(),
 		user_login: yup.string().nullable().required(),
-		user_password: initialValues.user_id ? yup.string().nullable().required().min(8).max(24) : yup.string().nullable().min(8).max(24),
+		user_password: initialValues.user_id ? yup.string().nullable().min(8).max(24) : yup.string().nullable().required().min(8).max(24),
 		user_email: yup.string().nullable().email('Email must be valid'),
 		user_phone: yup.string().nullable().required(),
 		user_driver_licence: yup.string().nullable().required(),

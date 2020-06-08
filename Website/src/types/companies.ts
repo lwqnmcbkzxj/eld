@@ -32,4 +32,7 @@ export type CompanyType = {
 	company_usdot: number,
 	company_sort: number,
 	company_status: StatusEnum
+	user_id: number,
+	user_role_id: number
+	terminal_addresses: Array<string>
 }

@@ -145,7 +145,6 @@ export const CustomField: React.FC<FieldAttributes<CustomFieldProps>> = (
 	}
 
 
-	debugger
 	return (
 		<div className={fieldClass}>
 			{typeof label === "string" &&

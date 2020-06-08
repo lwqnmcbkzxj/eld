@@ -16,22 +16,26 @@ import * as yup from "yup";
 
 type ChangePasswordType = {
 	submitFunction: (passwordObject: PasswordObjectType) => void
+	isUser?: boolean
 }
 
-const ChangePassword = ({ open, handleClose, submitFunction, ...props }: ModalType & ChangePasswordType) => {
+const ChangePassword = ({ open, handleClose, submitFunction, isUser = false, ...props }: ModalType & ChangePasswordType) => {
 	const classes = useStyles();
 
 	const handleSubmit = async (data: any, setSubmitting: any) => {
 		setSubmitting(true);
 
+		if (data.old_password === "") {
+			data.old_password = 'old_password'
+		}
 		await submitFunction(data);
-
+ 
 		setSubmitting(false);
 		handleClose()
 	}
 
 	const validationSchema = yup.object({
-		old_password: yup.string().required().min(8).max(24),
+		old_password: isUser ? yup.string() : yup.string().required().min(8).max(24),
 		new_password: yup.string().required().min(8).max(24),
 		new_password_confirmation: yup.string().required().min(8).max(24).test('passwords-match', `Passwords don't match`, function(value) {
 			return this.parent.new_password === value;
@@ -48,7 +52,7 @@ const ChangePassword = ({ open, handleClose, submitFunction, ...props }: ModalTy
 				aria-labelledby="change-password-dialog-title"
 				className={classes.root}
 			>
-				<DialogTitle id="change-password-dialog-titlee" className={classes.dialog__header}>Change password</DialogTitle>
+				<DialogTitle id="change-password-dialog-title" className={classes.dialog__header}>Change password</DialogTitle>
 
 				<Formik
 					validateOnChange={true}
@@ -76,6 +80,8 @@ const ChangePassword = ({ open, handleClose, submitFunction, ...props }: ModalTy
 									label={'Current Password'}
 									placeholder="********"
 									canSeeInputValue={true}
+									disabled={isUser}
+									
 								/>
 								<CustomField 
 									name={'new_password'} 

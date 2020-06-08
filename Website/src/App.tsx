@@ -72,7 +72,7 @@ const App = (props: any) => {
 		dispatch(getPageName(pathName))
 	}, [pathName])
 
-	
+
 	useEffect(() => {
 		if (!logged) {
 			props.history.push('/login')
@@ -96,52 +96,53 @@ const App = (props: any) => {
 	if (pathName === '/login' || !logged) {
 		return <Login />
 	}
-	
+
 
 	return (
-		isFetchingArray.includes('app') ? 
-			<Loader style={{ height: '100vh', width: '100vw' }}/> :
+		isFetchingArray.includes('app') ?
+			<Loader style={{ height: '100vh', width: '100vw' }} /> :
 
 
-		<div className="app-wrapper">
-			<CustomHelmet />
-			<HeaderContainer />
+			<div className="app-wrapper">
+				<CustomHelmet />
+				<HeaderContainer />
 
 
-			<div className='app-container'>
-				<MenuContainer />
+				<div className='app-container'>
+					<MenuContainer />
 
-				<div className="app-content">
-					<Switch>
-						{userInfo.role_id === RolesEnum.user ?
-							<>
-								<Route exact path="/drivers" render={withSuspense(DriversContainer)} />
-								<Route path="/drivers/:driverId" render={withSuspense(DriverContainer)} />
-								<Route path="/elds" render={withSuspense(EldsContainer)}/>
-								<Route exact path="/logs"  render={withSuspense(LogsContainer)}/>
-								<Route path="/logs/:logId"  render={withSuspense(LogContainer)}/>
-								<Route path="/units" render={withSuspense(UnitsContainer)} />
-								<Route path="/trips" render={withSuspense(TripsContainer)} />
-								<Route path="/vehicles" render={withSuspense(VehiclesContainer)}/>
-							</> : <>
-								<Route path="/companies" render={withSuspense(CompaniesContainer)}/>
-								<Route path="/dashboard" render={withSuspense(DashboardContainer)} />
+					<div className="app-content">
+						<Switch>
+							{userInfo.role_id === RolesEnum.company ?
+								<>
+									<Route exact path="/drivers" render={withSuspense(DriversContainer)} />
+									<Route path="/drivers/:driverId" render={withSuspense(DriverContainer)} />
+									<Route path="/elds" render={withSuspense(EldsContainer)} />
+									<Route exact path="/logs" render={withSuspense(LogsContainer)} />
+									<Route path="/logs/:logId" render={withSuspense(LogContainer)} />
+									<Route path="/units" render={withSuspense(UnitsContainer)} />
+									<Route path="/trips" render={withSuspense(TripsContainer)} />
+									<Route path="/vehicles" render={withSuspense(VehiclesContainer)} />
+								</> :
+								userInfo.role_id === RolesEnum.admin ? <>
+									<Route path="/companies" render={withSuspense(CompaniesContainer)} />
+									<Route path="/dashboard" render={withSuspense(DashboardContainer)} />
 
-								<Route exact path="/drivers" render={withSuspense(DriversContainer)} />
-								<Route path="/drivers/:driverId" render={withSuspense(DriverContainer)} />
-								
-								<Route exact path="/logs"  render={withSuspense(LogsContainer)}/>
-								<Route path="/logs/:logId"  render={withSuspense(LogContainer)}/>
-							</>}
+									<Route exact path="/drivers" render={withSuspense(DriversContainer)} />
+									<Route path="/drivers/:driverId" render={withSuspense(DriverContainer)} />
 
-						<Route component={NotFound} />
+									<Route exact path="/logs" render={withSuspense(LogsContainer)} />
+									<Route path="/logs/:logId" render={withSuspense(LogContainer)} />
+								</> : <></>}
 
-					</Switch>
+							<Route component={NotFound} />
 
+						</Switch>
+
+					</div>
 				</div>
-			</div>
 
-		</div>
+			</div>
 	)
 }
 
