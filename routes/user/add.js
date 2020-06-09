@@ -14,7 +14,7 @@ router.post('/', body_parser, async (req, res) => {
             user_password: Joi.string().required(),
             role_id: Joi.number().integer().min(1).required(),
             company_id: Joi.number().integer().min(1).required(),
-            user_email: Joi.string().email().allow(''),
+            user_email: Joi.string().allow(''),
             user_phone: Joi.string().required(),
             user_driver_licence: Joi.string().required(),
             issuing_state_id: Joi.number().integer().min(1).required(),
