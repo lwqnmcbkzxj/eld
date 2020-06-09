@@ -2,7 +2,7 @@ const router = require('express').Router();
 const { mQuery, makeResponse } = require('../../utils');
 const Joi = require('@hapi/joi');
 
-router.patch('/:user_id', async (req, res) => {
+router.delete('/:user_id', async (req, res) => {
     let db, user_id;
     try {
         const schema = Joi.object({
@@ -15,7 +15,7 @@ router.patch('/:user_id', async (req, res) => {
     }
 
     try {
-        db = await mQuery(`update user set user_status = 'DEACTIVATED' where user_id = ?`, [ user_id ]);
+        db = await mQuery(`update user set user_status = 'DELETED' where user_id = ?`, [ user_id ]);
     } catch (err) {
         return res.status(500).send(makeResponse(2, err));
     }
