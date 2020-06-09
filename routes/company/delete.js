@@ -20,6 +20,13 @@ router.delete('/:company_id', async (req, res) => {
         return res.status(500).send(makeResponse(2, err));
     }
 
+    try {
+        const db1 = await mQuery(`update user set user_status = 'DELETED' 
+            where role_id = 3 and company_id = ?`, [ company_id ]);
+    } catch (err) {
+        return res.status(500).send(makeResponse(2, err));
+    }
+
     return res.status(200).send(makeResponse(0, { changedRows: db.changedRows }));
 });
 
