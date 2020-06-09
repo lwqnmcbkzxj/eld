@@ -22,7 +22,7 @@ router.get('/:company_id', async (req, res) => {
     db = null;
     try {
         db = await mQuery(`select * from company_address where company_id = ? 
-                                and company_address_status <> 'DELETED'`, [ company_id ]);
+                                and company_address_status = 'ACTIVE'`, [ company_id ]);
     } catch (err) {
         return res.status(500).send(makeResponse(3, err));
     }

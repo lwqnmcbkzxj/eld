@@ -15,7 +15,7 @@ router.patch('/:company_id', async (req, res) => {
     }
 
     try {
-        db = await mQuery(`update company set company_status = 'DELETED' where company_id = ?`, [ company_id ]);
+        db = await mQuery(`update company set company_status = 'DEACTIVATED' where company_id = ?`, [ company_id ]);
     } catch (err) {
         return res.status(500).send(makeResponse(2, err));
     }

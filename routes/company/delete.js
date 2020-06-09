@@ -2,26 +2,25 @@ const router = require('express').Router();
 const { mQuery, makeResponse } = require('../../utils');
 const Joi = require('@hapi/joi');
 
-router.get('/:company_id', async (req, res) => {
+router.delete('/:company_id', async (req, res) => {
     let db, company_id;
     try {
         const schema = Joi.object({
-            company_id: Joi.number().integer().min(1).required(),
+            company_id: Joi.number().integer().min(1)
         });
-        const vars = await schema.validateAsync(req.params);
+        const vars = await schema.validateAsync({ company_id: req.params.company_id });
         company_id = vars.company_id;
     } catch (err) {
         return res.status(400).send(makeResponse(1, err));
     }
 
     try {
-        db = await mQuery(`select company_address_id, company_address_text, company_address_type, company_address_status 
-        from company_address where company_address_status = 'ACTIVE' and company_id = ?`, [ company_id ]);
+        db = await mQuery(`update company set company_status = 'DELETED' where company_id = ?`, [ company_id ]);
     } catch (err) {
         return res.status(500).send(makeResponse(2, err));
     }
 
-    return res.status(200).send(makeResponse(0, db));
+    return res.status(200).send(makeResponse(0, { changedRows: db.changedRows }));
 });
 
 module.exports = router;

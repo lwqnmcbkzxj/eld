@@ -16,7 +16,7 @@ router.get('/:company_id', async (req, res) => {
 
     try {
         db = await mQuery(`select vehicle_id, vehicle_status, vehicle_external_id from vehicle 
-        where company_id = ? and vehicle_status <> 'DELETED'`, [ company_id ]);
+        where company_id = ? and vehicle_status = 'ACTIVE'`, [ company_id ]);
     } catch (err) {
         return res.status(500).send(makeResponse(2, err));
     }
