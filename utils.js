@@ -38,7 +38,7 @@ module.exports.mQuery = mQuery;
 const checkAuth = function(req, res, next) {
     const token = req.headers.token;
     // console.log(req.body);
-    makeQuery(`SELECT user_id, role_id, company_id FROM user WHERE user_token = ? and user_status <> 'DELETED'`, [ token ], (db_success) => {
+    makeQuery(`SELECT user_id, role_id, company_id FROM user WHERE user_token = ? and user_status = 'ACTIVE'`, [ token ], (db_success) => {
         if (db_success.result.length <= 0) return res.status(401).send(makeResponse(-1, 'User Not Authorized'));
         const auth_info = {
             req_user_id: db_success.result[0].user_id,
