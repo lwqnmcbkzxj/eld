@@ -13,7 +13,7 @@ router.patch('/', require('express').json(), async (req, res) => {
             timezone_id: Joi.number().integer().min(1),
             company_contact_name: Joi.string(),
             company_contact_phone: Joi.string(),
-            company_email: Joi.string().email(),
+            company_email: Joi.string(),
             company_usdot: Joi.number().integer(),
             terminal_addresses: Joi.array().items({
                 company_address_id: Joi.number().integer().min(1),

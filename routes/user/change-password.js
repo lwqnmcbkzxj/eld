@@ -10,8 +10,8 @@ router.patch('/', body_parser, async (req, res) => {
         const schema = Joi.object({
             user_id: Joi.number().integer().min(1),
             old_password: Joi.string().required(),
-            new_password: Joi.string().min(6).required(),
-            new_password_confirmation: Joi.string().min(6).required()
+            new_password: Joi.string().required(),
+            new_password_confirmation: Joi.string().required()
         });
         vars = await schema.validateAsync(req.body);
     } catch (err) {
