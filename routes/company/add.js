@@ -20,7 +20,7 @@ router.post('/', multer().none(), async (req, res) => {
             timezone_id: Joi.number().integer().min(1),
             company_contact_name: Joi.string(),
             company_contact_phone: Joi.string(),
-            company_email: Joi.string(),
+            company_email: Joi.string().required(),
             company_usdot: Joi.number(),
             terminal_addresses: Joi.array().items(Joi.string())
         });
@@ -43,8 +43,20 @@ router.post('/', multer().none(), async (req, res) => {
     const company_id = db.insertId;
     db = null;
 
+    const user_login = vars.company_email;
     try {
-        const user_login = `u` + getRandomInt(1000000, 9999999).toString();
+        db = await mQuery(`select user_id from user where user_login = ?`, [ user_login ]);
+    } catch (err) {
+        return res.status(500).send(makeResponse(5, err));
+    }
+    if (db.length > 0) {
+        const ret_text = 'User with login ' + user_login + ' already exists';
+        return res.status(403).send(makeResponse(6, ret_text));
+    }
+    db = null;
+
+    try {
+        // const user_login = `u` + getRandomInt(1000000, 9999999).toString();
         const role_id = 3;
         const user_password = md5('Qq123456');
         const params = [ role_id, company_id, user_login, user_password ];
