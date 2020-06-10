@@ -3,6 +3,7 @@ package com.sixhandsapps.simpleeld.activity
 import android.app.Dialog
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import android.view.Window
@@ -47,6 +48,8 @@ class ConfirmVehicleActivity : BaseActivity() {
             viewModel.vehicles.observe(this, Observer { response ->
                 handleResponse(response, onSuccess = {
                     recyclerView.adapter = VehicleAdapter(it)
+                }, onError = {
+                    Log.d("", "")
                 })
             })
             viewModel.chooseVehicleResponse.observe(this, Observer {
