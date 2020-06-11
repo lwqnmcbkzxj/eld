@@ -33,7 +33,8 @@ router.get('/:user_id', async (req, res) => {
     try {
         db = await mQuery(`select u.user_id, u.user_remark, u.user_status, u.user_first_name, u.user_last_name,
         u.user_login, u.user_email, u.user_phone, u.user_driver_licence, u.issuing_state_id, ist.issuing_state_name, u.company_id,
-        u.user_trailer_number, u.co_driver_id, u.role_id, cd.user_first_name, cd.user_last_name, ct.company_address_id, ct.company_address_text,
+        u.user_trailer_number, u.co_driver_id, u.role_id, cd.user_status as co_user_status, 
+       ct.company_address_id, ct.company_address_text, v.vehicle_status, ct.company_address_status,
         u.timezone_id, tz.timezone_name, u.user_notes, 
        CAST(u.user_personal_conveyance_flag as UNSIGNED) as user_personal_conveyance_flag,
        CAST(u.user_eld_flag as UNSIGNED) as user_eld_flag,
@@ -41,7 +42,7 @@ router.get('/:user_id', async (req, res) => {
        CAST(u.user_manual_drive_flag as UNSIGNED) as user_manual_drive_flag,
        u.default_vehicle_id, v.vehicle_id, c.company_contact_name, c.company_contact_phone
         from user u left join issuing_state ist on u.issuing_state_id = ist.issuing_state_id
-        left join user cd on u.user_id = cd.user_id
+        left join user cd on u.co_driver_id = cd.user_id
         left join company_address ct on u.company_terminal_id = ct.company_address_id
         left join timezone tz on u.timezone_id = tz.timezone_id
         left join vehicle v on u.default_vehicle_id = v.vehicle_id
@@ -50,6 +51,19 @@ router.get('/:user_id', async (req, res) => {
     } catch (err) {
         return res.status(500).send(makeResponse(2, err));
     }
+
+    db.forEach((item) => {
+        if (item.co_user_status) {
+            if (item.co_user_status.localeCompare('ACTIVE')) {
+                item.co_driver_id = null;
+            }
+        }
+        if (item.vehicle_status) {
+            if (item.vehicle_status.localeCompare('ACTIVE')) {
+                item.vehicle_id = null;
+            }
+        }
+    });
 
     const n = db.length;
     if (n <= 0) return res.status(200).send(makeResponse(0, {}));

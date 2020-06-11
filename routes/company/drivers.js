@@ -21,7 +21,7 @@ router.get('/:company_id', async (req, res) => {
         const query = `select u.user_id, u.user_first_name, u.user_last_name, 
         concat(u.user_first_name, ' ', u.user_last_name) as user_full_name, u.user_login, u.user_phone,
         v.vehicle_external_id as vehicle_truck_number, u.user_notes, u.user_status, '3.2.9' as app_version,
-       'Wireless Link/BL.02.48' as device_version
+       'Wireless Link/BL.02.48' as device_version, v.vehicle_status
         from user u left join vehicle v on u.default_vehicle_id = v.vehicle_id
         where u.role_id = 1` + company_filter;
         const params = to_filter_company ? [ company_id ] : [ ];
@@ -30,6 +30,14 @@ router.get('/:company_id', async (req, res) => {
     } catch (err) {
         return res.status(500).send(makeResponse(2, err));
     }
+
+    db.forEach((item) => {
+        if (item.vehicle_status) {
+            if (item.vehicle_status.localeCompare('ACTIVE')) {
+                item.vehicle_external_id = null;
+            }
+        }
+    });
 
     return res.status(200).send(makeResponse(0, db));
 });
