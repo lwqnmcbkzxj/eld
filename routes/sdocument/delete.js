@@ -10,7 +10,9 @@ router.delete('/', async (req, res) => {    /* session_shipping_document_id */
 
     let db;
     try{
-        db = await mQuery(`update session_shipping_document set session_shipping_document_status = 'DELETED' where session_shipping_document_id = ?`, [session_shipping_document_id]);
+        db = await mQuery(`update session_shipping_document set 
+             session_shipping_document_status = 'DELETED', shipping_document_deleted_dt = current_timestamp 
+             where session_shipping_document_id = ?`, [session_shipping_document_id]);
     } catch (err) {
         return res.status(500).send(makeResponse(2, err));
     }
