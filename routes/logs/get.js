@@ -1,8 +1,25 @@
 const router = require('express').Router();
 const { mQuery, makeResponse, makeDay } = require('../../utils');
+const Joi = require('@hapi/joi');
 
-router.get('/:date/:days', async (req, res) => {
-    const req_user_id = req.auth_info.req_user_id;
+router.get('/:date/:days/', async (req, res) => {
+    let db, vars;
+    try {
+        const schema = Joi.object({
+            user_id: Joi.number().integer().min(1),
+            date: Joi.string().required(),
+            days: Joi.number().integer().min(1).required()
+        });
+        vars = await schema.validateAsync({
+            user_id: req.body.user_id,
+            date: req.params.date,
+            days: req.params.days
+        });
+    } catch (err) {
+        return res.status(400).send(makeResponse(1, err));
+    }
+
+    const req_user_id = (vars.user_id) ? vars.user_id : req.auth_info.req_user_id;
     const date_str = req.params.date;
     const days_amount = req.params.days;
     if (days_amount <= 0) return res.status(400).send(makeResponse(3, 'Received incorrect days_amount'));
@@ -13,15 +30,20 @@ router.get('/:date/:days', async (req, res) => {
     const date_end = new Date(Date.parse(date_str) + ms_in_day);
     const date_start = new Date(Date.parse(date_str) - (days_amount - 1)* ms_in_day);
 
-    console.log(date_start + ":" + date_end);
+    // console.log(date_start + ":" + date_end);
     let ds = date_start;
+    let ii = 0;
+    let mapDateToIndex = {};
     while (ds < date_end) {
         const md = makeDay(ds);
-        result.push({ day: md, has_inspection: 0, has_signature: 0, on_duty_seconds: 0, has_records: 0 });
+        result.push({ day: md, has_inspection: 0, has_signature: 0, on_duty_seconds: 0, has_records: 0,
+            distance: 201.3, has_violation_11h: 0, has_violation_14h: 0, has_violation_70h: 0
+        });
         ds = new Date(ds.getTime() + ms_in_day);
+        mapDateToIndex[md] = ii;
+        ii++;
     }
 
-    let db;
     try {
         const params = [ date_start - ms_in_day, date_end, req_user_id ];
         db = await mQuery(`select signature_id, signature_type, date_format(signature_dt, '%Y-%m-%d') as signature_day
@@ -40,6 +62,26 @@ router.get('/:date/:days', async (req, res) => {
         if (i < result.length) {
             if (!rec.signature_type.localeCompare('DVIR')) result[i].has_inspection = 1;
             if (!rec.signature_type.localeCompare('REGULAR')) result[i].has_signature = 1;
+        }
+    });
+
+    // check for violation (hours of service)
+    try {
+        const params = [ req_user_id, date_start, date_end ];
+        db = await mQuery(`select count(violation_id) as amount_of_violations, violation_type, 
+       date_format(violation_created_at, '%Y-%m-%d') as violation_date from violation where 
+        violation_status = 'ACTIVE' and user_id = ? 
+    and violation_created_at >= ? and violation_created_at < ? group by violation_type, violation_date`, params);
+    } catch (err) {
+        return res.status(500).send(makeResponse(3, err));
+    }
+
+    db.forEach((rec) => {
+        if (rec.amount_of_violations > 0) {
+            const index = mapDateToIndex[rec.violation_date];
+            if (!rec.violation_type.localeCompare('11h')) result[index].has_violation_11h = 1;
+            if (!rec.violation_type.localeCompare('14h')) result[index].has_violation_14h = 1;
+            if (!rec.violation_type.localeCompare('70h')) result[index].has_violation_70h = 1;
         }
     });
 
