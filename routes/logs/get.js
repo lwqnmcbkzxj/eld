@@ -37,7 +37,8 @@ router.get('/:date/:days/', async (req, res) => {
     while (ds < date_end) {
         const md = makeDay(ds);
         result.push({ day: md, has_inspection: 0, has_signature: 0, on_duty_seconds: 0, has_records: 0,
-            distance: 201.3, has_violation_11h: 0, has_violation_14h: 0, has_violation_70h: 0
+            distance: 201.3, has_violation_11h: 0, has_violation_14h: 0, has_violation_70h: 0,
+            has_shipping_doc: 0
         });
         ds = new Date(ds.getTime() + ms_in_day);
         mapDateToIndex[md] = ii;
@@ -84,6 +85,40 @@ router.get('/:date/:days/', async (req, res) => {
             if (!rec.violation_type.localeCompare('70h')) result[index].has_violation_70h = 1;
         }
     });
+    db = null;
+
+    // get info about shipping documents
+    try {
+        const params = [ req_user_id ];
+        db = await mQuery(`select u.user_id, ssd.session_shipping_document_dt, ssd.shipping_document_deleted_dt,
+            ssd.session_shipping_document_status, ssd.session_shipping_document_id
+            from session_shipping_document ssd left join session s on ssd.session_id = s.session_id 
+            left join user u on s.driver_user_id = u.user_id 
+            where u.user_id = ?
+        `, params);
+    } catch (err) {
+        return res.status(500).send(makeResponse(4, err));
+    }
+
+    console.log(db);
+    db.forEach((rec) => {
+        const dt1 = new Date(Date.parse(makeDay(rec.session_shipping_document_dt)));
+        const dt2 = (rec.shipping_document_deleted_dt != null) ? new Date(rec.shipping_document_deleted_dt) : new Date();
+        // console.log(rec.session_shipping_document_id + " : " + dt1 + " : " + dt2 + " : " + typeof rec.shipping_document_deleted_dt);
+        let dt = dt1;
+        while (dt <= dt2) {
+            const d_str = makeDay(dt);
+            // console.log(d_str);
+            const index_in_result = mapDateToIndex[d_str];
+            if (index_in_result !== undefined) {
+                result[index_in_result].has_shipping_doc = 1;
+            }
+            dt = new Date(dt.getTime() + ms_in_day);
+        }
+        // console.log("*********");
+    });
+    console.log(mapDateToIndex);
+    // calculate driving hours
 
     try {
         db = await mQuery(`select record_id, record_type in ('ON_DUTY', 'DRIVING', 'ON_DUTY_YM') as record_type_ok,
