@@ -25,6 +25,7 @@ const signatureRouter = require('./routes/signature');
 const timezoneRouter = require('./routes/timezone');
 const stateRouter = require('./routes/state');
 const eldRouter = require('./routes/eld');
+const violationRouter = require('./routes/violation');
 // const sessionRouter = require('./routes/session');
 
 eldApp.use(cors());
@@ -41,6 +42,7 @@ eldApp.use('/signature', signatureRouter);
 eldApp.use('/timezone', timezoneRouter);
 eldApp.use('/state', stateRouter);
 eldApp.use('/eld', eldRouter);
+eldApp.use('/violation', violationRouter);
 // app.use('/session', sessionRouter);
 
 const port = 3021;
