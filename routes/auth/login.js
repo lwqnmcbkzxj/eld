@@ -21,6 +21,7 @@ router.post('/', async function(req, res) { /* user_login, user_password */
     const user_login = vars.user_login;
     const user_password = vars.user_password;
     const is_web = (vars.is_web) ? vars.is_web : 0;
+
     // if (!user_password) return res.status(400).send(makeResponse(1, 'Empty password received'));
     // if (!user_login) return res.status(400).send(makeResponse(2, 'Empty login received'));
 
@@ -34,6 +35,13 @@ router.post('/', async function(req, res) { /* user_login, user_password */
 
     if (db_result.length <= 0) return res.status(404).send(makeResponse(6, 'User not found'));
     const user_info = db_result[0];
+    if ((is_web === 0) && (user_info.role_id !== 1)) {
+        return res.status(403).send(makeResponse(7, 'User has not enough rights to login'));
+    }
+    if ((is_web === 1) && (user_info.role_id === 1)) {
+        return res.status(403).send(makeResponse(8, 'Driver cannot access web application'));
+    }
+
     const db_password_hash = user_info.user_password;
     const user_id = user_info.user_id;
     if (db_password_hash.localeCompare(user_password_hashed)) {    // passwords not match
