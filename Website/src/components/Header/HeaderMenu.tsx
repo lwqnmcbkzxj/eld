@@ -8,7 +8,10 @@ import EditProfileModal from '../Common/Modals/ProfileModals/EditProfileModal'
 
 import { logout, changePassword, editProfile } from '../../redux/user-reducer'
 import { PasswordObjectType, AppStateType } from '../../types/types'
-import { UserType } from '../../types/user';
+import { UserType, RolesEnum } from '../../types/user';
+import { CompanyType } from '../../types/companies';
+
+import { editCompany } from '../../redux/companies-reducer';
 
 type HeaderMenuProps = {
 	anchorEl: null | HTMLElement
@@ -48,6 +51,9 @@ export const HeaderMenu: React.FC<HeaderMenuProps> = ({ anchorEl, handleClose, .
 	const editProfileDispatch = async (profileObj: UserType) => {
 		await dispatch(editProfile(profileObj))
 	} 
+	const editCompanyDispatch = async (companyObj: CompanyType, alertVisilbe?: boolean) => {
+		await dispatch(editCompany(companyObj, alertVisilbe))
+	}
 
 	return (
 		<div style={{ boxShadow: '0px 6px 16px rgba(0, 0, 0, 0.2)', borderRadius: '4px' }}>
@@ -67,14 +73,14 @@ export const HeaderMenu: React.FC<HeaderMenuProps> = ({ anchorEl, handleClose, .
 					horizontal: 'center',
 				}}
 			>
-				<MenuItem
+				{ loggedUser.role_id === RolesEnum.company && <MenuItem
 					className={classes.menu__item}
 					onClick={() => {
 						setProfileEditModalOpen(true)
 						handleClose()
 					}}>
 					Edit Profile
-				</MenuItem>
+				</MenuItem>}
 
 				{/* <MenuItem
 					className={classes.menu__item}
@@ -96,13 +102,15 @@ export const HeaderMenu: React.FC<HeaderMenuProps> = ({ anchorEl, handleClose, .
 
 
 			{/* <ProfileSubscriptionModal open={subscriptionModalOpen} handleClose={handleSubscriptionModalClose} /> */}
-			<EditProfileModal
+			{profileEditModalOpen && <EditProfileModal
 				initialValues={loggedUser}
 				open={profileEditModalOpen}
 				handleClose={handleProfileEditModalClose}
-				editProfile={editProfileDispatch}
 				changePassword={changePasswordDispatch}
-			/>
+
+				editProfile={editProfileDispatch}
+				editCompany={editCompanyDispatch}
+			/>}
 		</div>
 	);
 }

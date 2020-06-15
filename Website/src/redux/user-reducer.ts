@@ -101,13 +101,16 @@ export const login = (login: string, password: string): ThunksType => async (dis
 }
 
 export const logout = (): ThunksType => async (dispatch) => {
+	let response = userAPI.logout()
+
 	dispatch(setLogged(false))
 		dispatch(setAccessToken(""))
 		dispatch(setUserInfo({}))
 		Cookies.remove('token')
 		Cookies.remove('user_id')
-	let response = await userAPI.logout()
 
+		window.location.reload()
+	
 	// if (response.status === 0) {
 		// dispatch(setLogged(false))
 		// dispatch(setAccessToken(""))
@@ -122,9 +125,14 @@ export const logout = (): ThunksType => async (dispatch) => {
 export const getUserInfo = (userId: number): ThunksType => async (dispatch) => {
 	dispatch(toggleIsFetching('app'))
 	let response = await userAPI.getUserInfo(userId)
+	debugger
+
 	if (response.status === ResultCodesEnum.Success) {
 		dispatch(setUserInfo(response.result))
 		dispatch(toggleIsFetching('app'))
+	} else {
+	// } else if (response.result === "User Not Authorized") {
+		dispatch(logout())
 	}
 }
 export const authUser = (): ThunksType => async (dispatch) => {
@@ -151,10 +159,13 @@ export const editProfile = (profileData: UserType): ThunksType => async (dispatc
 	let response = await userAPI.editUser(profileData)
 
 	if (response.status === ResultCodesEnum.Success) {
-		showAlert(AlertStatusEnum.Success, 'Profile changed successfully')
+		showAlert(AlertStatusEnum.Success, 'Profile edited successfully')
 		dispatch(getUserInfo(profileData.user_id))
 	} else {
-		showAlert(AlertStatusEnum.Error, 'Failed to change profile')
+		if (response.status === ResultCodesEnum.ExistsEmail)
+			showAlert(AlertStatusEnum.Error, 'Company with that email already exists')
+		else
+			showAlert(AlertStatusEnum.Error, 'Failed to edit profile')
 	}
 }
 

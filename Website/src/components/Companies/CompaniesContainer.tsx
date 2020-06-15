@@ -35,14 +35,6 @@ const CompaniesContainer: FC = ({ ...props }) => {
 		await dispatch(editCompany(company))
 	}
 
-	const activateCompanyDispatch = async (companyId: number) => {
-		await dispatch(toggleCompanyActivation(companyId, 'activate'))
-	}	
-	const deactivateCompanyDispatch = async (companyId: number) => {
-		await dispatch(toggleCompanyActivation(companyId, 'deactivate'))
-	}
-
-
 	return (
 		<div className="page companies-page">
 			<CompaniesTable
@@ -52,8 +44,6 @@ const CompaniesContainer: FC = ({ ...props }) => {
 				handleAdd={addCompanyDispatch}
 				handleEdit={editCompanyDispatch}
 			
-				handleActivate={activateCompanyDispatch}
-				handleDeactivate={deactivateCompanyDispatch}
 			/>
 		</div>
 	)

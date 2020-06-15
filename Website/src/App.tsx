@@ -86,12 +86,23 @@ const App = (props: any) => {
 	}, [])
 
 	if (pathName === "/" || pathName === "/login") {
-		if (userInfo.role_id === RolesEnum.user) {
+		debugger
+		if (userInfo.role_id === RolesEnum.company) {
 			return <Redirect to="/units" />
 		} else if (userInfo.role_id === RolesEnum.admin) {
 			return <Redirect to="/dashboard" />
 		}
 	}
+
+	// useEffect(() => {
+	// 	if (pathName === "/" || pathName === "/login") {
+	// 		if (userInfo.role_id === RolesEnum.company) {
+	// 			props.history.push('/units')
+	// 		} else if (userInfo.role_id === RolesEnum.admin) {
+	// 			props.history.push('/dashboard')
+	// 		}
+	// 	}
+	// }, [logged])
 
 	if (pathName === '/login' || !logged) {
 		return <Login />

@@ -1,37 +1,36 @@
 import React, { FC, useState } from 'react'
-import { Paper, TableHead, TableRow, TableBody, withStyles, Toolbar, Button } from '@material-ui/core';
-import StatusLabel from '../Common/StatusLabel/StatusLabel'
-import { StyledTableCell, CustomTable, CustomPaginator, CustomTableHeaderCells } from '../Common/StyledTableComponents/StyledTableComponents'
+import { useSelector, useDispatch } from 'react-redux';
 
+import { Paper, TableHead, TableRow, TableBody, Toolbar } from '@material-ui/core';
+import { StyledTableCell, CustomTable, CustomPaginator, CustomTableHeaderCells } from '../Common/StyledTableComponents/StyledTableComponents'
 import { StyledSearchInput } from '../Common/StyledTableComponents/StyledInputs'
 import { StyledDefaultButtonSmall } from '../Common/StyledTableComponents/StyledButtons'
 
+import { PasswordObjectType, AppStateType, StatusEnum } from '../../types/types';
 import { CompanyType } from '../../types/companies'
-import { isContainsSearchText } from '../../utils/isContainsSearchText'
 
+import StatusLabel from '../Common/StatusLabel/StatusLabel'
 import CompanyModal from '../Common/Modals/PagesModals/CompanyModal'
+import Loader from '../Common/Loader/Loader';
 
 import historyIcon from '../../assets/img/ic_history.svg'
 import editIcon from '../../assets/img/ic_edit.svg'
-import { PasswordObjectType, AppStateType } from '../../types/types';
+
+import { isContainsSearchText } from '../../utils/isContainsSearchText'
 import { isFetchingArrContains } from '../../utils/isFetchingArrayContains';
-import Loader from '../Common/Loader/Loader';
-import { useSelector, useDispatch } from 'react-redux';
 
 import { getCompanyFromServer } from '../../redux/companies-reducer'
+import { getComparator, stableSort } from '../../utils/tableFilters'
 
 type PropsType = {
 	rows: Array<CompanyType>
 	changePassword: (companyId: number, passwordObj: PasswordObjectType) => void
 	handleAdd: (company: CompanyType) => void
 	handleEdit: (company: CompanyType) => void
-
-	handleActivate: (companyId: number) => void
-	handleDeactivate: (companyId: number) => void
 }
 type Order = 'asc' | 'desc';
 
-const CompaniesTable: FC<PropsType> = ({ rows, handleAdd, handleEdit, changePassword, handleActivate, handleDeactivate, ...props }) => {
+const CompaniesTable: FC<PropsType> = ({ rows, handleAdd, handleEdit, changePassword, ...props }) => {
 	const dispatch = useDispatch()
 	const isFetchingArray = useSelector<AppStateType, Array<string>>(state => state.app.isFetchingArray)
 	const company = useSelector<AppStateType, CompanyType>(state => state.companies.currentCompany)
@@ -51,7 +50,7 @@ const CompaniesTable: FC<PropsType> = ({ rows, handleAdd, handleEdit, changePass
 	};
 
 	let labels = [
-		{ label: "No.", name: '' },
+		{ label: "No.", name: 'company_id' },
 		{ label: "Company name", name: 'company_short_name' },
 		{ label: "Contact Name", name: 'company_contact_name' },
 		{ label: "Contact Phone", name: 'company_contact_phone' },
@@ -103,7 +102,9 @@ const CompaniesTable: FC<PropsType> = ({ rows, handleAdd, handleEdit, changePass
 
 				<TableBody>
 					{!isFetchingArrContains(isFetchingArray, ['companies']) &&
-						rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row, counter) => (
+						stableSort(rows as any, getComparator(order, orderBy))						
+						.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+						.map((row: any, counter) => (
 							isContainsSearchText(searchText, row, [
 								'counter',
 								'company_short_name',
@@ -126,7 +127,7 @@ const CompaniesTable: FC<PropsType> = ({ rows, handleAdd, handleEdit, changePass
 								}}
 
 							>
-								<StyledTableCell>{counter + 1}</StyledTableCell>
+								<StyledTableCell>{row.company_id}</StyledTableCell>
 								<StyledTableCell>{row.company_short_name}</StyledTableCell>
 								<StyledTableCell>{row.company_contact_name}</StyledTableCell>
 								<StyledTableCell>{row.company_contact_phone}</StyledTableCell>
@@ -172,9 +173,6 @@ const CompaniesTable: FC<PropsType> = ({ rows, handleAdd, handleEdit, changePass
 					handleClose={handleEditModalClose}
 					submitFunction={handleEdit}
 				
-					handleActivate={handleActivate}
-					handleDeactivate={handleDeactivate}
-
 					changePassword={changePassword}
 					initialValues={company}
 					titleText={"Edit Company"}

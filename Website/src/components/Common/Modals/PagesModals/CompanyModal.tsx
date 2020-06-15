@@ -10,6 +10,7 @@ import { ModalType } from '../ModalsTypes'
 import { CompanyType } from '../../../../types/companies';
 import { PasswordObjectType, AppStateType, SelectorType, StatusEnum } from '../../../../types/types'
 
+import StyledLabel from '../../StatusLabel/StatusLabel'
 import { CustomField, CustomDropdown } from '../../FormComponents/FormComponents';
 import { StyledDefaultButtonSmall } from '../../StyledTableComponents/StyledButtons';
 import { CustomDialogActions } from '../ModalsComponents'
@@ -17,6 +18,7 @@ import ChangePasswordModal from '../ProfileModals/ChangePasswordModal'
 import Loader from '../../Loader/Loader';
 
 import { getTimezones } from '../../../../redux/commonData-reducer'
+import { toggleCompanyActivation, deleteCompany } from '../../../../redux/companies-reducer'
 import { isFetchingArrContains } from '../../../../utils/isFetchingArrayContains';
 
 
@@ -26,17 +28,12 @@ type CompanyModalType = {
 
 	submitFunction: (company: CompanyType) => void
 	changePassword?: (userId: number, passwordObj: PasswordObjectType) => void
-
-	handleActivate?: (comapnyId: number) => void
-	handleDeactivate?: (comapnyId: number) => void
 }
 
 const EditCompanyModal = ({
 	open, handleClose,
 	titleText, initialValues,
-	submitFunction, changePassword,
-	handleActivate = () => { }, handleDeactivate = () => { }, ...props }: ModalType & CompanyModalType) => {
-
+	submitFunction, changePassword, ...props }: ModalType & CompanyModalType) => {
 
 	const classes = useStyles();
 	const dispatch = useDispatch()
@@ -59,22 +56,24 @@ const EditCompanyModal = ({
 		})()
 	}, [open]);
 
-	
 
-	let [initialAddressesObj, setInitialAddressesObjects] = useState([])
 
+	let [initialAddressesObj, setInitialAddressesObjects] = useState<any>([])
+	let [terminalAddresses, setTerminalAddresses] = useState([''])
 	useEffect(() => {
 		//  Getting array [{name: ..., id: ..}], but need array with only strings. Setting initial values string array and using useState for addresses objects
-		let initialAddressesObj = initialValues.terminal_addresses
-		initialValues.terminal_addresses = []
+		let initialAddressesObj = initialValues.terminal_addresses as Array<any>
+
+		let terminalAddresses = [] as Array<string>
 
 		initialAddressesObj && initialAddressesObj.map((address: any) => {
-		if (address.company_address_text)
-			initialValues.terminal_addresses.push(address.company_address_text)
-			
-		setInitialAddressesObjects(initialAddressesObj)
-	})
-	}, [initialValues]);
+			if (address.company_address_text)
+				terminalAddresses.push(address.company_address_text)
+
+			setInitialAddressesObjects(initialAddressesObj)
+			setTerminalAddresses(terminalAddresses)
+		})
+	}, [initialValues as Array<any>]);
 
 	let initialValuesObj = {
 		company_short_name: '',
@@ -86,8 +85,8 @@ const EditCompanyModal = ({
 		company_contact_phone: '',
 		company_email: '',
 		company_usdot: '',
-		terminal_addresses: [''],
-		...initialValues
+		...initialValues,
+		terminal_addresses: [...terminalAddresses],
 	}
 
 
@@ -117,7 +116,6 @@ const EditCompanyModal = ({
 
 
 		dataObj.terminal_addresses = []
-
 		data.terminal_addresses.map(address => {
 			let id = 0
 			let filteredObject = initialAddressesObj.filter((addressObj: any) => addressObj.company_address_text === address)[0] as any
@@ -129,7 +127,7 @@ const EditCompanyModal = ({
 			} else {
 				dataObj.terminal_addresses.push({ company_address_text: address })
 			}
-			
+
 		})
 
 
@@ -140,15 +138,15 @@ const EditCompanyModal = ({
 	}
 
 	const validationSchema = yup.object({
-		company_short_name: yup.string().required(),
+		company_short_name: yup.string().min(2).max(32).required(),
 
-		company_main_office_address: yup.string().required(),
+		company_main_office_address: yup.string().min(2).max(128).required(),
 		company_subscribe_type: yup.string().required(),
 		timezone_id: yup.number().required(),
-		company_contact_name: yup.string().required(),
+		company_contact_name: yup.string().min(2).max(32).required(),
 		company_contact_phone: yup.string().required(),
 		company_email: yup.string().required().email('E-mail must be valid'),
-		company_usdot: yup.string().required(),
+		company_usdot: yup.string().min(1).max(9).required(),
 
 		terminal_adresses: yup.array().of(yup.string().required('Terminal adress is required'))
 	});
@@ -171,24 +169,31 @@ const EditCompanyModal = ({
 					<>
 						<DialogTitle id="edit-company-dialog-title" className={classes.dialog__header}>
 							<div style={{ display: 'flex', alignItems: 'center', justifyContent: "flex-start" }}>
-								<div style={{ marginRight: '15px' }}>{titleText} <span>{initialValues.company_name}</span></div>
+								<div style={{ marginRight: '15px' }}>{titleText} <span>{initialValues.company_short_name}</span></div>
+								{initialValues.company_id && <StyledLabel text={initialValues.company_status} />}
 							</div>
 
-							{initialValues.company_id &&
-								<StyledDefaultButtonSmall
-									onClick={async () => {
-										if (initialValues.company_status === StatusEnum.ACTIVE)
-											await handleDeactivate(initialValues.company_id)
-										else
-											await handleActivate(initialValues.company_id)
 
-										handleClose()
-									}}
-								>{initialValues.company_status === StatusEnum.ACTIVE ? "Deactivate" : "Activate"}</StyledDefaultButtonSmall>}
+							{initialValues.company_id &&
+								<div className={classes.header__buttons}>
+									<StyledDefaultButtonSmall
+										onClick={async () => {
+											await dispatch(deleteCompany(initialValues.company_id))
+											handleClose()
+										}}>Delete</StyledDefaultButtonSmall>
+
+									<StyledDefaultButtonSmall
+										onClick={async () => {
+											await dispatch(toggleCompanyActivation(initialValues.company_id, initialValues.company_status as StatusEnum))
+											handleClose()
+										}}
+									>{initialValues.company_status === StatusEnum.ACTIVE ? "Deactivate" : "Activate"}</StyledDefaultButtonSmall>
+								</div>}
 						</DialogTitle>
 
 						<Formik
-							validateOnChange={true}
+							// validateOnChange={true}
+							validateOnChange={false}
 							initialValues={{ ...initialValuesObj }}
 							validationSchema={validationSchema}
 							validate={values => {

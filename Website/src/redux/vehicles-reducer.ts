@@ -1,4 +1,4 @@
-import { AppStateType } from '../types/types'
+import { AppStateType, StatusEnum, AlertStatusEnum } from '../types/types'
 import { ThunkAction } from 'redux-thunk'
 
 import { VehicleType } from '../types/vehicles'
@@ -25,7 +25,7 @@ const unitsReducer = (state = initialState, action: ActionsTypes): InitialStateT
 		case SET_VEHICLES: {
 			return {
 				...state,
-				vehicles: [...action.vehicles]
+				vehicles: [...action.vehicles.filter(vehicle => vehicle.vehicle_status !== StatusEnum.DELETED)]
 			}
 		}
 		case SET_VEHICLE: {
@@ -79,25 +79,10 @@ export const getVehicleFromServer = (vehicleId: number): ThunksType => async (di
 	}
 }
 
-export const deleteVehicle = (id: number): ThunksType => async (dispatch) => {
-	let response = await vehiclesAPI.deleteVehicle(id)
 
-	if (response.status === ResultCodesEnum.Success) {
-		// dispatch(getVehiclesFromServer())
-	} else {
-		showAlert('error', 'Failed to delete vehicle')
-	}
-}
 
-export const activateVehicle = (id: number): ThunksType => async (dispatch) => { 
-	let response = await vehiclesAPI.activateVehicle(id)
 
-	if (response.status === ResultCodesEnum.Success) {
-		showAlert('success', 'Vehicle activated successfully')
-	} else {
-		showAlert('error', 'Failed to toggle active status')
-	}
-}
+
 
 export const addVehicle = (companyId: number, vehicle: VehicleType): ThunksType => async (dispatch) => { 
 	let response = await vehiclesAPI.addVehicle(companyId, vehicle)
@@ -112,14 +97,39 @@ export const editVehicle = (vehicle: VehicleType): ThunksType => async (dispatch
 	let response = await vehiclesAPI.editVehicle(vehicle)
 
 	if (response.status === ResultCodesEnum.Success) {
-		showAlert('success', 'Vehicle edited successfully' )
+		showAlert('success', 'Vehicle edited successfully')
 	} else {
 		showAlert('error', 'Failed to edit vehicle')
 	}
 }
 
+export const deleteVehicle = (id: number, companyId: number): ThunksType => async (dispatch) => {
+	let response = await vehiclesAPI.deleteVehicle(id)
 
+	if (response.status === ResultCodesEnum.Success) {
+		dispatch(getVehiclesFromServer(companyId))
+	} else {
+		showAlert('error', 'Failed to delete vehicle')
+	}
+}
 
+export const toggleVehicleActivation = (id: number, status: StatusEnum, companyId: number): ThunksType => async (dispatch) => {
+	let response
+	if (status === StatusEnum.DEACTIVATED) {
+		response = await vehiclesAPI.activateVehicle(id)
+	} else {
+		response = await vehiclesAPI.deactivateVehicle(id)
+	}
+
+	let statusText = status === StatusEnum.DEACTIVATED ? 'activate' : 'deactivate'
+
+	if (response.status === ResultCodesEnum.Success) {
+		showAlert(AlertStatusEnum.Success, `Vehicle ${statusText}d successfully`)
+		dispatch(getVehiclesFromServer(companyId))
+	} else {
+		showAlert(AlertStatusEnum.Error, `Failed to ${statusText} vehicle`)
+	}
+}
 
 type ThunksType = ThunkAction<Promise<void>, AppStateType, unknown, ActionsTypes>
 

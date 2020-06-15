@@ -10,11 +10,12 @@ export type StatusType = {
 
 
 export enum StatusEnum {
-	Deactivated = 'DELETED',
+	Deactivated = 'DEACTIVATED',
 
 	ACTIVE = 'ACTIVE',
 	BUSY = 'BUSY',
 	DELETED = 'DELETED',
+	DEACTIVATED = 'DEACTIVATED',
 
 	OFF_DUTY = 'OFF_DUTY',
 	DRIVING = 'DRIVING',

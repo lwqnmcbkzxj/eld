@@ -26,17 +26,17 @@ import { isFetchingArrContains } from '../../../../utils/isFetchingArrayContains
 import { getStates, getFuelTypes, getYears } from '../../../../redux/commonData-reducer';
 import { getEldsFromServer } from '../../../../redux/elds-reducer'
 
+import { toggleVehicleActivation, deleteVehicle } from '../../../../redux/vehicles-reducer'
+
 type VehiclesModalType = {
 	initialValues: VehicleType
 	titleText: string
 
 	confirmFunction: (vehicle: VehicleType) => void
 
-	handleActivate?: (id: number) => void
-	handleDelete?: (id: number) => void
 }
 
-const EditVehicleModal = ({ open, handleClose, initialValues, titleText, handleDelete, handleActivate, confirmFunction, ...props }: ModalType & VehiclesModalType) => {
+const EditVehicleModal = ({ open, handleClose, initialValues, titleText, confirmFunction, ...props }: ModalType & VehiclesModalType) => {
 	const classes = useStyles();
 	const dispatch = useDispatch()
 	const isFetchingArray = useSelector<AppStateType, Array<string>>(state => state.app.isFetchingArray)
@@ -71,37 +71,49 @@ const EditVehicleModal = ({ open, handleClose, initialValues, titleText, handleD
 		})()
 	}, [open]);
 
-
-	const submitProfileEdit = async (data: VehicleType, setSubmitting: any) => {
-		setSubmitting(true);
-
-		let newDataObj = {} as any
+	useEffect(() => {
 		if (initialValues.vehicle_id) {
-			// IF EDIT
 			let key = "" as keyof VehicleType
-			for (key in data) {
-				if (data[key] !== initialValues[key] || key === 'vehicle_id') {
-					newDataObj[key] = data[key]
-				}
-			}
-		} else {
-			// IF ADD
-			let key = "" as keyof VehicleType
-			for (key in data) {
-				if (data[key] || (data[key] === 'vehicle_enter_vin_manually_flag' && data[key] !== null)) {
-					if (data[key]) {
-						if (data[key] === 'vehicle_enter_vin_manually_flag') {
-							newDataObj[key] = +(data[key] as any)
-						} else {
-							newDataObj[key] = data[key]
-						}
-					}
+			for (key in initialValues) {
+				if (key === 'vehicle_enter_vin_manually_flag') {
+					let val = initialValues[key]
+					initialValues[key] = !!val as boolean
 				}
 			}
 		}
 
+	}, [initialValues])
 
-		await confirmFunction(newDataObj)
+
+	const submitProfileEdit = async (data: VehicleType, setSubmitting: any) => {
+		setSubmitting(true);
+
+
+		let newDataObj = {} as any
+		let changedKeysCounter = 0
+		let key = "" as keyof VehicleType
+		for (key in data) {
+			if (data[key] !== initialValues[key] || key === 'vehicle_id') {
+				if (key !== 'vehicle_id') {
+					changedKeysCounter++
+				}
+
+				if (key === "vehicle_enter_vin_manually_flag" && data[key] !== undefined)
+					newDataObj[key] =  +data[key]
+				else
+					newDataObj[key] = data[key]
+			}
+		}
+
+	
+		if (!newDataObj.vehicle_id) {
+			changedKeysCounter = 1	
+			newDataObj.company_id = loggedUser.company_id			
+		}
+
+		if (changedKeysCounter !== 0)
+			await confirmFunction(newDataObj)
+		
 		setSubmitting(false);
 		handleClose()
 	}
@@ -113,13 +125,18 @@ const EditVehicleModal = ({ open, handleClose, initialValues, titleText, handleD
 		vehicle_model_name: yup.string().nullable(),
 		vehicle_issue_year: yup.number().nullable(),
 		vehicle_fuel_type: yup.string().nullable(),
-		vehicle_licence_plate: yup.string().nullable(),
+		vehicle_licence_plate: yup.string().min(1).max(20).nullable(),
 		issuing_state_id: yup.number().nullable(),
 		vehicle_enter_vin_manually_flag: yup.boolean().nullable(),
-		vehicle_vin: yup.string().nullable(),
-		vehicle_notes: yup.string().nullable()
+		vehicle_vin: yup.string().min(17).max(18).nullable(),
+		vehicle_notes: yup.string().min(0).max(60).nullable()
 	});
 
+	if (!initialValues.vehicle_id) {
+		initialValues = {
+			vehicle_truck_number: ''
+		} as VehicleType
+	}
 
 	return (
 		<React.Fragment>
@@ -143,16 +160,16 @@ const EditVehicleModal = ({ open, handleClose, initialValues, titleText, handleD
 							{initialValues.vehicle_id &&
 								<div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gridGap: '20px' }}>
 									<StyledDefaultButtonSmall
-										onClick={() => {
-											if (initialValues.vehicle_id && handleDelete)
-												handleDelete(initialValues.vehicle_id)
+										onClick={async() => {
+											await dispatch(deleteVehicle(initialValues.vehicle_id as number, loggedUser.company_id))
 											handleClose()
 										}}>Delete</StyledDefaultButtonSmall>
 
 									<StyledDefaultButtonSmall
-										onClick={() => {
-											if (initialValues.vehicle_id && handleActivate)
-												handleActivate(initialValues.vehicle_id)
+										onClick={async () => {
+											await dispatch(toggleVehicleActivation(initialValues.vehicle_id, initialValues.vehicle_status, loggedUser.company_id))
+											handleClose()
+												
 										}}>{initialValues.vehicle_status === StatusEnum.ACTIVE ? "Deactivate" : "Activate"}</StyledDefaultButtonSmall>
 
 								</div>}
@@ -220,6 +237,7 @@ const EditVehicleModal = ({ open, handleClose, initialValues, titleText, handleD
 														Component={CustomDropdown}
 														values={states}
 														onValueChange={setFieldValue}
+														optional={true} 
 													/>
 												</div>
 

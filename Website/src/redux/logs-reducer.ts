@@ -9,7 +9,8 @@ const SET_SEARCH_TEXT = 'logs/SET_SEARCH_TEXT'
 const SET_LOGS = 'logs/SET_LOGS'
 
 let initialState = {
-	searchText: ""
+	searchText: "",
+	logs: [] as Array<LogsType>
 }
 
 type InitialStateType = typeof initialState;
@@ -27,7 +28,10 @@ const unitsReducer = (state = initialState, action: ActionsTypes): InitialStateT
 			}
 		}
 		case SET_LOGS: {
-			
+			return {
+				...state,
+				logs: action.logs
+			}
 		}
 		default:
 			return state;
@@ -59,9 +63,12 @@ const setLogs = (logs: Array<LogsType>): SetLogsType => {
 }
 
 
-export const getLogsFromServer = (): ThunksType => async (dispatch) => {
+export const getLogsFromServer = (date: string, days: number, userId?: number): ThunksType => async (dispatch) => {
 	dispatch(toggleIsFetching('logs'))
-	let response = await logsAPI.getLogs()
+	let response
+
+	
+	response = await logsAPI.getLogs(date, days)
 
 	if (response.status === ResultCodesEnum.Success) {
 		dispatch(toggleIsFetching('logs'))

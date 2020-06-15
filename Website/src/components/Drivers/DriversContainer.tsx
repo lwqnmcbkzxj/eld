@@ -16,12 +16,11 @@ const DriversContainer: FC = ({ ...props }) => {
 	const loggedUser = useSelector<AppStateType, UserType>(state => state.user.userInfo)
 
 	const getDriversDispatch = () => {
-		if (loggedUser.company_id && loggedUser.role_id === RolesEnum.user)
+		if (loggedUser.company_id && loggedUser.role_id === RolesEnum.company)
 			dispatch(getDriversFromServer(loggedUser.company_id))
 		else if (loggedUser.role_id === RolesEnum.admin) {
 			dispatch(getDriversFromServer(-1))
 		}
-			
 	}
 
 	useEffect(() => {

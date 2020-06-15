@@ -28,13 +28,13 @@ const LogsContainer: FC = ({ ...props }) => {
 
 
 	const getLogs = () => {
-		dispatch(getLogsFromServer())
+		// dispatch(getLogsFromServer())
 	}
 
 
 	useEffect(() => {
 		getLogs()
-	})
+	}, [])
 
 
 	let logs = [

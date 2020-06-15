@@ -13,25 +13,9 @@ import GoogleMap from '../../Common/GoogleMap/GoogleMap'
 import DriversModal from '../../Common/Modals/PagesModals/DriversModal'
 import { setSearchText } from '../../../redux/logs-reducer'
 import { DriverType } from '../../../types/drivers'
+import { getDriversFromServer, editDriver } from '../../../redux/drivers-reducer'
+import { LogsType } from '../../../types/logs'
 
-let driverRecentItemValues = [
-	{
-		date: 'Mar 13',
-		hours_worked: '10:30',
-		distance: '201.3 mi',
-		hours_of_service: 'HOS Violation',
-		form_and_manner: 'Shipping docs, Driver Signature',
-		dvir: true,
-	},
-	{
-		date: 'Mar 13',
-		hours_worked: '10:30',
-		distance: '201.3 mi',
-		hours_of_service: 'HOS Violation',
-		form_and_manner: 'Shipping docs, Driver Signature',
-		dvir: true,
-	}
-] as any
 let driverTripsValues = [
 	{
 		start_time: 'Mar 13, 11:04 PM',
@@ -65,20 +49,24 @@ let driverTripsValues = [
 
 
 type PropsType = {
-	driver: UserType
+	driver: UserType,
+
+	logs: Array<LogsType>
+	handleEdit: (driverObj: UserType) => void
 }
 
-const DriverView: FC<PropsType & RouteComponentProps> = ({ driver, ...props }) => {
+const DriverView: FC<PropsType & RouteComponentProps> = ({ driver, logs, handleEdit, ...props }) => {
 	const dispatch = useDispatch()
 	let recentItemLabels = [
-		{ label: "Date", name: 'date' },
-		{ label: "Hours worked", name: 'hours_worked' },
-		{ label: "Distance", name: 'distance' },
-		{ label: "Hours of service", name: 'hours_of_service' },
-		{ label: "Form & manner", name: 'form_and_manner' },
-		{ label: "DVIR", name: 'dvir', align: 'right' },
+		{ label: "Date", name: 'day' }, 
+		{ label: "Hours worked", name: 'on_duty_hours' }, 
+		{ label: "Distance", name: 'distance' }, 
+
+		{ label: "Hours of service", name: 'has_violation_all' },
+		{ label: "Form & manner", name: 'has_signature' },
+		{ label: "DVIR", name: 'has_inspection', align: 'right' },
 	] as Array<LabelType>
-	
+
 
 	let tripsLabels = [
 		{ label: "Start time", name: 'start_time' },
@@ -89,14 +77,14 @@ const DriverView: FC<PropsType & RouteComponentProps> = ({ driver, ...props }) =
 		{ label: "Note", name: 'note' },
 		{ label: 'Trip', name: 'trip', align: 'right' }
 	] as Array<LabelType>
-	
+
 
 	const [currentModalData, setModalData] = useState({});
 	const [editModalOpen, setEditModalOpen] = useState(false)
 	const handleEditModalClose = () => {
 		setEditModalOpen(false);
 	};
-	
+
 	return (
 		<div className={"page driver-page"}>
 			<DriverPreview
@@ -105,17 +93,17 @@ const DriverView: FC<PropsType & RouteComponentProps> = ({ driver, ...props }) =
 				setModalData={setModalData}
 			/>
 			<GoogleMap
-			
+
 			/>
 
 
 			<SimpeTable
 				tableTitle="Recent item"
 				button={{
-					func: () => { props.history.push(`/logs`); dispatch(setSearchText("Потом тут будет имя водителя"))    },
+					func: () => { props.history.push(`/logs`); dispatch(setSearchText(driver.user_first_name)) },
 					text: "View logs"
 				}}
-				rows={driverRecentItemValues}
+				rows={logs}
 				labels={recentItemLabels}
 			/>
 			<SimpeTable
@@ -127,11 +115,11 @@ const DriverView: FC<PropsType & RouteComponentProps> = ({ driver, ...props }) =
 			{/* Edit modal */}
 			{editModalOpen &&
 				<DriversModal
-				open={editModalOpen}
-				handleClose={handleEditModalClose}
-				initialValues={{} as UserType}
-				titleText={"Edit Driver"}
-				submitFunction={() => { }}
+					open={editModalOpen}
+					handleClose={handleEditModalClose}
+					initialValues={currentModalData as UserType}
+					titleText={"Edit Driver"}
+					submitFunction={handleEdit}
 				/>}
 		</div>
 	)

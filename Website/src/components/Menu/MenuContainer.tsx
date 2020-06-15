@@ -11,7 +11,7 @@ const MenuContainer: FC = ({ ...props }) => {
 
 
 	return (
-		userInfo.role_id === RolesEnum.user ? <UserMenu /> :
+		userInfo.role_id === RolesEnum.company ? <UserMenu /> :
 		userInfo.role_id === RolesEnum.admin ? <AdminMenu /> : <></>
 	)
 }

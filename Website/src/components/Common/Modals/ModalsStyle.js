@@ -51,6 +51,11 @@ export const useStyles = makeStyles((theme) =>
 			"& button:first-child": {
 				marginRight: '24px',
 			},
+		},
+		header__buttons: {
+			display: 'grid',
+			gridTemplateColumns: '1fr 1fr',
+			gridGap: '20px'
 		}
 
 	}),

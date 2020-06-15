@@ -46,7 +46,7 @@ const StatusLabel: FC<PropsType> = ({ text = "", description = "", ...props }) =
 
 	return (
 		<StyledTooltip title={description} arrow>
-			<div className={`status-label` + ' ' + theme}>{text.toUpperCase()}</div>
+			<div className={`status-label` + ' ' + theme}>{text && text.toUpperCase()}</div>
 		</StyledTooltip>
 	)
 }

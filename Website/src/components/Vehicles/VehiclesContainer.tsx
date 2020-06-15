@@ -7,8 +7,6 @@ import { VehicleType } from '../../types/vehicles';
 import { getVehiclesFromServer, addVehicle, editVehicle } from '../../redux/vehicles-reducer';
 import { UserType } from '../../types/user';
 
-import { deleteVehicle, activateVehicle } from '../../redux/vehicles-reducer'
-
 const VehiclesContainer: FC = ({ ...props }) => {
 	const dispatch = useDispatch()
 	const vehicles = useSelector<AppStateType, Array<VehicleType>>(state => state.vehicles.vehicles)
@@ -23,18 +21,6 @@ const VehiclesContainer: FC = ({ ...props }) => {
 		getVehiclesDispatch()
 	}, [])
 
-
-	const activateVehicleDispatch = async (vehicleId: number) => {
-		await dispatch(activateVehicle(vehicleId))
-
-		getVehiclesDispatch()
-	}
-
-	const deleteVehicleDispatch = async (vehicleId: number) => {
-		await dispatch(deleteVehicle(vehicleId))
-
-		getVehiclesDispatch()
-	}
 
 	const addVehicleDispatch = async (vehicleObject: VehicleType) => {
 		await dispatch(addVehicle(loggedUser.company_id, vehicleObject))
@@ -54,9 +40,6 @@ const VehiclesContainer: FC = ({ ...props }) => {
 				rows={vehicles}
 				handleAdd={addVehicleDispatch}
 				handleEdit={editVehicleDispatch}
-
-				handleActivate={activateVehicleDispatch}
-				handleDelete={deleteVehicleDispatch}
 			/>
 		</div>
 	)

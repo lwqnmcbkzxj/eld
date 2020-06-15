@@ -10,7 +10,7 @@ import { CompanyType } from '../types/companies';
 
 // https://cors-anywhere.herokuapp.com/
 const instance = Axios.create({
-	baseURL: "https://cors-anywhere.herokuapp.com/http://api.eld.sixhands.co/",
+	baseURL: "http://api.eld.sixhands.co/",
 	headers: {
 		'Content-Type': 'application/x-www-form-urlencoded'
 	}
@@ -21,8 +21,8 @@ export const setTokenForAPI = (token: string) => {
 }
 
 export const userAPI = {
-	login(login: string, password: string) {
-		return instance.post<ApiTypes.GetUserInfoResponseType>(`auth/login`, qs.stringify({ user_login: login, user_password: password }))
+	login(login: string, password: string, is_web = true) {
+		return instance.post<ApiTypes.GetUserInfoResponseType>(`auth/login`, qs.stringify({ user_login: login, user_password: password, is_web: +is_web }))
 			.then((response) => {
 				return response.data
 			})
@@ -87,6 +87,27 @@ export const userAPI = {
 				return response.data
 			})
 			.catch((err) => { return err });
+	},
+	activateUser(userId: number) {
+		return instance.patch(`user/activate/${userId}`)
+			.then((response) => {
+				return response.data
+			})
+			.catch((err) => { return err });
+	},
+	deactivateUser(userId: number) {
+		return instance.patch(`user/deactivate/${userId}`)
+			.then((response) => {
+				return response.data
+			})
+			.catch((err) => { return err });
+	},
+	deleteUser(userId: number) {
+		return instance.delete(`user/delete/${userId}`)
+		.then((response) => {
+			return response.data
+		})
+		.catch((err) => { return err });
 	}
 }
 
@@ -173,19 +194,35 @@ export const vehiclesAPI = {
 
 	activateVehicle(id: number) {
 		return instance.post(`vehicle/activate/${id}`)
-			.then(response => response.data)
-			.catch((err) => { return err });
-	}
-}
-
-export const logsAPI = {
-	getLogs() {
-		return instance.get(`logs/get`)
 			.then((response) => {
 				return response.data
 			})
 			.catch((err) => { return err });
 	},
+	deactivateVehicle(id: number) {
+		return instance.post(`vehicle/deactivate/${id}`)
+			.then((response) => {
+				return response.data
+			})
+			.catch((err) => { return err });
+	},
+}
+
+export const logsAPI = {
+	getLogs(date: string, days: number) {
+		return instance.get(`logs/get/${date}/${days}`)
+			.then((response) => {
+				return response.data
+			})
+			.catch((err) => { return err });
+	},
+	getUserLogs() {
+		return instance.get(`logs/get`)
+			.then((response) => {
+				return response.data
+			})
+			.catch((err) => { return err });
+	}
 }
 
 export const companiesAPI = {
@@ -204,31 +241,58 @@ export const companiesAPI = {
 			.catch((err) => { return err });
 	},
 
-	addCompany(companyObj: CompanyType) {
-		return instance.post(`company/add`, {...companyObj}, { headers:{ 'Content-type': 'application/json' }})
+	addCompany(companyObj: any) {
+		
+		let formData = new FormData()
+
+		for (let key in companyObj) {
+			if (typeof companyObj[key] === 'object') {
+				if (Array.isArray(companyObj[key])) {
+					// IF ARRAY - makes terminal_addresses: [{ company_address_text: "uuiwnxdka" }] ---> 
+					// terminal_addresses[0]: "string"
+					companyObj[key].map((element: any, counter: number) => {
+						formData.append(`${key}[${[counter]}]`, element.company_address_text)
+					})
+				} else {
+					formData.append(key, JSON.stringify(companyObj[key]))
+				}
+			} else {
+				//Simple field
+				formData.append(key, companyObj[key])
+			}
+		}
+
+		// try {
+		// 	let response = instance.post(`company/add`, formData ).then(response => response.data)
+		// } catch(err) { console.log(err) }
+
+
+		return instance.post(`company/add`, formData )
 			.then(response => response.data)
 			.catch((err) => { return err });
 	},
 
 
 	editCompany(companyObj: any) {
-		return instance.patch(`company/edit`, JSON.stringify({...companyObj}), { headers:{ 'Content-type': 'application/json' }})
-
+		return instance.patch(`company/edit`, JSON.stringify({ ...companyObj }), { headers: { 'Content-type': 'application/json' } })
 			.then(response => response.data)
 			.catch((err) => { return err });
 	},
+	deleteCompany(company_id: number) {
+		return instance.delete(`company/delete/${company_id}`)
+		.then((response) => {
+			return response.data
+		})
+		.catch((err) => { return err });
+	},
 	activateCompany(company_id: number) {
 		return instance.patch(`company/activate/${company_id}`)
-			.then((response) => {
-				return response.data
-			})
+			.then((response) => response.data )
 			.catch((err) => { return err });
 	},
 	deactivateCompany(company_id: number) {
 		return instance.patch(`company/deactivate/${company_id}`)
-			.then((response) => {
-				return response.data
-			})
+			.then((response) => response.data )
 			.catch((err) => { return err });
 	}
 }

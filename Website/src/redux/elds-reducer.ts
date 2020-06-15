@@ -1,4 +1,4 @@
-import { AppStateType } from '../types/types'
+import { AppStateType, StatusEnum } from '../types/types'
 import { ThunkAction } from 'redux-thunk'
 import { EldType } from '../types/elds'
 import { eldsAPI } from '../api/api'
@@ -22,7 +22,7 @@ const eldsReducer = (state = initialState, action: ActionsTypes): InitialStateTy
 		case SET_ELDS: {
 			return {
 				...state,
-				elds: [...action.elds]
+				elds: [...action.elds.filter(eld => eld.eld_status !== StatusEnum.DELETED)]
 			}
 		}
 		

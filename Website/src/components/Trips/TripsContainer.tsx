@@ -7,7 +7,6 @@ import { VehicleType } from '../../types/vehicles';
 import { getVehiclesFromServer } from '../../redux/vehicles-reducer';
 import { UserType } from '../../types/user';
 
-import { deleteVehicle, activateVehicle } from '../../redux/vehicles-reducer'
 
 const TripsContainer: FC = ({ ...props }) => {
 	const dispatch = useDispatch()

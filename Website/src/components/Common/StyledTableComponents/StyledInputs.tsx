@@ -31,8 +31,6 @@ const inputStyle = {
 					minHeight: '138px',
 				},
 			},
-
-
 			"&:before": {
 				borderBottom: `1px solid ${colors.bg_component_color}`,
 			},

@@ -24,11 +24,9 @@ type PropsType = {
 	handleAdd: (vehicle: VehicleType) => void
 	handleEdit: (vehicle: VehicleType) => void
 
-	handleActivate: (id: number) => void
-	handleDelete: (id: number) => void
 }
 type Order = 'asc' | 'desc';
-const DriversTable: FC<PropsType> = ({ rows, handleAdd, handleEdit, handleActivate, handleDelete, ...props }) => {
+const DriversTable: FC<PropsType> = ({ rows, handleAdd, handleEdit, ...props }) => {
 	const dispatch = useDispatch()
 	const [page, setPage] = React.useState(0)
 	const [rowsPerPage, setRowsPerPage] = React.useState(10)
@@ -152,8 +150,6 @@ const DriversTable: FC<PropsType> = ({ rows, handleAdd, handleEdit, handleActiva
 					handleClose={handleEditModalClose}
 					initialValues={vehicle}
 					titleText={"Edit Vehicle"}
-					handleActivate={handleActivate}
-					handleDelete={handleDelete}
 					confirmFunction={handleEdit}
 				/>}
 
@@ -162,7 +158,7 @@ const DriversTable: FC<PropsType> = ({ rows, handleAdd, handleEdit, handleActiva
 				<VehicleModal
 					open={addModalOpen}
 					handleClose={handleAddModalClose}
-					initialValues={{}}
+					initialValues={{} as VehicleType}
 					titleText={"Add Vehicle"}
 					confirmFunction={handleAdd}
 				/>}

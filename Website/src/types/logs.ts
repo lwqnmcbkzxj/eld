@@ -1,7 +1,19 @@
 import { StatusEnum } from './types'
 
 export type LogsType = {
+	day: string
+	has_inspection: number | boolean
+	has_signature: number | boolean | string,
+	on_duty_seconds: number
+	on_duty_hours: string
+	has_records: number | boolean
+	distance: number
+	has_violation_11h: number | boolean
+	has_violation_14h: number | boolean
+	has_violation_70h: number | boolean
 
+	has_violation_all: number | boolean | string
+	has_shipping_doc: number | boolean
 }
 
 export type RecordType = {

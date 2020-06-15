@@ -37,8 +37,8 @@ const EditProfileModal = ({ open, handleClose, initialValues, titleText, submitF
 	}
 
 	const validationSchema = yup.object({
-		eld_serial_number: yup.string().required(),
-		eld_note: yup.string().required(),
+		eld_serial_number: yup.string().min(4).max(60).required(),
+		eld_note: yup.string().min(4).max(60).required(),
 	});
 
 	if (!initialValues.eld_id) {

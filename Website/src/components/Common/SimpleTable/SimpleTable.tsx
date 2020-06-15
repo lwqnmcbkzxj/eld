@@ -33,19 +33,27 @@ type PropsType = {
 
 const SimpleTable: FC<PropsType & RouteComponentProps> = ({ tableTitle, rows = [], labels, button, additionalButton, doubleClickFunction, ...props }) => {
 
-	const checkField = (label: LabelType, rowItem: string) => {
-		let filedElem
 
+	
+	
+	
+
+	const checkField = (label: LabelType, rowItem: string) => {
+
+		if (label.name === 'has_inspection') {
+			debugger
+		}
+		let filedElem
 		if (label.name === 'note') {
 			filedElem = <div className="text-block">{rowItem}</div>
-		} else if (label.name === 'hours_of_service' || label.name === 'form_and_manner') {
+		} else if (rowItem && (label.name === 'hours_of_service' || label.name === 'form_and_manner' || label.name === 'has_violation_all' || label.name === 'has_signature')) {
 			filedElem = (
 				<div style={{ display: 'flex', alignItems: 'center' }}>
 					<img src={iconAlert} alt="alert-icon" style={{ marginRight: '5px' }} />
 					<p>{rowItem}</p>
 				</div>
 			)
-		} else if (label.name === 'dvir' || label.name === 'trip' || label.name === 'driver_signature' || label.name === 'mechanic_signature') {
+		} else if (label.name === 'dvir' || label.name === 'trip' || label.name === 'driver_signature' || label.name === 'mechanic_signature' || label.name === 'has_inspection') {
 			filedElem = !!rowItem === true ?
 				<img src={iconDone} alt="icon-done" /> :
 				<img src={iconNone} alt="icon-none" />

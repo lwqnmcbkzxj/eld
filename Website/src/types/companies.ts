@@ -34,5 +34,5 @@ export type CompanyType = {
 	company_status: StatusEnum
 	user_id: number,
 	user_role_id: number
-	terminal_addresses: Array<string>
+	terminal_addresses: Array<any>
 }

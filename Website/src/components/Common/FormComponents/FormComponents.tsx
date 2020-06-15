@@ -28,6 +28,9 @@ export const useFieldStyles = makeStyles(theme => ({
 		"&.field_with_icon input": {
 			paddingRight: '40px'
 		},
+		"&.big_input .icon_password": {
+			top: '8px',
+		}
 		
 	},
 	dropdown: {
@@ -43,7 +46,7 @@ export const useFieldStyles = makeStyles(theme => ({
 		position: 'absolute',
 		"&.icon_password": {
 			right: '8px',
-			top: '18px',
+			top: '22px',
 			height: '32px'
 		},
 		"&.icon_delete": {
@@ -64,6 +67,8 @@ type CustomFieldProps = {
 	optional?: boolean
 	disabled?: boolean
 	Component?: any
+
+	checkboxChecked?: boolean 
 
 	values?: Array<SelectorType>
 	onValueChange?: (field: string, value: any, shouldValidate?: boolean | undefined) => void
@@ -145,6 +150,10 @@ export const CustomField: React.FC<FieldAttributes<CustomFieldProps>> = (
 	}
 
 
+
+	if (Component !== StyledFilledInputSmall)
+		fieldClass= cn(fieldClass, "big_input")
+
 	return (
 		<div className={fieldClass}>
 			{typeof label === "string" &&
@@ -189,6 +198,7 @@ export const CustomCheckBox: React.FC<FieldAttributes<CustomFieldProps>> = ({ ..
 			name={props.name}
 			control={<Field name={props.name} color="primary" as={Checkbox} />}
 			label={props.label}
+			checked={props.checkboxChecked}
 		/>
 	)
 }
@@ -222,7 +232,6 @@ export const CustomDropdown: React.FC<DropdownValues> = ({ values, name = "", on
 		onValueChange(name, event.target.value)
 	};
 
-	
 	return (
 		<div>
 			<FormControl style={{ width: '100%', ...style }} className={classes.dropdown}>
@@ -233,7 +242,7 @@ export const CustomDropdown: React.FC<DropdownValues> = ({ values, name = "", on
 					onChange={handleChange}
 					helperText={helperText}
 					error={error}
-					value={props.field.value !== null ? props.field.value :
+					value={props.field && props.field.value !== null ? props.field.value :
 						values.length > 0 ? values[0].id : ""}
 				>
 

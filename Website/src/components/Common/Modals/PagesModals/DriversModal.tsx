@@ -5,7 +5,7 @@ import { useStyles } from '../ModalsStyle'
 import { useSelector, useDispatch, Selector } from 'react-redux';
 
 import { ModalType } from '../ModalsTypes'
-import { AppStateType, SelectorType } from '../../../../types/types';
+import { AppStateType, SelectorType, StatusEnum } from '../../../../types/types';
 import { UserType, RolesEnum } from '../../../../types/user';
 import { VehicleType } from '../../../../types/vehicles';
 import { DriverType } from '../../../../types/drivers';
@@ -21,14 +21,16 @@ import { isFetchingArrContains } from '../../../../utils/isFetchingArrayContains
 import Loader from '../../Loader/Loader';
 import { getStates, getCompanyTerminals, getTimezones } from '../../../../redux/commonData-reducer';
 import { getVehiclesFromServer } from '../../../../redux/vehicles-reducer';
-import { getDriversFromServer } from '../../../../redux/drivers-reducer';
+import { getDriversFromServer, toggleDriverActivation, deleteDriver } from '../../../../redux/drivers-reducer';
 import { getCompaniesFromServer } from '../../../../redux/companies-reducer';
+
 
 
 type DriversModal = {
 	initialValues: UserType
 	titleText: string
 	submitFunction: (driverObject: UserType) => void
+
 }
 
 const EditProfileModal = ({ open, handleClose, initialValues, titleText, submitFunction, ...props }: ModalType & DriversModal) => {
@@ -44,7 +46,7 @@ const EditProfileModal = ({ open, handleClose, initialValues, titleText, submitF
 
 	// Calculating data
 	const vehicles = useSelector<AppStateType, Array<VehicleType>>(state => state.vehicles.vehicles)
-	const drivers = useSelector<AppStateType, Array<DriverType>>(state => state.drivers.drivers)
+	const drivers = useSelector<AppStateType, Array<DriverType>>(state => state.drivers.modalDrivers)
 	const companies = useSelector<AppStateType, Array<CompanyType>>(state => state.companies.companies)
 
 
@@ -64,11 +66,12 @@ const EditProfileModal = ({ open, handleClose, initialValues, titleText, submitF
 	useEffect(() => {
 		let driversArray = [] as Array<SelectorType>
 		drivers.map(driver => {
-			if (driver.user_id !== initialValues.user_id)
+			if (driver.user_id !== initialValues.user_id && driver.user_status !== StatusEnum.DEACTIVATED)
 				driversArray.push({ id: driver.user_id as number, value: driver.user_full_name as string })
 		})
 		setDriversSelectors(driversArray)
-	}, [drivers])
+	}, [initialValues, drivers])
+
 	useEffect(() => {
 		let companiesArray = [] as Array<SelectorType>
 		companies.map(company => {
@@ -83,14 +86,19 @@ const EditProfileModal = ({ open, handleClose, initialValues, titleText, submitF
 				let companyId = 0
 				if (initialValues.company_id)
 					companyId = initialValues.company_id
-				else
-					companyId = loggedUser.company_id
+				else {
+					if (loggedUser.role_id === RolesEnum.company)
+						companyId = loggedUser.company_id
+				}
 
 				dispatch(getStates())
 				dispatch(getTimezones())
-				dispatch(getDriversFromServer(companyId, 'drivers-modal'))
-				dispatch(getCompanyTerminals(companyId))
-				dispatch(getVehiclesFromServer(companyId))
+
+				if (companyId !== 0) {
+					dispatch(getDriversFromServer(companyId, 'drivers-modal'))
+					dispatch(getCompanyTerminals(companyId))
+					dispatch(getVehiclesFromServer(companyId))
+				}
 
 				if (loggedUser.role_id === RolesEnum.admin) {
 					dispatch(getCompaniesFromServer())
@@ -100,43 +108,76 @@ const EditProfileModal = ({ open, handleClose, initialValues, titleText, submitF
 	}, [open]);
 
 
-
 	useEffect(() => {
-		let key = "" as keyof UserType
-		for (key in initialValues) {
-			if (key === "user_personal_conveyance_flag" || key === "user_eld_flag" || key === "user_yard_move_flag" || key === "user_manual_drive_flag") {
-				if (initialValues[key] === null) {
-					initialValues[key] = false
+		if (initialValues.user_id) {
+			let key = "" as keyof UserType
+			for (key in initialValues) {
+				if (key === 'user_personal_conveyance_flag' || key === 'user_eld_flag' || key === 'user_yard_move_flag' || key == 'user_manual_drive_flag') {
+					let val = initialValues[key]
+					initialValues[key] = !!val as boolean
 				}
 			}
+			if (initialValues.company_id)
+				setInitialCompanyId(initialValues.company_id)
+			
+			if (!initialValues.co_driver_id) {
+				initialValues.co_driver_id = 0
+			}
 		}
+
 	}, [initialValues])
 
+	const [initialCompanyId, setInitialCompanyId] = useState<number | string>(initialValues.company_id ? initialValues.company_id : '')
+
+
+	useEffect(() => {
+		handleGetDataByCompanyId(initialCompanyId)
+	}, [initialCompanyId])
+
+	const handleGetDataByCompanyId = async (id: any | number) => {
+		if (loggedUser.role_id === RolesEnum.admin && !isFetchingArrContains(isFetchingArray, ['terminals', 'vehicles', 'drivers-modal']) && id) {
+			dispatch(getDriversFromServer(id, 'drivers-modal'))
+			dispatch(getCompanyTerminals(id))
+			dispatch(getVehiclesFromServer(id))
+			setInitialCompanyId(id)
+		}
+	}
 
 	const submitProfileEdit = async (data: UserType, setSubmitting: any) => {
 		setSubmitting(true);
 
 		let newDataObj = {} as any
 		let key = "" as keyof UserType
+		let changedKeysCounter = 0
 		for (key in data) {
 			if (data[key] !== initialValues[key] || key === 'user_id') {
-				if (key === "user_personal_conveyance_flag" || key === "user_eld_flag" || key === "user_yard_move_flag" || key === "user_manual_drive_flag")
-					newDataObj[key] = +data[key]
-				else
-					newDataObj[key] = data[key]
+				if (initialValues.user_id || (!initialValues.user_id && data[key])) {
+					// If adding and value !== '' or editing
+					if (key !== 'user_id') {
+						changedKeysCounter++
+					}
+
+					if (key === "user_personal_conveyance_flag" || key === "user_eld_flag" || key === "user_yard_move_flag" || key === "user_manual_drive_flag")
+						newDataObj[key] = +data[key]
+					
+					else
+						newDataObj[key] = data[key]
+				}
 			}
 		}
 
+		// IFF ADD
 		if (!newDataObj.user_id) {
+			changedKeysCounter = 1
 			newDataObj.role_id = 1
-			if (!initialValues.company_id) 
+			if (!data.company_id)
 				newDataObj.company_id = loggedUser.company_id
-			else 
-				newDataObj.company_id = initialValues.company_id
-				
-				
+			else
+				newDataObj.company_id = data.company_id
 		}
-		await submitFunction(newDataObj)
+
+		if (changedKeysCounter !== 0)
+			await submitFunction(newDataObj)
 
 		setSubmitting(false);
 		handleClose()
@@ -146,41 +187,51 @@ const EditProfileModal = ({ open, handleClose, initialValues, titleText, submitF
 		user_first_name: '',
 		user_last_name: '',
 		user_login: '',
-		user_password: '',
+		user_email: '',
 		user_phone: '',
 		user_driver_licence: '',
 		issuing_state_id: '',
-		company_id: '',
 
 		user_personal_conveyance_flag: false,
 		user_yard_move_flag: false,
 		user_eld_flag: false,
 		user_manual_drive_flag: false,
-	}
+	} as any
+
+
+	if (!initialValues.user_id)
+		initialValuesObj.user_password = ''
 
 	const validationSchema = yup.object({
-		user_first_name: yup.string().nullable().required(),
-		user_last_name: yup.string().nullable().required(),
-		user_login: yup.string().nullable().required(),
-		user_password: initialValues.user_id ? yup.string().nullable().min(8).max(24) : yup.string().nullable().required().min(8).max(24),
+		user_first_name: yup.string().min(2).max(30).nullable().required(),
+		user_last_name: yup.string().min(2).max(30).nullable().required(),
+
+		user_login: yup.string().min(4).max(60).nullable().required(),
+
+		user_password: initialValues.user_id ?
+			yup.string().nullable().min(8).max(24) :
+			yup.string().nullable().required().min(8).max(24),
+
 		user_email: yup.string().nullable().email('Email must be valid'),
+
 		user_phone: yup.string().nullable().required(),
-		user_driver_licence: yup.string().nullable().required(),
+		user_driver_licence: yup.string().min(1).max(20).nullable().required(),
 		issuing_state_id: yup.number().nullable().required(),
 
-		// vehicle_id: yup.number().nullable(),
-		// user_trailer_number: yup.string().nullable(),
+		// vehicle_id: yup.number(),
+		user_trailer_number: yup.string().min(0).max(32).nullable(),
 		// user_personal_conveyance_flag: yup.boolean().nullable(),
 		// user_yard_move_flag: yup.boolean().nullable(),
 		// user_eld_flag: yup.boolean().nullable(),
 		// user_manual_drive_flag: yup.boolean().nullable(),
 		// co_driver_id: yup.number().nullable(),
 
-		company_id: loggedUser.role_id === RolesEnum.admin ? yup.number().nullable().required() : yup.number().nullable(),
 		// company_address_id: yup.number().nullable(),
 		// timezone_id: yup.number().nullable(),
 
-		// user_notes: yup.string().nullable(),
+
+		company_id: loggedUser.role_id === RolesEnum.admin ? yup.number().nullable().required() : yup.number(),
+		user_notes: yup.string().min(0).max(60).nullable()
 	});
 
 	return (
@@ -200,28 +251,49 @@ const EditProfileModal = ({ open, handleClose, initialValues, titleText, submitF
 						<DialogTitle id="edit-driver-dialog-title" className={classes.dialog__header}>
 							<div style={{ display: 'flex', alignItems: 'center', justifyContent: "flex-start" }}>
 								<div style={{ marginRight: '15px' }}>{titleText} {initialValues.user_first_name && initialValues.user_last_name && <span>{initialValues.user_first_name + ' ' + initialValues.user_last_name} </span>}</div>
-								{initialValues.user_id && <StyledLabel text={"ACTIVE"} />}
+								{initialValues.user_id && <StyledLabel text={initialValues.user_status} />}
 							</div>
 
+
+
 							{initialValues.user_id &&
-								<StyledDefaultButtonSmall
-									onClick={() => {
-										console.log('DEACTIVATING ' + initialValues.user_id);
-										handleClose()
-									}}
-								>Deactivate</StyledDefaultButtonSmall>}
+								<div className={classes.header__buttons}>
+									<StyledDefaultButtonSmall
+										onClick={async () => {
+											let companyIdForDrivers = loggedUser.role_id === RolesEnum.admin ? -1 : initialValues.company_id
+
+											await dispatch(deleteDriver(initialValues.user_id, companyIdForDrivers))
+											handleClose()
+										}}>Delete</StyledDefaultButtonSmall>
+
+									<StyledDefaultButtonSmall
+										onClick={async () => {
+											let companyIdForDrivers = loggedUser.role_id === RolesEnum.admin ? -1 : initialValues.company_id
+
+											await dispatch(toggleDriverActivation(initialValues.user_id, initialValues.user_status, companyIdForDrivers))
+
+											handleClose()
+										}}>{initialValues.user_status === StatusEnum.ACTIVE ? "Deactivate" : "Activate"}</StyledDefaultButtonSmall>
+								</div>}
+
+
+
 						</DialogTitle>
 
+
 						<Formik
-							validateOnChange={true}
-							initialValues={{ ...initialValuesObj, ...initialValues }}
+							validateOnChange={false}
+
+							initialValues={{
+								...initialValuesObj, ...initialValues, company_id: initialCompanyId,
+								co_driver_id: initialValues.co_driver_id ? initialValues.co_driver_id : 0
+							}}
 							validationSchema={validationSchema}
 							validate={values => {
 								const errors: Record<string, string> = {};
 								return errors;
 							}}
 							onSubmit={(data, { setSubmitting }) => {
-								debugger
 								submitProfileEdit(data, setSubmitting)
 							}}
 						>
@@ -269,12 +341,12 @@ const EditProfileModal = ({ open, handleClose, initialValues, titleText, submitF
 
 												</div>
 												<div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gridGap: '32px' }}>
-													<CustomCheckBox name="user_personal_conveyance_flag" label="Personal Conveyance" />
-													<CustomCheckBox name="user_yard_move_flag" label="Yard move" />
+													<CustomCheckBox name="user_personal_conveyance_flag" label="Personal Conveyance" checkboxChecked={values.user_personal_conveyance_flag as boolean} />
+													<CustomCheckBox name="user_yard_move_flag" label="Yard move" checkboxChecked={values.user_yard_move_flag as boolean} />
 												</div>
 												<div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gridGap: '32px' }}>
-													<CustomCheckBox name="user_eld_flag" label="ELD (no exemption)" />
-													<CustomCheckBox name="user_manual_drive_flag" label="Allow Manual Drive Time" />
+													<CustomCheckBox name="user_eld_flag" label="ELD (no exemption)" checkboxChecked={values.user_eld_flag as boolean} />
+													<CustomCheckBox name="user_manual_drive_flag" label="Allow Manual Drive Time" checkboxChecked={values.user_manual_drive_flag as boolean} />
 												</div>
 											</div>
 
@@ -294,7 +366,10 @@ const EditProfileModal = ({ open, handleClose, initialValues, titleText, submitF
 														label={'Company'}
 														Component={CustomDropdown}
 														values={companiesSelectors}
-														onValueChange={setFieldValue}
+														onValueChange={(field: string, value: any, shouldValidate?: boolean | undefined) => {
+															setFieldValue(field, value, shouldValidate);
+															handleGetDataByCompanyId(value)
+														}}
 													/>
 
 												}
